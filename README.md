@@ -20,7 +20,7 @@ The above *static* method is used the create the database file for you in the pa
 ```py
 DiscordLevelingSystem.create_database_file(r'C:\Users\Defxult\Documents')
 ```
-Once created, there is no needed to ever run that method again unless you want to create a new database file from scratch. Now that you have the database file, you can use the leveling system.
+Once created, there is no need to ever run that method again unless you want to create a new database file from scratch. Now that you have the database file, you can use the leveling system.
 
 ---
 ## `DiscordLevelingSystem`
