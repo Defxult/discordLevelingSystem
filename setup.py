@@ -25,12 +25,18 @@ tags = [
     'level up'
 ]
 
+details = {
+    'Github Repo' : 'https://github.com/Defxult/discordLevelingSystem',
+    'Github Issues' : 'https://github.com/Defxult/discordLevelingSystem/issues'
+}
+
 setup(
     author='Defxult#8269',
     name='discordLevelingSystem',
     description='A local discord.py leveling system powered by SQLite',
     version='0.0.1', 
     url='https://github.com/Defxult',
+    project_urls=details,
     classifiers=classifiers,
     long_description=_get_readme(),
     long_description_content_type='text/markdown',
