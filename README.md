@@ -1,9 +1,10 @@
+Install the Github version of this library by doing:
+```
+pip install git+https://github.com/Defxult/discordLevelingSystem.git
+```
+You must have [Git](https://git-scm.com/) installed in order to do this
 
-<!-- ## How to install
-```
-pip install discordLevelingSystem
-```
---- -->
+---
 ## Showcase
 ![showcase](https://cdn.discordapp.com/attachments/655186216060321816/835010159092039680/leveling_showcase.gif)
 
