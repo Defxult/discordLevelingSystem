@@ -27,13 +27,14 @@ tags = [
 
 details = {
     'Github Repo' : 'https://github.com/Defxult/discordLevelingSystem',
-    'Github Issues' : 'https://github.com/Defxult/discordLevelingSystem/issues'
+    'Github Issues' : 'https://github.com/Defxult/discordLevelingSystem/issues',
+    'Changelog' : 'https://github.com/Defxult/discordLevelingSystem/blob/main/CHANGELOG.txt'
 }
 
 setup(
     author='Defxult#8269',
     name='discordLevelingSystem',
-    description='A local discord.py leveling system powered by SQLite',
+    description='A library to implement a leveling system into a discord bot. Contains features such as XP, level, ranks, and role awards.',
     version='0.0.1', 
     url='https://github.com/Defxult',
     project_urls=details,
@@ -45,3 +46,9 @@ setup(
     packages=find_packages(),
     install_requires=['discord.py>=1.4.0', 'aiosqlite>=0.17.0']
 )
+
+# PyPI project description
+
+# For full documentation of this library, visit the [Github repo](https://github.com/Defxult/discordLevelingSystem). For the time being, this PyPI page will only
+# act as a placeholder that directs you to Github because a vast majority of fixes, changes, and additions will take place there during the initial stages of development.
+# Feel free to install the current PyPI version, but updates will always be pushed to Github before PyPI.
