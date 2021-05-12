@@ -4,7 +4,10 @@ Install the Github version of this library by doing:
 ```
 pip install git+https://github.com/Defxult/discordLevelingSystem.git
 ```
-You must have [Git](https://git-scm.com/) installed in order to do this
+You must have [Git](https://git-scm.com/) installed in order to do this. The option to install the [PyPI](https://pypi.org/project/discordLevelingSystem/) version is available as well:
+```txt
+pip install discordLevelingSystem
+```
 
 ---
 ## Showcase
