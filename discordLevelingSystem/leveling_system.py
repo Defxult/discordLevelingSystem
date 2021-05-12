@@ -162,7 +162,7 @@ class DiscordLevelingSystem:
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         """
         # the decorator @db_file_exists should be used here because if :attr:`_database_file_path` is :class:`None`, it will raise TypeError, which is exactly what Exception `NotConnected` is made for
-        # and is handled in inside that decorator. But to repurpose the entire function to support functions that are not coroutines is unnecessary. A simple check is all thats needed for this
+        # and is handled inside that decorator. But to repurpose the entire function to support functions that are not coroutines is unnecessary. A simple check is all thats needed for this
         if not self._database_file_path:
             raise NotConnected
             
@@ -1018,7 +1018,7 @@ class DiscordLevelingSystem:
                 if arg <= 0 or arg > 100:
                     raise DiscordLevelingSystemError('Parameter "amount" can only be a value from 1-100')
             else:
-                # ensures there are only 2 values in the lis
+                # ensures there are only 2 values in the list
                 if len(arg) != 2:
                     raise DiscordLevelingSystemError('Parameter "amount" list must only have two values')
                 
@@ -1070,7 +1070,6 @@ class DiscordLevelingSystem:
             on_cooldown = bucket.update_rate_limit()
 
             if not on_cooldown:
-                member = message.author
                 new_member_query = """
                     INSERT INTO leaderboard
                     VALUES (?, ?, ?, ?, ?)

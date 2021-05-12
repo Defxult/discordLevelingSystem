@@ -54,7 +54,7 @@ def db_file_exists(func):
 
         # if it gets this far, that means :meth:`DiscordLevelingSystem.connect_to_file()` was ran, the connection
         # object was set, the file path was stored, and that file does end in ".db". This checks it again because
-        # this check applies to variuous other methods that need to verify that the file exists. Using :meth:`DiscordLevelingSystem.connect_to_file()`
+        # this check applies to various other methods that need to verify that the file exists. Using :meth:`DiscordLevelingSystem.connect_to_file()`
         # has its own check just like this, and that method will only be called to setup the initial connection
         if path_exists():
             if os.path.isfile(instance._database_file_path) and instance._database_file_path.endswith('.db'):
