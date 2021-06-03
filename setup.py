@@ -5,7 +5,7 @@ def _get_readme():
         return fp.read()
 
 classifiers = [
-    'Development Status :: 3 - Alpha',
+    'Development Status :: 4 - Beta',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
@@ -35,7 +35,7 @@ setup(
     author='Defxult#8269',
     name='discordLevelingSystem',
     description='A library to implement a leveling system into a discord bot. Contains features such as XP, level, ranks, and role awards.',
-    version='0.0.1', 
+    version='0.0.2', 
     url='https://github.com/Defxult',
     project_urls=details,
     classifiers=classifiers,
