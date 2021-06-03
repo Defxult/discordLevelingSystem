@@ -22,7 +22,11 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from discord import AllowedMentions
+from typing import Union
+
+from discord import AllowedMentions, Embed
+
+from .errors import DiscordLevelingSystemError
 
 default_message = '[$mention], you are now **level [$level]!**'
 default_mentions = AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)
@@ -31,7 +35,7 @@ class LevelUpAnnouncement:
     
     Parameters
     ----------
-    message: :class:`str`
+    message: Union[:class:`str`, :class:`discord.Embed`]
         (optional) The message that is sent when someone levels up (defaults to `"<mention>, you are now **level <level>!**"`)
     
     level_up_channel_id: :class:`int`
@@ -67,6 +71,10 @@ class LevelUpAnnouncement:
     announcement = LevelUpAnnouncement(message=f'{LevelUpAnnouncement.AUTHOR_MENTION} you leveled up! Your rank is now {LevelUpAnnouncement.RANK}')
     lvl = DiscordLevelingSystem(..., level_up_announcement=announcement)
     ```
+    
+        .. changes::
+            v0.0.2
+                Now accepts embeds as the message parameter
     """
     AUTHOR_MENTION = '[$mention]'
     XP = '[$xp]'
@@ -74,7 +82,7 @@ class LevelUpAnnouncement:
     LEVEL = '[$level]'
     RANK = '[$rank]'
 
-    def __init__(self, message: str=default_message, level_up_channel_id: int=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: float=None):
+    def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_id: int=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: float=None):
         self.message = message
         self.level_up_channel_id = level_up_channel_id
         self._author_mention = None
@@ -88,14 +96,73 @@ class LevelUpAnnouncement:
             'delete_after' : delete_after
         }
     
-    def _parse_message(self, message: str):
+    def _convert_markdown(self, to_convert: str) -> str:
+        """Convert the markdown text to the value it represents
+
+            .. added:: v0.0.2
+        """
         markdowns = {
-           LevelUpAnnouncement.AUTHOR_MENTION : self._author_mention,
-           LevelUpAnnouncement.XP : self._xp,
-           LevelUpAnnouncement.TOTAL_XP : self._total_xp,
-           LevelUpAnnouncement.LEVEL : self._level,
-           LevelUpAnnouncement.RANK : self._rank
+            LevelUpAnnouncement.AUTHOR_MENTION : self._author_mention,
+            LevelUpAnnouncement.XP : self._xp,
+            LevelUpAnnouncement.TOTAL_XP : self._total_xp,
+            LevelUpAnnouncement.LEVEL : self._level,
+            LevelUpAnnouncement.RANK : self._rank
         }
         for mrkd, value in markdowns.items():
-            message = message.replace(mrkd, str(value))
-        return message
+            to_convert = to_convert.replace(mrkd, str(value))
+        return to_convert
+    
+    def _parse_message(self, message: Union[str, Embed]) -> Union[str, Embed]:
+        """
+            .. changes::
+                v0.0.2
+                    Added handling for embed announcements
+                    Moved markdown conversion to its own method (`_convert_markdown`)
+        """
+        if isinstance(message, str):
+            return self._convert_markdown(message)
+        
+        elif isinstance(message, Embed):
+            embed = message
+            new_dict_embed = {}
+            temp_formatted = []
+
+            def e_dict_to_converted(embed_value: dict):
+                """If the value from the :class:`discord.Embed` dictionary contains a :class:`LevelUpAnnouncement` markdown, convert the markdown to it's 
+                associated value and return it for use
+                    
+                    .. added:: v0.0.2
+                """
+                temp_dict = {}
+                for key, value in embed_value.items():
+                    if not isinstance(value, str):
+                        temp_dict[key] = value
+                    else:
+                        temp_dict[key] = self._convert_markdown(value)
+                else:
+                    return temp_dict.copy()
+
+            for embed_key, embed_value in embed.to_dict().items():
+                # description, title, etc...
+                if isinstance(embed_value, str):
+                    new_dict_embed[embed_key] = self._convert_markdown(embed_value)
+                
+                # field inline values or discord.Color
+                elif isinstance(embed_value, (int, bool)):
+                    new_dict_embed[embed_key] = embed_value
+                
+                # footer, author, etc...
+                elif isinstance(embed_value, dict):
+                    new_dict_embed[embed_key] = e_dict_to_converted(embed_value)
+                
+                # fields
+                elif isinstance(embed_value, list):
+                    for item in embed_value: # "item" is a dict
+                        temp_formatted.append(e_dict_to_converted(item))
+                    new_dict_embed[embed_key] = temp_formatted.copy()
+                    temp_formatted.clear()
+
+            return Embed.from_dict(new_dict_embed)
+
+        else:
+            raise DiscordLevelingSystemError(f'Level up announcement parameter "message" expected a str or discord.Embed, got {message.__class__.__name__}')

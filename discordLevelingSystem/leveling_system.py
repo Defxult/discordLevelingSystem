@@ -33,7 +33,7 @@ from typing import Union, List, Tuple, Dict, Optional
 
 import aiosqlite
 from discord.ext.commands import BucketType, CooldownMapping
-from discord import Member, Role, Message, Guild
+from discord import Member, Role, Message, Guild, Embed
 
 from .announcement import LevelUpAnnouncement
 from .decorators import db_file_exists, leaderboard_exists, verify_leaderboard_integrity
@@ -932,7 +932,12 @@ class DiscordLevelingSystem:
                 await self._connection.commit()
     
     async def _handle_level_up(self, message: Message):
-        """|coro| Gives/removes roles from members that leveled up and met the :class:`RoleAward` requirement. This also sends the level up message"""
+        """|coro| Gives/removes roles from members that leveled up and met the :class:`RoleAward` requirement. This also sends the level up message
+        
+            .. changes::
+                v0.0.2
+                    Added handling for level up messages that are embeds
+        """
         member = message.author
 
         # if member_data is :class:`None`, their not in the database so raise an error
@@ -979,13 +984,18 @@ class DiscordLevelingSystem:
                 if lua.level_up_channel_id:
                     channel = message.guild.get_channel(lua.level_up_channel_id)
                     if channel:
-                        await channel.send(announcement_message, **lua._send_kwargs)
+                        if isinstance(announcement_message, str):
+                            await channel.send(announcement_message, **lua._send_kwargs)
+                        else:
+                            await channel.send(embed=announcement_message, **lua._send_kwargs)
                     else:
                         raise LevelUpChannelNotFound(lua.level_up_channel_id)
                 else:
-                    await message.channel.send(announcement_message, **lua._send_kwargs)
+                    if isinstance(announcement_message, str):
+                        await message.channel.send(announcement_message, **lua._send_kwargs)
+                    else:
+                        await message.channel.send(embed=announcement_message, **lua._send_kwargs)
             
-
             # check if there is a role award (could be :class:`None`) for the new level, if so, apply it
             if self.awards:
                 role_award = [ra for ra in self.awards if ra.level_requirement == updated_data.level]
