@@ -30,6 +30,28 @@ from .errors import DiscordLevelingSystemError
 
 default_message = '[$mention], you are now **level [$level]!**'
 default_mentions = AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)
+
+class AnnouncementMember:
+    """Helper class for :class:`LevelUpAnnouncement`
+    
+        .. added:: v0.0.2
+    """
+    avatar_url = '[$avatar_url]'
+    created_at = '[$created_at]'
+    default_avatar_url = '[$default_avatar_url]'
+    discriminator = '[$discriminator]'
+    display_name = '[$display_name]'
+    id = '[$id]'
+    joined_at = '[$joined_at]'
+    mention = '[$mention]'
+    name = '[$name]'
+    nick = '[$nick]'
+
+    class Guild:
+        icon_url = '[$g_icon_url]'
+        id = '[$g_id]'
+        name = '[$g_name]'
+
 class LevelUpAnnouncement:
     """A helper class for setting up messages that are sent when someone levels up
     
@@ -50,7 +72,6 @@ class LevelUpAnnouncement:
     delete_after: :class:`float`
         (optional) Delete the level up message after an x amount of seconds (defaults to :class:`None`)
     
-    
     Attributes
     ----------
     - `message`
@@ -59,11 +80,26 @@ class LevelUpAnnouncement:
     Class Attributes
     ----------------
     The below class attributes are used to implement the values that are associated with the members level up information
-    - `LevelUpAnnouncement.AUTHOR_MENTION`: The member that leveled up
-    - `LevelUpAnnouncement.XP`: The members current XP amount
     - `LevelUpAnnouncement.TOTAL_XP`: The members current total XP amount
     - `LevelUpAnnouncement.LEVEL`: The members current level
     - `LevelUpAnnouncement.RANK`: The members current rank
+    
+    You can access a reduced version of discord.py's `discord.Member` object via the :class:`LevelUpAnnouncement.Member` attribute. That attribute (class) contains the following information
+    about a member and the guild
+
+    - `LevelUpAnnouncement.Member.avatar_url`
+    - `LevelUpAnnouncement.Member.created_at`
+    - `LevelUpAnnouncement.Member.default_avatar_url`
+    - `LevelUpAnnouncement.Member.discriminator`
+    - `LevelUpAnnouncement.Member.display_name`
+    - `LevelUpAnnouncement.Member.id`
+    - `LevelUpAnnouncement.Member.joined_at`
+    - `LevelUpAnnouncement.Member.mention`
+    - `LevelUpAnnouncement.Member.name`
+    - `LevelUpAnnouncement.Member.nick`
+    - `LevelUpAnnouncement.Member.Guild.icon_url`
+    - `LevelUpAnnouncement.Member.Guild.id`
+    - `LevelUpAnnouncement.Member.Guild.name`
     
     Example
     -------
@@ -75,18 +111,18 @@ class LevelUpAnnouncement:
         .. changes::
             v0.0.2
                 Now accepts embeds as the message parameter
+                Removed :attr:`LevelUpAnnouncement.AUTHOR_MENTION`
+                Removed :attr:`LevelUpAnnouncement.XP`
+                Added :attr:`LevelUpAnnouncement.Member`
     """
-    AUTHOR_MENTION = '[$mention]'
-    XP = '[$xp]'
     TOTAL_XP = '[$total_xp]'
     LEVEL = '[$level]'
     RANK = '[$rank]'
+    Member: AnnouncementMember = AnnouncementMember()
 
     def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_id: int=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: float=None):
         self.message = message
         self.level_up_channel_id = level_up_channel_id
-        self._author_mention = None
-        self._xp = None
         self._total_xp = None
         self._level = None
         self._rank = None
@@ -102,8 +138,6 @@ class LevelUpAnnouncement:
             .. added:: v0.0.2
         """
         markdowns = {
-            LevelUpAnnouncement.AUTHOR_MENTION : self._author_mention,
-            LevelUpAnnouncement.XP : self._xp,
             LevelUpAnnouncement.TOTAL_XP : self._total_xp,
             LevelUpAnnouncement.LEVEL : self._level,
             LevelUpAnnouncement.RANK : self._rank
@@ -112,15 +146,45 @@ class LevelUpAnnouncement:
             to_convert = to_convert.replace(mrkd, str(value))
         return to_convert
     
-    def _parse_message(self, message: Union[str, Embed]) -> Union[str, Embed]:
+    def _convert_member_markdown(self, to_convert: str, message_author) -> str:
+        """Convert the member markdown text to the value it represents
+
+            .. added:: v0.0.2
+        """
+        markdowns = {
+            # member
+            AnnouncementMember.avatar_url : message_author.avatar_url,
+            AnnouncementMember.created_at : message_author.created_at,
+            AnnouncementMember.default_avatar_url : message_author.default_avatar_url,
+            AnnouncementMember.discriminator : message_author.discriminator,
+            AnnouncementMember.display_name : message_author.display_name,
+            AnnouncementMember.id : message_author.id,
+            AnnouncementMember.joined_at : message_author.joined_at,
+            AnnouncementMember.mention : message_author.mention,
+            AnnouncementMember.name : message_author.name,
+            AnnouncementMember.nick : message_author.nick,
+
+            # guild
+            AnnouncementMember.Guild.icon_url : message_author.guild.icon_url,
+            AnnouncementMember.Guild.id : message_author.guild.id,
+            AnnouncementMember.Guild.name : message_author.guild.name
+        }
+        for mrkd, value in markdowns.items():
+            to_convert = to_convert.replace(mrkd, str(value))
+        return to_convert
+    
+    def _parse_message(self, message: Union[str, Embed], message_author) -> Union[str, Embed]:
         """
             .. changes::
                 v0.0.2
                     Added handling for embed announcements
+                    Added handling for LevelUpAnnouncement.Member markdowns
                     Moved markdown conversion to its own method (`_convert_markdown`)
         """
         if isinstance(message, str):
-            return self._convert_markdown(message)
+            partial = self._convert_markdown(message)
+            full = self._convert_member_markdown(partial, message_author)
+            return full
         
         elif isinstance(message, Embed):
             embed = message
@@ -138,14 +202,18 @@ class LevelUpAnnouncement:
                     if not isinstance(value, str):
                         temp_dict[key] = value
                     else:
-                        temp_dict[key] = self._convert_markdown(value)
+                        partial = self._convert_markdown(value)
+                        full = self._convert_member_markdown(partial, message_author)
+                        temp_dict[key] = full
                 else:
                     return temp_dict.copy()
 
             for embed_key, embed_value in embed.to_dict().items():
                 # description, title, etc...
                 if isinstance(embed_value, str):
-                    new_dict_embed[embed_key] = self._convert_markdown(embed_value)
+                    partial = self._convert_markdown(embed_value)
+                    full = self._convert_member_markdown(partial, message_author)
+                    new_dict_embed[embed_key] = full
                 
                 # field inline values or discord.Color
                 elif isinstance(embed_value, (int, bool)):
