@@ -1,18 +1,18 @@
 ## v0.0.2 » Upcoming release
 #### New Features
-* Added the ability for `LevelUpAnnouncement` messages to be embeds
-* Added the ability to have multiple `LevelUpAnnouncement` messages
-* Added the ability for multiple servers to have their own level up awards
-* Added the ability to set roles that give bonus XP
-* Added the ability to set the name for a `RoleAward`
-* Added the ability to access `rate` and `per` (the values set in the `DiscordLevelingSystem` constructor)
+* Added the ability for `LevelUpAnnouncement` messages to be embeds ([docs](https://github.com/Defxult/discordLevelingSystem#levelupannouncement))
+* Added the ability to have multiple `LevelUpAnnouncement` messages ([docs](https://github.com/Defxult/discordLevelingSystem#levelupannouncement))
+* Added the ability for multiple servers to have their own level up awards ([docs](https://github.com/Defxult/discordLevelingSystem#roleaward))
+* Added the ability to set roles that give bonus XP ([docs](https://github.com/Defxult/discordLevelingSystem#handling-xp))
+* Added the ability to set the name for a `RoleAward` ([docs](https://github.com/Defxult/discordLevelingSystem#roleaward))
+* Added the ability to access `rate` and `per` (the values set in the `DiscordLevelingSystem` constructor) ([docs](https://github.com/Defxult/discordLevelingSystem#discordlevelingsystem))
   * `DiscordLevelingSystem.rate` (property)
   * `DiscordLevelingSystem.per` (property)
-* Added the ability to manually set a members XP and level
+* Added the ability to manually set a members XP and level ([docs](https://github.com/Defxult/discordLevelingSystem#all-methods-for-discordlevelingsystem))
   * `DiscordLevelingSystem.add_xp(member: Member, amount: int)`
   * `DiscordLevelingSystem.remove_xp(member: Member, amount: int)`
   * `DiscordLevelingSystem.set_level(member: Member, level: int)`
-* Added the ability to access more of the members information when a level up message is sent
+* Added the ability to access more of the members information when a level up message is sent ([docs](https://github.com/Defxult/discordLevelingSystem#class-attributes))
   * `LevelUpAnnouncement.Member.avatar_url`
   * `LevelUpAnnouncement.Member.created_at`
   * `LevelUpAnnouncement.Member.default_avatar_url`
