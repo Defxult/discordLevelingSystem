@@ -52,11 +52,6 @@ class ImproperRoleAwardOrder(RoleAwardError):
     def __init__(self, message):
         super().__init__(message)
 
-class AwardedRoleNotFound(RoleAwardError):
-    """When attempting to get the awarded role from the guild, the role was not found"""
-    def __init__(self, role_id: int):
-        super().__init__(f'A role you have set to be awarded was not found in the guild. Role ID: {role_id}')
-
 class LevelUpChannelNotFound(DiscordLevelingSystemError):
     """When attempting to get the level up channel from the guild, that text channel was not found"""
     def __init__(self, channel_id: int):
