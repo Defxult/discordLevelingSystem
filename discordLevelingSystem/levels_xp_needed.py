@@ -5,6 +5,10 @@ All credit goes towards the MEE6 developers for providing the "LEVELS_AND_XP" do
 MEE6 documentation can be found here: https://github.com/Mee6/Mee6-documentation
 """
 
+from collections import namedtuple
+
+__all__ = ('LEVELS_AND_XP', 'MAX_XP', 'MAX_LEVEL', '_next_level_details', '_find_level')
+
 LEVELS_AND_XP = {
     "0": 0,
     "1": 100,
@@ -109,12 +113,45 @@ LEVELS_AND_XP = {
     "100": 1899250
 }
 
+MAX_XP = LEVELS_AND_XP['100']
+MAX_LEVEL = 100
+
 def _next_level_details(current_level: int) -> tuple:
-    """Returns the next level in a :class:`tuple`. Index 0 being the next level, index 1 being the xp needed for that next level"""
+    """Returns a `namedtuple`
+    
+    Attributes
+    ----------
+    - level (:class:`int`)
+    - xp_needed (:class:`int`)
+    
+        .. changes
+            v0.0.2
+                Changed return type to a namedtuple instead of tuple
+    """
     temp = current_level + 1
     if temp > 100:
         temp = 100
     key = str(temp)
     val = LEVELS_AND_XP[key]
-    return (key, val)
+    Details = namedtuple('Details', ['level', 'xp_needed'])
+    return Details(level=int(key), xp_needed=val)
+
+def _find_level(current_total_xp: int) -> int:
+    """Return the members current level based on their total XP
+
+    NOTE: Do not use this with detecting level ups in :meth:`award_xp`. Pretty much only made for :meth:`add_xp`, :meth:`remove_xp`
     
+        .. added:: v0.0.2
+    """
+    # check if the current xp matches the xp_needed exactly
+    if current_total_xp in LEVELS_AND_XP.values():
+        for level, xp_needed in LEVELS_AND_XP.items():
+            if current_total_xp == xp_needed:
+                return int(level)
+    else:
+        for level, xp_needed in LEVELS_AND_XP.items():
+            if 0 <= current_total_xp <= xp_needed:
+                level = int(level)
+                level -= 1
+                if level < 0: level = 0
+                return level
