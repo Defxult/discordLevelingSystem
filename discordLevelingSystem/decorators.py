@@ -80,15 +80,21 @@ def leaderboard_exists(func):
     return wrapper
 
 def verify_leaderboard_integrity(func):
-    """Ensures the values of the leaderboard table are the values needed in order to operate on said table"""
+    """Ensures the values of the leaderboard table are the values needed in order to operate on said table
+    
+        .. changes::
+            v0.0.2
+                Added pragma for guild_id
+    """
     @wraps(func)
     async def wrapper(*args, **kwargs):
         PRAGMA_LAYOUT = [
-            (0, 'member_id', 'INT', 0, None, 1),
-            (1, 'member_name', 'TEXT', 1, None, 0),
-            (2, 'member_level', 'INT', 1, None, 0),
-            (3, 'member_xp', 'INT', 1, None, 0),
-            (4, 'member_total_xp', 'INT', 1, None, 0)
+            (0, 'guild_id', 'INT', 1, None, 0),
+            (1, 'member_id', 'INT', 1, None, 0),
+            (2, 'member_name', 'TEXT', 1, None, 0),
+            (3, 'member_level', 'INT', 1, None, 0),
+            (4, 'member_xp', 'INT', 1, None, 0),
+            (5, 'member_total_xp', 'INT', 1, None, 0)
         ]
         instance = _return_self(args)
         async with instance._connection.execute('PRAGMA table_info(leaderboard)') as cursor:
