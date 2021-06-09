@@ -26,9 +26,7 @@ tags = [
 ]
 
 details = {
-    'Github Repo' : 'https://github.com/Defxult/discordLevelingSystem',
-    'Github Issues' : 'https://github.com/Defxult/discordLevelingSystem/issues',
-    'Changelog' : 'https://github.com/Defxult/discordLevelingSystem/blob/main/CHANGELOG.txt'
+    'Changelog' : 'https://github.com/Defxult/discordLevelingSystem/blob/main/CHANGELOG.md'
 }
 
 setup(
@@ -36,7 +34,7 @@ setup(
     name='discordLevelingSystem',
     description='A library to implement a leveling system into a discord bot. Contains features such as XP, level, ranks, and role awards.',
     version='0.0.2', 
-    url='https://github.com/Defxult',
+    url='https://github.com/Defxult/discordLevelingSystem',
     project_urls=details,
     classifiers=classifiers,
     long_description=_get_readme(),
