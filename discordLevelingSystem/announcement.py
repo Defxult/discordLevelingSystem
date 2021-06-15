@@ -22,7 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from typing import Union
+from typing import List, Union
 
 from discord import AllowedMentions, Embed
 
@@ -60,8 +60,8 @@ class LevelUpAnnouncement:
     message: Union[:class:`str`, :class:`discord.Embed`]
         (optional) The message that is sent when someone levels up (defaults to `"<mention>, you are now **level <level>!**"`)
     
-    level_up_channel_id: :class:`int`
-        (optional) The text channel ID where all level up messages will be sent. If :class:`None`, the level up message will be sent in the channel where they sent the message (defaults to :class:`None`)
+    level_up_channel_ids: List[:class:`int`]
+        (optional) The text channel IDs where all level up messages will be sent for each server. If :class:`None`, the level up message will be sent in the channel where they sent the message (defaults to :class:`None`)
     
     allowed_mentions: :class:`discord.AllowedMentions`
         (optional) The :class:`discord.AllowedMentions` object that is used to determine who can be pinged in the level up message (defaults to `AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)`)
@@ -75,7 +75,7 @@ class LevelUpAnnouncement:
     Attributes
     ----------
     - `message`
-    - `level_up_channel_id`
+    - `level_up_channel_ids`
     
     Class Attributes
     ----------------
@@ -120,9 +120,9 @@ class LevelUpAnnouncement:
     RANK = '[$rank]'
     Member: AnnouncementMember = AnnouncementMember()
 
-    def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_id: int=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: float=None):
+    def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_ids: List[int]=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: float=None):
         self.message = message
-        self.level_up_channel_id = level_up_channel_id
+        self.level_up_channel_ids = level_up_channel_ids
         self._total_xp = None
         self._level = None
         self._rank = None

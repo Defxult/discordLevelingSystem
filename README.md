@@ -130,7 +130,7 @@ lvl = DiscordLevelingSystem(..., awards=my_awards)
 ---
 
 ## LevelUpAnnouncement
-```class LevelUpAnnouncement(message=default_message, level_up_channel_id=None, allowed_mentions=default_mentions, tts=False, delete_after=None)```
+```class LevelUpAnnouncement(message=default_message, level_up_channel_ids=None, allowed_mentions=default_mentions, tts=False, delete_after=None)```
 
 Level up announcements are for when you want to implement your own level up messages. It provides access to who leveled up, their rank, level and much more. It also uses some of discord.py's kwargs from it's `Messageable.send` such as `allowed_mentions`, `tts`, and `delete_after` to give you more control over the sent message.
 
@@ -139,7 +139,7 @@ Level up announcements are for when you want to implement your own level up mess
 
 * `message` (`Union[str, discord.Embed]`) The message that is sent when someone levels up. Defaults to `"<mention>, you are now **level <level>!**"`
 
-* `level_up_channel_id` (`int`) The text channel ID where all level up messages will be sent. If `None`, the level up message will be sent in the channel where they sent the message.
+* `level_up_channel_ids` (`List[int]`) The text channel IDs where all level up messages will be sent for each server. If `None`, the level up message will be sent in the channel where they sent the message (example below).
 
 * `allowed_mentions` (`discord.AllowedMentions`) Used to determine who can be pinged in the level up message. Defaults to `discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)`
 
@@ -185,6 +185,14 @@ lvl = DiscordLevelingSystem(..., level_up_announcement=announcement)
 
 # NOTE: You can have multiple level up announcements by setting the parameter to a list of LevelUpAnnouncement
 lvl = DiscordLevelingSystem(..., level_up_announcement=[announcement_1, announcement_2, ...])
+```
+When it comes to `level_up_channel_ids`, you can set a designated channel for each server. If you don't set a level up channel ID for a specific server, the level up message will be sent in the channel where the member leveled up. You don't have to specify a level up channel ID for each server unless you'd like to.
+```py
+johns_bot_commands = 489374746737648734 # text channel ID from server A
+janes_levelup_channel = 58498304930493094 # text channel ID from server B
+
+announcement = LevelUpAnnouncement(..., level_up_channel_ids=[johns_bot_commands, janes_levelup_channel])
+lvl = DiscordLevelingSystem(..., level_up_announcement=announcement)
 ```
 ---
 ## Handling XP

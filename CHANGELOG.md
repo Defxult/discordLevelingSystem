@@ -35,14 +35,19 @@
   * **IMPORTANT:** [Migrating from v0.0.1 to v0.0.2+](https://github.com/Defxult/discordLevelingSystem#migrating-from-v001-to-v002)
 * Fixed an issue where if an `award_xp` amount value was a list and the first value was larger than the second, an error would occur that was not informative. An informative error is now raised.
 * Fixed an issue where discord system messages would give XP to the member
+* Fixed an issue where if a `level_up_channel_id` was set for a server and level up occured in a different server, an error would occur (important: see Breaking Change for `level_up_channel_id`)
 #### Breaking Change
 * *removed* `LevelUpAnnouncement.AUTHOR_MENTION`
   * This has been replaced with `LevelUpAnnouncement.Member.mention`
 * *removed* `LevelUpAnnouncement.XP`
   * This was removed because in a level up message the members XP was always reset to zero because of the level up, and accessing that attribute would always give a value of zero
 * *removed* Exception `AwardedRoleNotFound` has been removed because it is no longer needed
+* *removed* Exception `LevelUpChannelNotFound` has been removed because it is no longer needed
 * *removed* `DiscordLevelingSystem.awards` attribute
   * The ability to set this attribute from an instance of `DiscordLevelingSystem` was removed because there is a necessary check that needs to take place to ensure the role award system can operate smoothly. You can still set the `awards` value via the `DiscordLevelingSystem` constructor
+* *changed* `LevelUpAnnouncement` parameter `level_up_channel_id`. This was renamed and the type has been changed to support multiple servers having their own level up channel
+  * Before: `level_up_channel_id` (`int`)
+  * After: `level_up_channel_ids` (`List[int]`)
 * *changed* Maximum value allowed in `award_xp`
   * Previously, the maximum value for the `amount` parameter in `award_xp` was 100. This has been reduced to a maximum of 25. Why? The goal of this library is to try and mimic the operations of the MEE6 leveling system, and awarding XP less than or equal to 25 has proved to be more of a stable way to earn XP, especially when it comes to bonus XP roles
 * *changed* `DiscordLevelingSystem` parameter `awards` type

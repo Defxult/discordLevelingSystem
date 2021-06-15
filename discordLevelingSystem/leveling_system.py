@@ -1320,7 +1320,9 @@ class DiscordLevelingSystem:
                     Added :param:`md`
                     Added :param:`leveled_up`
                     Added if check for :param:`leveled_up`
-                    Removed raising of exception to support multi-guild leveling
+                    Added :func:`send_announcement`
+                    Removed raising of exception (AwardedRoleNotFound) to support multi-guild leveling
+                    Removed raising of exception (LevelUpChannelNotFound) to support multi-guild level up channel IDs
         """
         if leveled_up:
             member = message.author       
@@ -1330,6 +1332,16 @@ class DiscordLevelingSystem:
                 role_obj = message.guild.get_role(award.role_id)
                 if role_obj: return role_obj
                 else: return False
+            
+            async def send_announcement(announcement_message, channel, send_kwargs):
+                """|coro| Send the level up message
+
+                    .. added:: v0.0.2
+                """
+                if isinstance(announcement_message, str):
+                    await channel.send(announcement_message, **send_kwargs)
+                else:
+                    await channel.send(embed=announcement_message, **send_kwargs)
             
             # send the level up message
             if self.announce_level_up:
@@ -1343,20 +1355,20 @@ class DiscordLevelingSystem:
                 lua._rank = md.rank
                 announcement_message = lua._parse_message(lua.message, self._message_author)
 
-                if lua.level_up_channel_id:
-                    channel = message.guild.get_channel(lua.level_up_channel_id)
-                    if channel:
-                        if isinstance(announcement_message, str):
-                            await channel.send(announcement_message, **lua._send_kwargs)
-                        else:
-                            await channel.send(embed=announcement_message, **lua._send_kwargs)
+                if lua.level_up_channel_ids:
+                    channel_found  = False
+                    for channel_id in lua.level_up_channel_ids:
+                        channel = message.guild.get_channel(channel_id)
+                        if channel:
+                            channel_found = True
+                            break
+                    
+                    if channel_found:
+                        await send_announcement(announcement_message, channel, lua._send_kwargs)
                     else:
-                        raise LevelUpChannelNotFound(lua.level_up_channel_id)
+                        await send_announcement(announcement_message, message.channel, lua._send_kwargs)
                 else:
-                    if isinstance(announcement_message, str):
-                        await message.channel.send(announcement_message, **lua._send_kwargs)
-                    else:
-                        await message.channel.send(embed=announcement_message, **lua._send_kwargs)
+                    await send_announcement(announcement_message, message.channel, lua._send_kwargs)
             
             # check if there is a role award for the new level, if so, apply it
             if self._awards:

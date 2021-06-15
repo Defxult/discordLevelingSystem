@@ -52,11 +52,6 @@ class ImproperRoleAwardOrder(RoleAwardError):
     def __init__(self, message):
         super().__init__(message)
 
-class LevelUpChannelNotFound(DiscordLevelingSystemError):
-    """When attempting to get the level up channel from the guild, that text channel was not found"""
-    def __init__(self, channel_id: int):
-        super().__init__(f'The level up text channel was not found. Channel ID: {channel_id}')
-
 class ImproperLeaderboard(DiscordLevelingSystemError):
     """Raised when the leaderboard table in the database file does not have the correct settings"""
     def __init__(self):
