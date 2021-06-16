@@ -104,7 +104,7 @@ class LevelUpAnnouncement:
     Example
     -------
     ```
-    announcement = LevelUpAnnouncement(message=f'{LevelUpAnnouncement.AUTHOR_MENTION} you leveled up! Your rank is now {LevelUpAnnouncement.RANK}')
+    announcement = LevelUpAnnouncement(message=f'{LevelUpAnnouncement.Member.mention} you leveled up! Your rank is now {LevelUpAnnouncement.RANK}')
     lvl = DiscordLevelingSystem(..., level_up_announcement=announcement)
     ```
     
