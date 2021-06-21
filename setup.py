@@ -44,9 +44,3 @@ setup(
     packages=find_packages(),
     install_requires=['discord.py>=1.4.0', 'aiosqlite>=0.17.0']
 )
-
-# PyPI project description
-
-# For full documentation of this library, visit the [Github repo](https://github.com/Defxult/discordLevelingSystem). For the time being, this PyPI page will only
-# act as a placeholder that directs you to Github because a vast majority of fixes, changes, and additions will take place there during the initial stages of development.
-# Feel free to install the current PyPI version, but updates will always be pushed to Github before PyPI.
