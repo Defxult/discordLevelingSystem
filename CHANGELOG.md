@@ -1,4 +1,4 @@
-## v0.0.2 » Upcoming release
+## v0.0.2 » Jun. 21, 2021
 #### New Features
 * Added the ability for `LevelUpAnnouncement` messages to be embeds ([docs](https://github.com/Defxult/discordLevelingSystem#levelupannouncement))
 * Added the ability to have multiple `LevelUpAnnouncement` messages ([docs](https://github.com/Defxult/discordLevelingSystem#levelupannouncement))
