@@ -3,7 +3,7 @@ A library to implement a leveling system into a discord bot. One of the most pop
 If your discord.py version is 1.5.0+, [intents](https://discordpy.readthedocs.io/en/latest/intents.html) are required
 
 ## Github Updates vs PyPI Updates
-The Github version of this library will always have the latest changes, fixes, and additions before the PyPI version. You can install the Github version by doing:
+The Github version of this library will always have the latest changes, fixes, and additions before the [PyPI](https://pypi.org/project/discordLevelingSystem/) version. You can install the Github version by doing:
 ```
 pip install git+https://github.com/Defxult/discordLevelingSystem.git
 ```
