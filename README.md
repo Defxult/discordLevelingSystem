@@ -65,7 +65,7 @@ When setting up the leveling system, a database file needs to be created in orde
 * Associated static method
   * `DiscordLevelingSystem.create_database_file(path: str)`
 
-The above *static* method is used the create the database file for you in the path you specify. This method only needs to be called once. Example:
+The above *static* method is used to create the database file for you in the path you specify. This method only needs to be called once. Example:
 ```py
 DiscordLevelingSystem.create_database_file(r'C:\Users\Defxult\Documents')
 ```
@@ -103,7 +103,7 @@ You can assign roles to the system so when someone levels up to a certain level,
 * `level_requirement` (`int`) What level is required for a member to be awarded the role.
 * `role_name` (`str`) An optional name. Nothing is done with this value, it is used for visual identification purposes.
 
-When creating role awards, all role ID's and level requirements must be unique. Level requirements must also be in ascending order. It is also possible to assign different role awards for different guilds. If you don't want any role awards, set the `awards` parameter to `None`. When setting `awards`, it accepts a `dict` where they keys are guild IDs and the values are a `list` of `RoleAward`
+When creating role awards, all role ID's and level requirements must be unique. Level requirements must also be in ascending order. It is also possible to assign different role awards for different guilds. If you don't want any role awards, set the `awards` parameter to `None`. When setting `awards`, it accepts a `dict` where the keys are guild IDs and the values are a `list` of `RoleAward`
 <div align="left"><sub>EXAMPLE</sub></div>
 
 ```py
