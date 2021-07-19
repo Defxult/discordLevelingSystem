@@ -382,7 +382,7 @@ class DiscordLevelingSystem:
             old_pragma_check = await db_from.connection.execute_fetchall('PRAGMA table_info(leaderboard)')
             new_pragma_check = await db_to.connection.execute_fetchall('PRAGMA table_info(leaderboard)')
             if all([old_pragma_check == OLD_PRAGMA_LAYOUT, new_pragma_check == NEW_PRAGMA_LAYOUT]):
-                # ensure the database file that the data will be transfered to is blank, if so, copy the contents to the new database file
+                # ensure the database file that the data will be transferred to is blank, if so, copy the contents to the new database file
                 await db_to.cursor.execute('SELECT COUNT(*) FROM leaderboard')
                 count_result = await db_to.cursor.fetchone()
                 if count_result[0] == 0:
@@ -1356,7 +1356,7 @@ class DiscordLevelingSystem:
                 announcement_message = lua._parse_message(lua.message, self._message_author)
 
                 if lua.level_up_channel_ids:
-                    channel_found  = False
+                    channel_found = False
                     for channel_id in lua.level_up_channel_ids:
                         channel = message.guild.get_channel(channel_id)
                         if channel:
@@ -1450,8 +1450,8 @@ class DiscordLevelingSystem:
         Parameters
         ----------
         amount: Union[:class:`int`, List[:class:`int`]]
-            The amount of XP to award to the member per message. Must be from 1-25. Can be a list with a minimum and maximum length of two. If :param:`amount` is a list of two integers, it will randomly
-            pick a number in between those numbers including the numbers provided
+            (optional) The amount of XP to award to the member per message. Must be from 1-25. Can be a list with a minimum and maximum length of two. If :param:`amount` is a list of two integers, it will randomly
+            pick a number in between those numbers including the numbers provided (defaults to a :class:`list` with values `[15, 25]`)
         
         message: :class:`discord.Message`
             A :class:`discord.Message` object

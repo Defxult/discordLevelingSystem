@@ -35,7 +35,7 @@
   * **IMPORTANT:** [Migrating from v0.0.1 to v0.0.2+](https://github.com/Defxult/discordLevelingSystem#migrating-from-v001-to-v002)
 * Fixed an issue where if an `award_xp` amount value was a list and the first value was larger than the second, an error would occur that was not informative. An informative error is now raised.
 * Fixed an issue where discord system messages would give XP to the member
-* Fixed an issue where if a `level_up_channel_id` was set for a server and level up occured in a different server, an error would occur (important: see Breaking Change for `level_up_channel_id`)
+* Fixed an issue where if a `level_up_channel_id` was set for a server and level up occurred in a different server, an error would occur (important: see Breaking Change for `level_up_channel_id`)
 #### Breaking Change
 * *removed* `LevelUpAnnouncement.AUTHOR_MENTION`
   * This has been replaced with `LevelUpAnnouncement.Member.mention`

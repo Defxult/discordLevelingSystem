@@ -46,11 +46,11 @@ def db_file_exists(func):
             traceback, and if the path does exist, return `True`"""
             nonlocal instance
             try:
-                existance = os.path.exists(instance._database_file_path)
+                existence = os.path.exists(instance._database_file_path)
             except TypeError:
                 raise NotConnected
             else:
-                return existance
+                return existence
 
         # if it gets this far, that means :meth:`DiscordLevelingSystem.connect_to_file()` was ran, the connection
         # object was set, the file path was stored, and that file does end in ".db". This checks it again because
