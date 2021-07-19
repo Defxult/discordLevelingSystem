@@ -22,12 +22,13 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from functools import wraps
 import os
+from functools import wraps
 
 import aiosqlite
 
-from .errors import DatabaseFileNotFound, LeaderboardNotFound, ImproperLeaderboard, NotConnected
+from .errors import DatabaseFileNotFound, ImproperLeaderboard, LeaderboardNotFound, NotConnected
+
 
 def _return_self(args: list):
     """Return the class instance"""

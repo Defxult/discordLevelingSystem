@@ -23,9 +23,10 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import collections
-from typing import List, Union, Dict
+from typing import Dict, List, Union
 
-from .errors import RoleAwardError, ImproperRoleAwardOrder
+from .errors import ImproperRoleAwardOrder, RoleAwardError
+
 
 class RoleAward:
     """Represents the role that will be awarded to the member upon meeting the XP requirement
