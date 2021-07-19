@@ -61,13 +61,7 @@ class RoleAward:
     
     def __eq__(self, value):
         if isinstance(value, RoleAward):
-            same_id = False
-            same_lvl_req = False
-            if self.role_id == value.role_id:
-                same_id = True
-            if self.level_requirement == value.level_requirement:
-                same_lvl_req = True
-            return all([same_id, same_lvl_req])
+            return all([self.role_id == value.role_id, self.level_requirement == value.level_requirement])
         else:
             return False
     
