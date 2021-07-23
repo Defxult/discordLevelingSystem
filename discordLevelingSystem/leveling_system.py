@@ -306,10 +306,8 @@ class DiscordLevelingSystem:
         in_no_xp_channel = False
         
         if self.no_xp_channels:
-            for no_xp_channel_id in self.no_xp_channels:
-                if no_xp_channel_id == message.channel.id:
-                    in_no_xp_channel = True
-                    break
+            if message.channel.id in self.no_xp_channels:
+                in_no_xp_channel = True
         
         # if :var:`in_no_xp_channel` is already `True`, there's no need to execute the no xp role check
         if in_no_xp_channel:
