@@ -491,8 +491,8 @@ class DiscordLevelingSystem:
         if amount <= 0:
             raise DiscordLevelingSystemError('Parameter "amount" was less than or equal to zero. The minimum value is 1')
         
-        if await self.is_in_database(member):
-            md = await self.get_data_for(member)
+        md = await self.get_data_for(member)
+        if md:
             if md.total_xp == 0:
                 return
             else:
