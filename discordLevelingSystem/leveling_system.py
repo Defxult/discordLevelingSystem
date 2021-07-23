@@ -207,7 +207,7 @@ class DiscordLevelingSystem:
         
         Raises
         ------
-        - `ConnectionFailure`: Attempted to connect to the database file when the event loop is already running
+        - `ConnectionFailure`: Attempted to create the database file when the event loop is already running
         - `DiscordLevelingSystemError`: The path does not exist or the path points to a file instead of a directory
         
             .. changes::
@@ -738,7 +738,7 @@ class DiscordLevelingSystem:
         - `LeaderboardNotFound`: Table "leaderboard" in the database file is missing
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
-        - `DiscordLevelingSystem`: The path does not exist or does not point to a directory
+        - `DiscordLevelingSystemError`: The path does not exist or does not point to a directory
         
             .. changes::
                 v0.0.2
