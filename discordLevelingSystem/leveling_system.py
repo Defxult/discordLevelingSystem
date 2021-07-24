@@ -550,6 +550,7 @@ class DiscordLevelingSystem:
         - `LeaderboardNotFound`: Table "leaderboard" in the database file is missing
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
+        - `DiscordLevelingSystemError`: The rate or per value was not greater than zero
         """
         if rate <= 0 or per <= 0:   raise DiscordLevelingSystemError('Invalid rate or per. Values must be greater than zero')
         self._cooldown = CooldownMapping.from_cooldown(rate, per, BucketType.member)
