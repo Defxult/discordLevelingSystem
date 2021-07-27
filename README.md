@@ -346,7 +346,7 @@ bot.run(...)
 * `await DiscordLevelingSystem.get_xp_for(member: Member) -> int`
   * Get the XP for the specified member
 ---
-* `await DiscordLevelingSystem.is_in_database(member: Union[Member, int]) -> bool`
+* `await DiscordLevelingSystem.is_in_database(member: Union[Member, int], guild=None) -> bool`
   * A quick check to see if a member is in the database. This is not guild specific
 ---
 * `await DiscordLevelingSystem.next_level_up(member: Member) -> int`
@@ -358,7 +358,7 @@ bot.run(...)
 * `await DiscordLevelingSystem.refresh_names(guild: Guild) -> int`
   * Update names inside the database. This does not add anything new. It simply verifies if the name in the database matches their current name, and if they don't match, update the database name
 ---
-* `await DiscordLevelingSystem.remove_from_database(member: Union[Member, int]) -> bool`
+* `await DiscordLevelingSystem.remove_from_database(member: Union[Member, int], guild=None) -> bool`
   * Remove a member from the database. This is not guild specific
 ---
 * `await DiscordLevelingSystem.remove_xp(member: Member, amount: int)`

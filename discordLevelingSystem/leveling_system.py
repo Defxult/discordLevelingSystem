@@ -831,13 +831,17 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def remove_from_database(self, member: Union[Member, int]) -> Optional[bool]:
-        """|coro| Remove a member from the database. This is not guild specific
+    async def remove_from_database(self, member: Union[Member, int], guild: Guild=None) -> Optional[bool]:
+        """|coro| Remove a member from the database. This is not guild specific although it can be if :param:`guild` is specified
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: Union[:class:`discord.Member`, :class:`int`]
             The member to remove. Can be the member object or that members ID
+
+        guild: `discord.Guild`
+            (optional) If this parameter is given, it will remove the record of the specified member only from the specified guild record. If :class:`None`, it will remove
+            all records no matter the guild (defaults to :class:`None`)
         
         Returns
         -------
@@ -854,33 +858,34 @@ class DiscordLevelingSystem:
         """
         if isinstance(member, (Member, int)):
             if isinstance(member, Member):
-                if await self.is_in_database(member):
-                    await self._cursor.execute('DELETE FROM leaderboard WHERE member_id = ?', (member.id,))
-                    await self._connection.commit()
-                    return True
-                else:
-                    return False
+                member_id = member.id
             else:
                 member_id = member
-                if await self.is_in_database(member_id):
-                    await self._cursor.execute('DELETE FROM leaderboard WHERE member_id = ?', (member_id,))
-                    await self._connection.commit()
-                    return True
-                else:
-                    return False
+            
+            removable = await self.is_in_database(member_id, guild=guild if guild else None)
+            if removable:
+                query = 'DELETE FROM leaderboard WHERE member_id = ? AND guild_id = ?' if guild else 'DELETE FROM leaderboard WHERE member_id = ?'
+                params = (member_id, guild.id) if guild else (member_id,)
+                
+                await self._cursor.execute(query, params)
+                await self._connection.commit()
+            return removable
         else:
-            raise DiscordLevelingSystemError(f'Paramater "member" expected discord.Member or int, got {member.__class__.__name__}')
+            raise DiscordLevelingSystemError(f'Parameter "member" expected discord.Member or int, got {member.__class__.__name__}')
     
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def is_in_database(self, member: Union[Member, int]) -> bool:
-        """|coro| A quick check to see if a member is in the database. This is not guild specific
+    async def is_in_database(self, member: Union[Member, int], guild: Guild=None) -> bool:
+        """|coro| A quick check to see if a member is in the database. This is not guild specific although it can be if :param:`guild` is specified
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: Union[:class:`discord.Member`, :class:`int`]
             The member to check for. Can be the member object or that members ID
+        
+        guild: `discord.Guild`
+            (optional) The guild to check if the member is registered in (defaults to :class:`None`)
         
         Returns
         -------
@@ -893,6 +898,10 @@ class DiscordLevelingSystem:
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         - `DiscordLevelingSystemError`: Parameter :param:`member` was not of type :class:`discord.Member` or :class:`int`
+        
+        .. changes::
+            v0.0.3
+                Added :param:`guild`
         """
         if isinstance(member, Member):
             arg = member.id
@@ -901,7 +910,10 @@ class DiscordLevelingSystem:
         else:
             raise DiscordLevelingSystemError(f'Parameter "member" expected discord.Member or int, got {member.__class__.__name__}')
 
-        async with self._connection.execute('SELECT * FROM leaderboard WHERE member_id = ?', (arg,)) as cursor:
+        query = 'SELECT * FROM leaderboard WHERE member_id = ? AND guild_id = ?' if guild else 'SELECT * FROM leaderboard WHERE member_id = ?'
+        params = (arg, guild.id) if guild else (arg,)
+        
+        async with self._connection.execute(query, params) as cursor:
             result = await cursor.fetchone()
             if result: return True
             else: return False
