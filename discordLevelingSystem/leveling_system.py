@@ -855,6 +855,10 @@ class DiscordLevelingSystem:
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `DiscordLevelingSystemError`: Parameter :param:`member` was not of type :class:`discord.Member` or :class:`int`
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
+        
+            .. changes::
+                v0.0.3
+                    Added :param:`guild`
         """
         if isinstance(member, (Member, int)):
             if isinstance(member, Member):
@@ -899,9 +903,9 @@ class DiscordLevelingSystem:
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         - `DiscordLevelingSystemError`: Parameter :param:`member` was not of type :class:`discord.Member` or :class:`int`
         
-        .. changes::
-            v0.0.3
-                Added :param:`guild`
+            .. changes::
+                v0.0.3
+                    Added :param:`guild`
         """
         if isinstance(member, Member):
             arg = member.id
