@@ -82,6 +82,7 @@ class DiscordLevelingSystem:
     - `announce_level_up`
     - `stack_awards`
     - `level_up_announcement`
+    - `active`
     - `rate` (property)
     - `per` (property)
     
@@ -93,6 +94,8 @@ class DiscordLevelingSystem:
                 Added :prop:`per`
                 Added :class:`Bonus`
                 Removed awards integrity check and duplicate check with just check
+            v0.0.3
+                Added :attr:`active`
     """
     _QUERY_NEW_MEMBER = """
         INSERT INTO leaderboard
@@ -121,6 +124,9 @@ class DiscordLevelingSystem:
 
         # v0.0.2
         self._message_author: Member = None
+
+        # v0.0.3
+        self.active = True
     
     @property
     def rate(self) -> int:
@@ -1494,7 +1500,7 @@ class DiscordLevelingSystem:
                     Replaced query with class attr
                     Moved the detection of a level up from :meth:`_handle_level_up` to here
         """
-        if message.guild is None or self._determine_no_xp(message) or message.author.bot or message.type != MessageType.default:
+        if any([message.guild is None, self._determine_no_xp(message), message.author.bot, message.type != MessageType.default, self.active is False]):
             return
         else:
             self._handle_amount_param(arg=amount)
