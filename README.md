@@ -55,8 +55,10 @@ from discordLevelingSystem import DiscordLevelingSystem, LevelUpAnnouncement, Ro
 * `announce_level_up`
 * `stack_awards`
 * `level_up_announcement`
-* `rate` (property - read only)
-* `per` (property - read only)
+---
+* `active` (`bool`) Enable/disable the leveling system. If `False`, nobody can gain XP unless this is set back to `True`
+* `rate` (`int`) Read only property from the constructor
+* `per` (`float`) Read only property from the constructor
 
 > NOTE: All attributes can be set during initialization
 ---
