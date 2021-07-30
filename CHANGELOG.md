@@ -3,7 +3,7 @@
 * Added parameter `guild` for methods `DiscordLevelingSystem.is_in_database()` and `DiscordLevelingSystem.remove_from_database()` This allows a more targeted check or removal for the specified member 
   * `DiscordLevelingSystem.is_in_database(member: Union[Member, int], guild: Guild=None)`
   * `DiscordLevelingSystem.remove_from_database(member: Union[Member, int], guild: Guild=None)`
-* Added the ability to enable/disable the leveling system via the `active` attribute
+* Added the ability to enable/disable the leveling system via the `active` attribute ([docs](https://github.com/Defxult/discordLevelingSystem#attributes))
   * `DiscordLevelingSystem.active`
 
 ## v0.0.2 » Jun. 21, 2021
