@@ -55,10 +55,9 @@ from discordLevelingSystem import DiscordLevelingSystem, LevelUpAnnouncement, Ro
 * `announce_level_up`
 * `stack_awards`
 * `level_up_announcement`
----
-* `active` (`bool`) Enable/disable the leveling system. If `False`, nobody can gain XP unless this is set back to `True`
 * `rate` (`int`) Read only property from the constructor
 * `per` (`float`) Read only property from the constructor
+* `active` (`bool`) Enable/disable the leveling system. If `False`, nobody can gain XP unless this is set back to `True`
 
 > NOTE: All attributes can be set during initialization
 ---
@@ -104,6 +103,12 @@ You can assign roles to the system so when someone levels up to a certain level,
 * `role_id` (`int`) ID of the role that is to be awarded.
 * `level_requirement` (`int`) What level is required for a member to be awarded the role.
 * `role_name` (`str`) An optional name. Nothing is done with this value, it is used for visual identification purposes.
+---
+### Attributes
+* `role_id`
+* `level_requirement`
+* `role_name`
+* `mention` (`str`) The discord role mention string
 
 When creating role awards, all role ID's and level requirements must be unique. Level requirements must also be in ascending order. It is also possible to assign different role awards for different guilds. If you don't want any role awards, set the `awards` parameter to `None`. When setting `awards`, it accepts a `dict` where the keys are guild IDs and the values are a `list` of `RoleAward`
 <div align="left"><sub>EXAMPLE</sub></div>
@@ -329,6 +334,9 @@ bot.run(...)
 ---
 * `await DiscordLevelingSystem.export_as_json(path: str, guild: Union[Guild, None])`
   * Export a json file that represents the database to the path specified
+---
+* `DiscordLevelingSystem.get_awards(guild=None) -> Union[Dict[int, List[RoleAward]], List[RoleAward]]`
+  * Get all `RoleAward`'s or only the `RoleAward`'s assigned to the specified guild
 ---
 * `await DiscordLevelingSystem.get_data_for(member: Member) -> MemberData`
   * Get the `MemberData` object that represents the specified member
