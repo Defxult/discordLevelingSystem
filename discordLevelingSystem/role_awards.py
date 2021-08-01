@@ -42,19 +42,25 @@ class RoleAward:
     role_name: :class:`str`:
         (optional) An optional name. Nothing is done with this value, it is used for visual identification purposes (defaults to :class:`None`)
     
+    mention: :class:`str`
+        The role mention string
+    
         .. changes::
             v0.0.2
                 Added :attr:`role_name`
                 Removed :attr:`_level_container`
                 Removed :attr:`_role_id_container`
+            v0.0.3
+                Added :attr:`mention`
     """
 
-    __slots__ = ('role_id', 'level_requirement', 'role_name')
+    __slots__ = ('role_id', 'level_requirement', 'role_name', 'mention')
 
     def __init__(self, role_id: int, level_requirement: int, role_name: str=None):
         self.role_id = role_id
         self.level_requirement = level_requirement
         self.role_name = role_name
+        self.mention = f'<@&{role_id}>'
 
     def __repr__(self):
         return f'<RoleAward role_id={self.role_id} level_requirement={self.level_requirement} role_name={self.role_name!r}>'
