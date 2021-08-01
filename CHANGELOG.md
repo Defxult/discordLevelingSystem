@@ -1,10 +1,13 @@
 ## v0.0.3 » Future release
 #### New Features
-* Added parameter `guild` for methods `DiscordLevelingSystem.is_in_database()` and `DiscordLevelingSystem.remove_from_database()` This allows a more targeted check or removal for the specified member 
+* Added parameter `guild` for methods `DiscordLevelingSystem.is_in_database()` and `DiscordLevelingSystem.remove_from_database()`. This allows a more targeted check or removal for the specified member 
   * `DiscordLevelingSystem.is_in_database(member: Union[Member, int], guild: Guild=None)`
   * `DiscordLevelingSystem.remove_from_database(member: Union[Member, int], guild: Guild=None)`
-* Added the ability to enable/disable the leveling system via the `active` attribute ([docs](https://github.com/Defxult/discordLevelingSystem#attributes))
-  * `DiscordLevelingSystem.active`
+* Added the ability to get the awards that were set in the constructor as a whole  or filtered by a specified guild
+  * `DiscordLevelingSystem.get_awards(guild: Union[Guild, int]=None)`
+* Added a few new attributes
+  * `DiscordLevelingSystem.active` - Enable/disable the leveling system ([docs](https://github.com/Defxult/discordLevelingSystem#attributes))
+  * `RoleAward.mention` - The discord role mention string
 
 ## v0.0.2 » Jun. 21, 2021
 #### New Features
