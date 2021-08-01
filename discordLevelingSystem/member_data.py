@@ -58,7 +58,7 @@ class MemberData:
         self.xp = xp
         self.total_xp = total_xp
         self.rank = rank
-        self.mention = '<@%s>' % id_number
+        self.mention = f'<@{id_number}>'
     
     def __repr__(self):
         return f'<MemberData id_number={self.id_number} name={self.name!r} level={self.level} xp={self.xp} total_xp={self.total_xp} rank={self.rank}>'
