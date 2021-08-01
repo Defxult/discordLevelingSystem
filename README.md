@@ -7,7 +7,7 @@ The Github version of this library will always have the latest changes, fixes, a
 ```
 pip install git+https://github.com/Defxult/discordLevelingSystem.git
 ```
-You must have [Git](https://git-scm.com/) installed in order to do this. With that said, the current README.md documentation represents the Github version of this library. If you are using the PyPI version of this library, it is suggested to read the README.md that matches your PyPI version [here](https://github.com/Defxult/discordLevelingSystem/releases/tag/v0.0.1) because documentation may have changed.
+You must have [Git](https://git-scm.com/) installed in order to do this. With that said, the current README.md documentation represents the Github version of this library. If you are using the PyPI version of this library, it is suggested to read the README.md that matches your PyPI version [here](https://github.com/Defxult/discordLevelingSystem/releases) because documentation may have changed.
 
 * `Github: v0.0.3`
 * `PyPI: v0.0.2`
