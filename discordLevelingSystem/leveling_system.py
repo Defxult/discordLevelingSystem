@@ -433,6 +433,33 @@ class DiscordLevelingSystem:
         transfer_to = DiscordLevelingSystem._get_transfer(new, loop)
         loop.run_until_complete(DiscordLevelingSystem._execute_transer(transfer_from, transfer_to, guild_id))
     
+    def get_awards(self, guild: Union[Guild, int]=None) -> Union[Dict[int, List[RoleAward]], List[RoleAward]]:
+        """Get all :class:`RoleAward`'s or only the :class:`RoleAward`'s assigned to the specified guild
+
+        Parameter
+        ---------
+        guild: Union[:class:`discord.Guild`, :class:`int`]
+            (optional) A guild object or a guild ID (defaults to :class:`None`)
+        
+        Returns
+        -------
+        Union[Dict[:class:`int`, List[:class:`RoleAward`]], List[:class:`RoleAward`]]: If :param:`guild` is :class:`None`, this returns the awards :class:`dict` that was set in constructor. If :param:`guild`
+        is specified, it returns a List[:class:`RoleAward`] that matches the specified guild ID. Can also return :class:`None` if awards were never set or if the awards for the specified guild was not found
+        
+            .. added:: v0.0.3
+        """
+        if self._awards:
+            if guild:
+                try:
+                    guild_id = guild.id if isinstance(guild, Guild) else guild
+                    return self._awards[guild_id].copy()
+                except KeyError:
+                    return None
+            else:
+                return self._awards.copy()
+        else:
+            return None
+    
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
