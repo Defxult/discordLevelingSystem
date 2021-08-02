@@ -104,8 +104,8 @@ class DiscordLevelingSystem:
 
     def __init__(self, rate: int=1, per: float=60.0, awards: Union[Dict[int, List[RoleAward]], None]=None, **kwargs):
         if rate <= 0 or per <= 0:   raise DiscordLevelingSystemError('Invalid rate or per. Values must be greater than zero')
-        self._rate = rate
-        self._per = per
+        self.__rate = rate
+        self.__per = per
 
         RoleAward._check(awards)
         self._awards = awards
@@ -138,7 +138,7 @@ class DiscordLevelingSystem:
         
             .. added:: v0.0.2
         """
-        return self._rate
+        return self.__rate
     
     @property
     def per(self) -> float:
@@ -150,7 +150,7 @@ class DiscordLevelingSystem:
 
             .. added:: v0.0.2
         """
-        return self._per
+        return self.__per
     
     class Bonus:
         """Set the roles that gives x amount of extra XP to the member. This is to be used with kwarg "bonus" in the :meth:`award_xp` method
