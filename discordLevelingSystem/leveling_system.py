@@ -897,11 +897,7 @@ class DiscordLevelingSystem:
                     Added :param:`guild`
         """
         if isinstance(member, (Member, int)):
-            if isinstance(member, Member):
-                member_id = member.id
-            else:
-                member_id = member
-            
+            member_id = member.id if isinstance(member, Member) else member
             removable = await self.is_in_database(member_id, guild=guild if guild else None)
             if removable:
                 query = 'DELETE FROM leaderboard WHERE member_id = ? AND guild_id = ?' if guild else 'DELETE FROM leaderboard WHERE member_id = ?'
@@ -943,13 +939,8 @@ class DiscordLevelingSystem:
                 v0.0.3
                     Added :param:`guild`
         """
-        if isinstance(member, Member):
-            arg = member.id
-        elif isinstance(member, int):
-            arg = member
-        else:
-            raise DiscordLevelingSystemError(f'Parameter "member" expected discord.Member or int, got {member.__class__.__name__}')
-
+        if not isinstance(member, (Member, int)): raise DiscordLevelingSystemError(f'Parameter "member" expected discord.Member or int, got {member.__class__.__name__}')
+        arg = member.id if isinstance(member, Member) else member
         query = 'SELECT * FROM leaderboard WHERE member_id = ? AND guild_id = ?' if guild else 'SELECT * FROM leaderboard WHERE member_id = ?'
         params = (arg, guild.id) if guild else (arg,)
         
