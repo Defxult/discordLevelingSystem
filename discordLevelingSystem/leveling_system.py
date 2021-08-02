@@ -618,13 +618,16 @@ class DiscordLevelingSystem:
             if result:
                 database_ids = [db[0] for db in result]
                 database_names = [db[1] for db in result]
+                to_execute = []
                 for db_id, db_name in zip(database_ids, database_names):
                     member = guild.get_member(db_id)
                     if member:
                         if str(member) != db_name:
-                            await cursor.execute('UPDATE leaderboard SET member_name = ? WHERE member_id = ? AND guild_id = ?', (str(member), db_id, guild.id))
-                            await self._connection.commit()
+                            to_execute.append((str(member), db_id, guild.id))
                             names_updated += 1
+                else: 
+                    await cursor.executemany('UPDATE leaderboard SET member_name = ? WHERE member_id = ? AND guild_id = ?', to_execute)
+                    await self._connection.commit()
 
             return names_updated
     
