@@ -253,7 +253,7 @@ class DiscordLevelingSystem:
         path: :class:`str`
             The path to copy the database file to
 
-        with_timestamp: :class:`bool`:
+        with_timestamp: :class:`bool`
             (optional) Creates a unique file name that has the date and time of when the backup file was created. This is useful when you want multiple backup files (defaults to `False`)
         
         Raises
@@ -637,9 +637,9 @@ class DiscordLevelingSystem:
     async def wipe_database(self, *, intentional: bool=False):
         """|coro| Delete EVERYTHING from the database
 
-        Parameters
-        ----------
-        intentional: :class:`bool`:
+        Parameter
+        ---------
+        intentional: :class:`bool`
             (optional) A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone (defaults to `False`)
 
         Raises
@@ -733,7 +733,7 @@ class DiscordLevelingSystem:
         guild: Union[:class:`discord.Guild`, :class:`None`]
             The guild for which everyone will be reset. If this is set to :class:`None`, everyone in the entire database will be reset
         
-        intentional: :class:`bool`:
+        intentional: :class:`bool`
             (optional) A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone (defaults to `False`)
 
         Raises
@@ -761,9 +761,9 @@ class DiscordLevelingSystem:
     async def export_as_json(self, path: str, guild: Union[Guild, None]):
         """|coro| Export a json file that represents the database to the path specified
         
-        Parameter
-        ---------
-        path :class:`str`:
+        Parameters
+        ----------
+        path: :class:`str`
             Path to copy the json file to
         
         guild: :class:`discord.Guild`
@@ -875,7 +875,7 @@ class DiscordLevelingSystem:
         member: Union[:class:`discord.Member`, :class:`int`]
             The member to remove. Can be the member object or that members ID
 
-        guild: `discord.Guild`
+        guild: :class:`discord.Guild`
             (optional) If this parameter is given, it will remove the record of the specified member only from the specified guild record. If :class:`None`, it will remove
             all records no matter the guild (defaults to :class:`None`)
         
@@ -920,7 +920,7 @@ class DiscordLevelingSystem:
         member: Union[:class:`discord.Member`, :class:`int`]
             The member to check for. Can be the member object or that members ID
         
-        guild: `discord.Guild`
+        guild: :class:`discord.Guild`
             (optional) The guild to check if the member is registered in (defaults to :class:`None`)
         
         Returns
