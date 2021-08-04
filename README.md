@@ -57,7 +57,7 @@ from discordLevelingSystem import DiscordLevelingSystem, LevelUpAnnouncement, Ro
 * `level_up_announcement`
 * `rate` (`int`) Read only property from the constructor
 * `per` (`float`) Read only property from the constructor
-* `active` (`bool`) Enable/disable the leveling system. If `False`, nobody can gain XP unless this is set back to `True`
+* `active` (`bool`) Enable/disable the leveling system. If `False`, nobody can gain XP when sending messages unless this is set back to `True`
 
 > NOTE: All attributes can be set during initialization
 ---
