@@ -1,9 +1,12 @@
 ## v0.0.3 » Future release
 #### New Features
-* Added parameter `guild` for methods `DiscordLevelingSystem.is_in_database()` and `DiscordLevelingSystem.remove_from_database()`. This allows a more targeted check or removal for the specified member 
-  * `DiscordLevelingSystem.is_in_database(member: Union[Member, int], guild: Guild=None)`
-  * `DiscordLevelingSystem.remove_from_database(member: Union[Member, int], guild: Guild=None)`
-* Added the ability to get the awards that were set in the constructor as a whole  or filtered by a specified guild
+* Added parameter `guild` for the below methods
+  * This allows a more targeted check or removal for the specified member 
+    * `DiscordLevelingSystem.is_in_database(member: Union[Member, int], guild: Guild=None)`
+    * `DiscordLevelingSystem.remove_from_database(member: Union[Member, int], guild: Guild=None)`
+  * Before, your only option was to delete the entire database file. You can now delete the guild records of your choice
+    * `DiscordLevelingSystem.wipe_database(guild: Guild=None, *, intentional: bool=False)`
+* Added the ability to get the awards that were set in the constructor as a whole or filtered by a specified guild
   * `DiscordLevelingSystem.get_awards(guild: Union[Guild, int]=None)`
 * Added a few new attributes
   * `DiscordLevelingSystem.active` - Enable/disable the leveling system ([docs](https://github.com/Defxult/discordLevelingSystem#attributes))
