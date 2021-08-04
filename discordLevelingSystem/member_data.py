@@ -47,6 +47,10 @@ class MemberData:
     
     mention: :class:`str`
         The discord member mention string
+    
+        .. changes::
+            v0.0.3
+                Added :attr:`mention`
     """
 
     __slots__ = ('id_number', 'name', 'level', 'xp', 'total_xp', 'rank', 'mention')
