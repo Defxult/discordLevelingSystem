@@ -634,11 +634,14 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def wipe_database(self, *, intentional: bool=False):
-        """|coro| Delete EVERYTHING from the database
+    async def wipe_database(self, guild: Guild=None, *, intentional: bool=False):
+        """|coro| Delete EVERYTHING from the database. If :param:`guild` is specified, only the information related to that guild will be deleted
 
-        Parameter
-        ---------
+        Parameters
+        ----------
+        guild: :class:`discord.Guild`
+            (optional) The guild for which all information that is related to that guild will be deleted. If :class:`None`, everything will be deleted (defaults to :class:`None`)
+
         intentional: :class:`bool`
             (optional) A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone (defaults to `False`)
 
@@ -649,9 +652,16 @@ class DiscordLevelingSystem:
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         - `FailSafe`: "intentional" argument for this method was set to `False` in case you called this method by mistake
+        
+            .. changes::
+                v0.0.3
+                    Added :param:`guild`
         """
         if intentional:
-            await self._cursor.execute('DELETE FROM leaderboard')
+            if guild:
+                await self._cursor.execute('DELETE FROM leaderboard WHERE guild_id = ?', (guild.id,))
+            else:
+                await self._cursor.execute('DELETE FROM leaderboard')
             await self._connection.commit()
         else:
             raise FailSafe
