@@ -389,8 +389,8 @@ bot.run(...)
 * `DiscordLevelingSystem.transfer(old: str, new: str, guild_id: int)`
   * *static method* Transfer the database records from a database file created from v0.0.1 to a blank database file created using v0.0.2+. If you were already using a v0.0.2+ database file, there's no need to use this method
 ---
-* `await DiscordLevelingSystem.wipe_database(*, intentional=False)`
-  * Delete EVERYTHING from the database
+* `await DiscordLevelingSystem.wipe_database(guild=None, *, intentional=False)`
+  * Delete EVERYTHING from the database. If `guild` is specified, only the information related to that guild will be deleted
 
 </details>
 
