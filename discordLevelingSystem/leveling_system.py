@@ -54,7 +54,7 @@ class DiscordLevelingSystem:
     per: :class:`float`
         (optional) The amount of seconds each member has to wait before gaining more XP, aka the cooldown (defaults to 60.0)
     
-    awards: Union[Dict[:class:`int`, List[:class:`RoleAward`]], :class:`None`]:
+    awards: Union[Dict[:class:`int`, List[:class:`RoleAward`]], :class:`None`]
         (optional) The role given to a member when they reach a :class:`RoleAward` level requirement (defaults to :class:`None`)
 
     Kwargs
@@ -658,10 +658,8 @@ class DiscordLevelingSystem:
                     Added :param:`guild`
         """
         if intentional:
-            if guild:
-                await self._cursor.execute('DELETE FROM leaderboard WHERE guild_id = ?', (guild.id,))
-            else:
-                await self._cursor.execute('DELETE FROM leaderboard')
+            if guild:   await self._cursor.execute('DELETE FROM leaderboard WHERE guild_id = ?', (guild.id,))
+            else:       await self._cursor.execute('DELETE FROM leaderboard')
             await self._connection.commit()
         else:
             raise FailSafe
@@ -1302,7 +1300,8 @@ class DiscordLevelingSystem:
         - Using `fetch='ALL'` returns List[:class:`tuple`]
         - Using `'fetch='ONE'` returns :class:`tuple`
         - Using `fetch=4` returns List[:class:`tuple`] with only four values
-        - Can also return and empty list if the query was valid but got nothing from it
+        
+        Can also return an empty list if the query was valid but got nothing from it
         
         Raises
         ------
