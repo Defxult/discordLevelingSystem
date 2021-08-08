@@ -1,4 +1,4 @@
-## v0.0.3 » Future release
+## v1.0.0 » Future release
 #### New Features
 * Added parameter `guild` for the below methods
   * This allows a more targeted check or removal for the specified member 

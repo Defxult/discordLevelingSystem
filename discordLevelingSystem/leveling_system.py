@@ -94,7 +94,7 @@ class DiscordLevelingSystem:
                 Added :prop:`per`
                 Added :class:`Bonus`
                 Removed awards integrity check and duplicate check with just check
-            v0.0.3
+            v1.0.0
                 Added :attr:`active`
     """
     _QUERY_NEW_MEMBER = """
@@ -125,7 +125,7 @@ class DiscordLevelingSystem:
         # v0.0.2
         self._message_author: Member = None
 
-        # v0.0.3
+        # v1.0.0
         self.active = True
     
     @property
@@ -446,7 +446,7 @@ class DiscordLevelingSystem:
         Union[Dict[:class:`int`, List[:class:`RoleAward`]], List[:class:`RoleAward`]]: If :param:`guild` is :class:`None`, this returns the awards :class:`dict` that was set in constructor. If :param:`guild`
         is specified, it returns a List[:class:`RoleAward`] that matches the specified guild ID. Can also return :class:`None` if awards were never set or if the awards for the specified guild was not found
         
-            .. added:: v0.0.3
+            .. added:: v1.0.0
         """
         if self._awards:
             if guild:
@@ -654,7 +654,7 @@ class DiscordLevelingSystem:
         - `FailSafe`: "intentional" argument for this method was set to `False` in case you called this method by mistake
         
             .. changes::
-                v0.0.3
+                v1.0.0
                     Added :param:`guild`
         """
         if intentional:
@@ -901,7 +901,7 @@ class DiscordLevelingSystem:
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         
             .. changes::
-                v0.0.3
+                v1.0.0
                     Added :param:`guild`
         """
         if isinstance(member, (Member, int)):
@@ -944,7 +944,7 @@ class DiscordLevelingSystem:
         - `DiscordLevelingSystemError`: Parameter :param:`member` was not of type :class:`discord.Member` or :class:`int`
         
             .. changes::
-                v0.0.3
+                v1.0.0
                     Added :param:`guild`
         """
         if not isinstance(member, (Member, int)): raise DiscordLevelingSystemError(f'Parameter "member" expected discord.Member or int, got {member.__class__.__name__}')

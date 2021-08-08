@@ -43,14 +43,14 @@ class RoleAward:
         (optional) An optional name. Nothing is done with this value, it is used for visual identification purposes (defaults to :class:`None`)
     
     mention: :class:`str`
-        The role mention string
+        The discord role mention string
     
         .. changes::
             v0.0.2
                 Added :attr:`role_name`
                 Removed :attr:`_level_container`
                 Removed :attr:`_role_id_container`
-            v0.0.3
+            v1.0.0
                 Added :attr:`mention`
     """
 
