@@ -332,8 +332,12 @@ class DiscordLevelingSystem:
         maybe_new_record = kwargs.get('maybe_new_record', False)
         if maybe_new_record and not name:
             raise Exception('kwarg "name" needs to be set when adding a new record')
-            
-        if await self.is_in_database(member):
+        
+        # :meth:`DiscordLevelingSystem.is_in_database` parameter "guild" expects a :class:`discord.Guild` object. We don't necessarily *need* an actual :class:`discord.Guild`
+        # object because that method really only needs the ID to operate on the correct guild. Since this method has no :class:`discord.Guild` object, just make a false guild
+        # object so :meth:`DiscordLevelingSystem.is_in_database` will work as intended
+        FakeGuild = collections.namedtuple('FakeGuild', 'id')
+        if await self.is_in_database(member, guild=FakeGuild(id=guild_id)):
             await self._cursor.execute('UPDATE leaderboard SET member_level = ?, member_xp = ?, member_total_xp = ? WHERE member_id = ? AND guild_id = ?', (level, xp, total_xp, member.id if isinstance(member, Member) else member, guild_id))
         else:
             await self._cursor.execute(DiscordLevelingSystem._QUERY_NEW_MEMBER, (guild_id, member.id if isinstance(member, Member) else member, name, level, xp, total_xp))
