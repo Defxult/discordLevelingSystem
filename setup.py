@@ -14,15 +14,23 @@ classifiers = [
 ]
 
 tags = [
+    'database',
     'discord',
+    'discord bot',
     'discord.py',
     'discord py',
     'discord level',
+    'discord leveling',
     'discord leveling system',
     'level',
     'levels',
     'leveling',
-    'level up'
+    'level up',
+    'level system',
+    'rank',
+    'ranking',
+    'role award',
+    'xp'
 ]
 
 details = {
