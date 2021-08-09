@@ -1403,7 +1403,6 @@ class DiscordLevelingSystem:
                 
                 # set the values for the level up announcement
                 lua: LevelUpAnnouncement = random.choice(self.level_up_announcement) if isinstance(self.level_up_announcement, list) else self.level_up_announcement
-                lua._xp = md.xp
                 lua._total_xp = md.total_xp
                 lua._level = md.level
                 lua._rank = md.rank
@@ -1447,8 +1446,9 @@ class DiscordLevelingSystem:
                             role_to_remove: Role = role_exists(award=last_award)
                             role_to_add: Role = role_exists(award=role_award)
                             
-                            if not role_to_remove:  return
-                            if not role_to_add:     return
+                            # Note: Don't use an exception here because of multi-guild support
+                            if not role_to_remove or not role_to_add:
+                                return
 
                             if last_award == role_award:
                                 await member.add_roles(role_to_add)
