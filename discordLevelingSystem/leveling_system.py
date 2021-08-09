@@ -1402,8 +1402,7 @@ class DiscordLevelingSystem:
             if self.announce_level_up:
                 
                 # set the values for the level up announcement
-                lua = random.choice(self.level_up_announcement) if isinstance(self.level_up_announcement, list) else self.level_up_announcement
-                lua._author_mention = md.mention
+                lua: LevelUpAnnouncement = random.choice(self.level_up_announcement) if isinstance(self.level_up_announcement, list) else self.level_up_announcement
                 lua._xp = md.xp
                 lua._total_xp = md.total_xp
                 lua._level = md.level
