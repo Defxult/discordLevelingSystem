@@ -28,7 +28,7 @@ class DiscordLevelingSystemError(Exception):
         super().__init__(message)
 
 class RoleAwardError(DiscordLevelingSystemError):
-    """Base exception for :class:`DiscordLevelingSystem`"""
+    """Base exception for :class:`RoleAward`"""
     def __init__(self, message: str):
         super().__init__(message)
 
@@ -48,7 +48,7 @@ class DatabaseFileNotFound(DiscordLevelingSystemError):
         super().__init__(message)
 
 class ImproperRoleAwardOrder(RoleAwardError):
-    """When setting the awards list in the :class:`DiscordLevelingSystem` constructor, :attr:`RoleAward.level_requirement` was not greater than the last level"""
+    """When setting the awards :class:`dict` in the :class:`DiscordLevelingSystem` constructor, :attr:`RoleAward.level_requirement` was not greater than the last level"""
     def __init__(self, message):
         super().__init__(message)
 
