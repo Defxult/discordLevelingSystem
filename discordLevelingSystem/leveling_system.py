@@ -1153,7 +1153,7 @@ class DiscordLevelingSystem:
         Parameters
         ----------
         guild: :class:`discord.Guild`
-            A :class:`discord.Guild` object
+            A guild object
         
         sort_by: :class:`str`
             (optional) Return each member data sorted by: 
@@ -1508,7 +1508,7 @@ class DiscordLevelingSystem:
             pick a number in between those numbers including the numbers provided (defaults to a :class:`list` with values `[15, 25]`)
         
         message: :class:`discord.Message`
-            A :class:`discord.Message` object
+            A message object
         
         refresh_name: :class:`bool`
             (optional) Everytime the member sends a message, check if their name still matches the name in the database. If it doesn't match, update the database to match their current name. It is
