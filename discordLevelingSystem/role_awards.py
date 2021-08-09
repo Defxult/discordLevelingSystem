@@ -31,7 +31,7 @@ from .errors import ImproperRoleAwardOrder, RoleAwardError
 class RoleAward:
     """Represents the role that will be awarded to the member upon meeting the XP requirement
 
-    Attributes
+    Parameters
     ----------
     role_id: :class:`int`
         ID of the role that is to be awarded
@@ -39,11 +39,15 @@ class RoleAward:
     level_requirement: :class:`int`
         What level is required for a member to be awarded the role
     
-    role_name: :class:`str`:
+    role_name: :class:`str`
         (optional) An optional name. Nothing is done with this value, it is used for visual identification purposes (defaults to :class:`None`)
     
-    mention: :class:`str`
-        The discord role mention string
+    Attributes
+    ----------
+    - `role_id`
+    - `level_requirement`
+    - `role_name`
+    - `mention`
     
         .. changes::
             v0.0.2
@@ -101,7 +105,7 @@ class RoleAward:
 
     @staticmethod
     def _role_id_check(awards: List['RoleAward']):
-        """|static method| ensure all IDs are unique"""
+        """|static method| Ensure all IDs are unique"""
         role_id_counter = collections.Counter([award.role_id for award in awards])
         if max(role_id_counter.values()) != 1:
             raise RoleAwardError("There cannot be duplicate ID numbers when using role awards. All ID's must be unique")

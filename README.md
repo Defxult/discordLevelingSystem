@@ -102,7 +102,7 @@ You can assign roles to the system so when someone levels up to a certain level,
 ### Parameters of the RoleAward constructor
 * `role_id` (`int`) ID of the role that is to be awarded.
 * `level_requirement` (`int`) What level is required for a member to be awarded the role.
-* `role_name` (`str`) An optional name. Nothing is done with this value, it is used for visual identification purposes.
+* `role_name` (`str`) An optional name. Nothing is done with this value, it is used for visual identification purposes only.
 ---
 ### Attributes
 * `role_id`
