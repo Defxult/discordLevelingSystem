@@ -22,7 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import collections
+from collections import Counter
 from typing import Dict, List, Union
 
 from .errors import ImproperRoleAwardOrder, RoleAwardError
@@ -40,7 +40,7 @@ class RoleAward:
         What level is required for a member to be awarded the role
     
     role_name: :class:`str`
-        (optional) An optional name. Nothing is done with this value, it is used for visual identification purposes (defaults to :class:`None`)
+        (optional) An optional name. Nothing is done with this value, it is used for visual identification purposes only (defaults to :class:`None`)
     
     Attributes
     ----------
@@ -99,14 +99,14 @@ class RoleAward:
         
             .. added:: v0.0.2
         """
-        counter = collections.Counter(guild_ids)
+        counter = Counter(guild_ids)
         if max(counter.values()) != 1:
             raise RoleAwardError('When assigning role awards, all guild IDs must be unique')
 
     @staticmethod
     def _role_id_check(awards: List['RoleAward']):
         """|static method| Ensure all IDs are unique"""
-        role_id_counter = collections.Counter([award.role_id for award in awards])
+        role_id_counter = Counter([award.role_id for award in awards])
         if max(role_id_counter.values()) != 1:
             raise RoleAwardError("There cannot be duplicate ID numbers when using role awards. All ID's must be unique")
     
@@ -114,7 +114,7 @@ class RoleAward:
     def _level_req_check(awards: List['RoleAward']):
         """|static method| Ensures all level requirements/level requirements values are unique and greater than zero"""
         # ensure all level requirements are unique
-        lvl_req_counter = collections.Counter([award.level_requirement for award in awards])
+        lvl_req_counter = Counter([award.level_requirement for award in awards])
         if max(lvl_req_counter.values()) != 1:
             raise RoleAwardError("There cannot be duplicate level requirements when using role awards. All level requirements must be unique")
         
@@ -127,7 +127,7 @@ class RoleAward:
     def _verify_duplicate_awards(awards: List['RoleAward']):
         """|static method| Only used in the :class:`DiscordLevelingSystem` constructor. Ensures all :class:`RoleAward` objects submitted are unique"""
         object_ids = [id(obj) for obj in awards]
-        counter = collections.Counter(object_ids)
+        counter = Counter(object_ids)
         if max(counter.values()) != 1:
             raise RoleAwardError('There cannot be duplicate role award objects when setting the "awards"')
     
