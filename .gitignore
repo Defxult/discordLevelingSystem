@@ -1,5 +1,7 @@
 .vscode/*
-bot.py
 discordLevelingSystem/__pycache__/*
+dist/*
+discordLevelingSystem.egg-info/*
+bot.py
 DiscordLevelingSystem.db
 SPS_Data.db
