@@ -344,6 +344,19 @@ class DiscordLevelingSystem:
         await self._connection.commit()
     
     @staticmethod
+    def version_info() -> tuple:
+        """|static method| Helper method that determines exactly what version of the library is being used. Can help with debugging. Mainly used when submitting a bug report on Github
+
+        Returns
+        -------
+        :class:`tuple`: A named tuple with the current build version and any notes relating to that build. This is only updated when significant (and sometimes subtle) changes are made to the library
+            
+            .. added:: v1.0.1
+        """
+        VersionInfo = collections.namedtuple('VersionInfo', ['build', 'notes'])
+        return VersionInfo(build='v1.0.1-a', notes=f'Initial release for methods DiscordLevelingSystem.insert() and DiscordLevelingSystem.add_record()')
+    
+    @staticmethod
     def _get_transfer(path: str, loop: asyncio.AbstractEventLoop):
         """|static method| Connect to the target database file in the specified path and return a named tuple of the connection and cursor
         
