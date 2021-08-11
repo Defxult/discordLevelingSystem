@@ -97,6 +97,7 @@ class DiscordLevelingSystem:
             v1.0.0
                 Added :attr:`active`
     """
+    
     _QUERY_NEW_MEMBER = """
         INSERT INTO leaderboard
         VALUES (?, ?, ?, ?, ?, ?)
@@ -172,6 +173,12 @@ class DiscordLevelingSystem:
         multiply: :class:`bool`
             If set to `True`, this will operate on a x2, x3 basis. Meaning if you have the awarded XP set to 10 and you want the bonus XP role to be awarded 20, it must be set to 2,
             not 10. If `False`, it operates purely on the given value. Meaning if you have the awarded XP set to 10 and you want the bonus XP role to be awarded 20, it must be set to 10
+        
+        Attributes
+        ----------
+        - `role_ids`
+        - `bonus_amount`
+        - `multiply`
 
         Example
         -------
