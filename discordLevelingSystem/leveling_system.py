@@ -29,11 +29,12 @@ import os
 import random
 import shutil
 from datetime import datetime
+from inspect import cleandoc
 from typing import Dict, List, Optional, Tuple, Union
 
 import aiosqlite
 from discord import Embed, Guild, Member, Message, MessageType, Role
-from discord.ext.commands import BucketType, CooldownMapping
+from discord.ext.commands import AutoShardedBot, Bot, BucketType, CooldownMapping
 
 from .announcement import AnnouncementMember, LevelUpAnnouncement
 from .decorators import db_file_exists, leaderboard_exists, verify_leaderboard_integrity
@@ -456,6 +457,147 @@ class DiscordLevelingSystem:
         transfer_from = DiscordLevelingSystem._get_transfer(old, loop)
         transfer_to = DiscordLevelingSystem._get_transfer(new, loop)
         loop.run_until_complete(DiscordLevelingSystem._execute_transer(transfer_from, transfer_to, guild_id))
+    
+    @db_file_exists
+    @leaderboard_exists
+    @verify_leaderboard_integrity
+    async def add_record(self, guild_id: int, member_id: int, member_name: str, level: int):
+        """|coro| Manually add a record to the database. If the record already exists (the :param:`guild_id` and :param:`member_id` was found), only the level will be updated. If there were no records that matched
+        those values, all provided information will be added
+
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The guild ID to register
+        
+        member_id: :class:`int`
+            The member ID to register
+        
+        member_name: :class:`str`
+            The member name to register
+        
+        level: :class:`int`
+            The member level to register. Must be from 0-100
+        
+        Raises
+        ------
+        - `DiscordLevelingSystemError`: The value given from a parameter was not of the correct type or "level" was not 0-100
+
+            .. added:: v1.0.1
+        """
+        if all([isinstance(guild_id, int), isinstance(member_id, int), isinstance(level, int)]):
+            if not (0 <= level <= 100):
+                raise DiscordLevelingSystemError('Parameter "level" must be from 0-100')
+            await self._update_record(member=member_id, level=level, xp=0, total_xp=LEVELS_AND_XP[str(level)], guild_id=guild_id, name=str(member_name), maybe_new_record=True)
+        else:
+            raise DiscordLevelingSystemError('All parameters that expect an int were not of type int')
+
+    @db_file_exists
+    @leaderboard_exists
+    @verify_leaderboard_integrity
+    async def insert(self, bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite: bool=False, show_results: bool=True):
+        """|coro| Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is
+        insufficient because json files are not made to act as a database. Using a database file has many benefits over a json file
+
+        Note
+        ----
+        This method is currently in a beta stage. If you already have records in the database file and you want to insert your records on top of the records that already exist, it is suggested to backup that
+        file using :meth:`DiscordLevelingSystem.backup_database_file()` first. If you don't have any records in your DiscordLevelingSystem database file, then there's no need to create a backup 
+
+        Parameters
+        ----------
+        bot: Union[:class:`discord.ext.commands.Bot`, :class:`discord.ext.commands.AutoShardedBot`]
+            Your bot instance variable
+        
+        guild_id: :class:`int`
+            ID of the guild that you used your leveling system with
+        
+        users: Dict[:class:`int`, :class:`int`]
+            This is the information that will be added to the database. The keys are user ID's, and the values are the users total XP or level.
+            Note: This library only uses levels 0-100 and XP 0-1899250. If any number in this dict are over the levels/XP threshold, it is implicitly set back to this libraries maximum value
+
+        using: :class:`str`
+            What structure your leveling system used. Options: "xp" or "levels". Some leveling systems give users only XP and they are ranked up based on that XP value. Others use a combination of levels and XP. If all the values
+            in the :param:`users` dict are based on XP, set this to "xp". If they are based on a users level, set this to "levels"
+        
+        overwrite: :class:`bool`
+            (optional) If a user you've specified in the :param:`users` dict already has a record in the database, overwrite their current record with the one your inserting (defaults to `False`)
+        
+        show_results: :class:`bool`
+            (optional) Print the results for how many of the :param:`users` were successfully added to the database file. If any are unsuccessful, their ID along with the value you provided will also be shown (defaults to `True`)
+        
+        Raises
+        ------
+        - `DiscordLevelingSystemError`: The value given from a parameter was not of the correct type. The database file was not empty. Or Your bot is not in the guild associated with :param:`guild_id`
+            
+            .. added:: v1.0.1
+        """
+        # Perform the necessary checks to ensure the proper values will be added to the database
+        if not isinstance(guild_id, int):
+            raise DiscordLevelingSystemError(f'Parameter "guild_id" expected int, got {guild_id.__class__.__name__}')
+        if not users:
+            raise DiscordLevelingSystemError('The "users" dict cannot be empty')
+        for k, v in users.items():
+            if not isinstance(k, int) or not isinstance(v, int):
+                raise DiscordLevelingSystemError('All keys and values in the "users" dict must be of type int')
+        
+        guild = bot.get_guild(guild_id)
+        if guild:
+            using = using.lower()
+            successfully_added: List[Member] = []
+            skipped_users = []
+            registered_users = []
+            SkippedUser = collections.namedtuple('SkippedUser', ['id', 'value'])
+            RegisteredUser = collections.namedtuple('RegisteredUser', ['id', 'name', 'value'])
+            for user_id, user_level_or_xp in users.items():
+                member = guild.get_member(user_id)
+                if member:
+                    if not overwrite and await self.is_in_database(user_id, guild):
+                        registered_users.append(str(RegisteredUser(id=user_id, name=str(member), value=user_level_or_xp)))
+                        continue
+                    else:
+                        if using == 'levels':
+                            level = user_level_or_xp
+                            if level < 0: level = 0
+                            elif level > MAX_LEVEL: level = MAX_LEVEL
+                            await self.set_level(member, level)
+                            successfully_added.append(member)
+                        
+                        elif using == 'xp':
+                            xp = user_level_or_xp
+                            if xp < 0: xp = 0
+                            elif xp > LEVELS_AND_XP[str(MAX_LEVEL)]: xp = LEVELS_AND_XP[str(MAX_LEVEL)]
+                            await self.set_level(member, _find_level(xp))
+                            successfully_added.append(member)
+                        
+                        else:
+                            raise DiscordLevelingSystemError(f'Parameter "using" expected "levels" or "xp", got {using!r}')
+                else:
+                    skipped_users.append(str(SkippedUser(id=user_id, value=user_level_or_xp)))
+            else:
+                if show_results:
+                    stats = cleandoc(f"""
+                        ----------------------------------------
+                        Discord Leveling System - Insert Results
+                        ----------------------------------------
+                        {len(successfully_added)} out of {len(users)} users were successfully added to the database file
+                    """)
+                    if successfully_added:
+                        data: List[MemberData] = [str(await self.get_data_for(stored_member)) for stored_member in successfully_added]
+                        joined_data = '\n'.join(data)
+                        stats += f'\n\nThe below {len(successfully_added)} user(s) are now apart of the Discord Leveling System and are represented as a MemberData object\n{joined_data}'
+                    
+                    if skipped_users:
+                        joined_skipped = '\n'.join(skipped_users)
+                        stats += f'\n\nThe below {len(skipped_users)} user(s) were skipped because they are not currently in guild {guild_id}\n{joined_skipped}'
+                    
+                    if registered_users:
+                        joined_registered = '\n'.join(registered_users)
+                        stats += f'\n\nThe below {len(registered_users)} user(s) were skipped because they already have a record in the database and the "overwrite" kwarg was set to False\n{joined_registered}'
+                    
+                    print(stats)
+        else:
+            raise DiscordLevelingSystemError(f'Your bot is not in guild {guild_id}')
     
     def get_awards(self, guild: Union[Guild, int]=None) -> Union[Dict[int, List[RoleAward]], List[RoleAward]]:
         """Get all :class:`RoleAward`'s or only the :class:`RoleAward`'s assigned to the specified guild

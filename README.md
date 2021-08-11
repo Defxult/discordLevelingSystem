@@ -314,6 +314,9 @@ bot.run(...)
 <details>
     <summary>Click to show all methods</summary>
 
+* `await DiscordLevelingSystem.add_record(guild_id: int, member_id: int, member_name: str, level: int)`
+  * Manually add a record to the database. If the record already exists (the `guild_id` and `member_id` was found), only the level will be updated. If there were no records that matched those values, all provided information will be added
+---
 * `await DiscordLevelingSystem.add_xp(member: Member, amount: int)`
   * Give XP to a member. This also changes their level so it matches the associated XP
 ---
@@ -361,6 +364,9 @@ bot.run(...)
 ---
 * `await DiscordLevelingSystem.get_xp_for(member: Member) -> int`
   * Get the XP for the specified member
+---
+* `await DiscordLevelingSystem.insert(bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite=False, show_results=True)`
+  * Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is insufficient because json files are not made to act as a database. Using an actual database file has many benefits over a json file
 ---
 * `await DiscordLevelingSystem.is_in_database(member: Union[Member, int], guild=None) -> bool`
   * A quick check to see if a member is in the database. This is not guild specific although it can be if `guild` is specified
@@ -423,6 +429,84 @@ old = r'C:\Users\Defxult\Documents\DiscordLevelingSystem.db'
 new = r'C:\Users\Defxult\Desktop\DiscordLevelingSystem.db'
 
 DiscordLevelingSystem.transfer(old, new, guild_id=850809412011950121)
+```
+
+</details>
+
+## Inserting your own leveling system information
+<details>
+    <summary>Click to show details</summary>
+
+Insert the records from your leveling system into this one. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is insufficient because json files are not made to act as a database. Using a database file has many benefits over a json file. If you previously watched a tutorial for your leveling system and would like to import your records over to use with this library, you can do so with the below method.
+
+* Associated static method
+  * `await DiscordLevelingSystem.insert(bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite=False, show_results=True)`
+
+### Parameters
+- `bot` (`Union[discord.ext.commands.Bot, discord.ext.commands.AutoShardedBot]`) Your bot instance variable
+
+- `guild_id` (`int`) ID of the guild that you used your leveling system with
+
+- `users` (`Dict[int, int]`) This is the information that will be added to the database. The keys are user ID's, and the values are the users total XP or level. Note: This library only uses levels 0-100 and XP 0-1899250. If any number in this dict are over the levels/XP threshold, it is implicitly set back to this libraries maximum value
+
+- `using` (`str`) What structure your leveling system used. Options: "xp" or "levels". Some leveling systems give users only XP and they are ranked up based on that XP value. Others use a combination of levels and XP. If all the values in the `users` dict are based on XP, set this to "xp". If they are based on a users level, set this to "levels"
+
+- `overwrite` (`bool`) If a user you've specified in the `users` dict already has a record in the database, overwrite their current record with the one your inserting
+
+- `show_results` (`bool`) Print the results for how many of the `users` were successfully added to the database file. If any are unsuccessful, their ID along with the value you provided will also be shown
+
+> NOTE: If the users you've provided in the `users` dict is not currently in the guild (`guild_id`), their information will not be inserted. If you'd like, you can manually add those records with method `DiscordLevelingSystem.add_record()`, but that is discouraged because it is better to discard information that is no longer in use (the user is no longer in the guild)
+
+<div align="left"><sub>EXAMPLE</sub></div>
+
+```py
+# leveling_system.json
+[
+  {
+      "5748392849348934" : {
+          "xp" : 373,
+          "level" : 4
+      }
+  },
+  {
+      "89283659820948923" : {
+          "xp" : 23,
+          "level" : 1
+      }
+  }
+]
+
+
+# bot.py
+import json
+from discord.ext import commands
+from discordLevelingSystem import DiscordLevelingSystem
+
+bot = commands.Bot(...)
+
+lvl = DiscordLevelingSystem(...)
+lvl.connect_to_database_file(...)
+
+def json_to_dict() -> dict:
+    with open('leveling_system.json') as fp:
+        data = json.load(fp)
+        formatted: Dict[int, int] = ... # format the data so all keys and values are associated with the user ID and level
+        
+        """
+        In the end, the formatted dict should look like so:
+        
+        formatted = {
+            5748392849348934 : 4,
+            89283659820948923 : 1
+        }
+        """
+        return formatted
+
+@bot.command()
+async def insert(ctx):
+    await lvl.insert(ctx.bot, guild_id=12345678901234, users=json_to_dict(), using='levels')
+
+bot.run(...)
 ```
 
 </details>
