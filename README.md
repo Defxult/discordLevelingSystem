@@ -258,6 +258,9 @@ Accessing the raw information inside the database file can look a bit messy if y
 * `rank` (`int`) The members rank
 * `mention` (`str`) The discord member mention string
 
+### Methods
+* `MemberData.to_dict() -> dict`
+
 <div align="left"><sub>EXAMPLE</sub></div>
 
 ```py

@@ -47,6 +47,10 @@ class MemberData:
     
     mention: :class:`str`
         The discord member mention string
+    
+        .. changes::
+            v1.0.1
+                Added :meth:`to_dict`
     """
 
     __slots__ = ('id_number', 'name', 'level', 'xp', 'total_xp', 'rank', 'mention')
@@ -62,4 +66,14 @@ class MemberData:
     
     def __repr__(self):
         return f'<MemberData id_number={self.id_number} name={self.name!r} level={self.level} xp={self.xp} total_xp={self.total_xp} rank={self.rank}>'
-        
+    
+    def to_dict(self) -> dict:
+        """Return the :class:`dict` representation of the :class:`MemberData` object
+
+        Returns
+        -------
+        :class:`dict`
+
+            .. added:: v1.0.1
+        """
+        return {key : getattr(self, key) for key in self.__class__.__slots__}
