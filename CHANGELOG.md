@@ -1,3 +1,12 @@
+## v1.0.1 » Future release
+#### New Features
+* Added the ability manually add a record to the database
+  * `DiscordLevelingSystem.add_record(guild_id: int, member_id: int, member_name: str, level: int)`
+* Added the ability to insert your own leveling system data into the library (beta)
+  * `DiscordLevelingSystem.insert(bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite: bool=False, show_results: bool=True)`
+* Added method `DiscordLevelingSystem.version_info()`. This should typically only be used with bug issue submissions
+* Added method `MemberData.to_dict()`
+
 ## v1.0.0 » Aug. 9, 2021
 #### New Features
 * Added parameter `guild` for the below methods
