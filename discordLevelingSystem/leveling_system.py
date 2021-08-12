@@ -130,6 +130,17 @@ class DiscordLevelingSystem:
         # v1.0.0
         self.active = True
     
+    @staticmethod
+    def version_info():
+        """|static method| Helper method that prints exactly what version of the library is being used. Can help with debugging. Mainly used when submitting a bug report on Github.
+        
+        Note: This is only updated when significant (and sometimes subtle) changes are made to the library
+            
+            .. added:: v1.0.1
+        """
+        VersionInfo = collections.namedtuple('VersionInfo', ['build', 'notes'])
+        print(VersionInfo(build='v1.0.1-a', notes='Initial release for methods DiscordLevelingSystem.insert() and DiscordLevelingSystem.add_record()'))
+    
     @property
     def rate(self) -> int:
         """The amount of messages each member can send before the cooldown triggers
@@ -350,19 +361,6 @@ class DiscordLevelingSystem:
         else:
             await self._cursor.execute(DiscordLevelingSystem._QUERY_NEW_MEMBER, (guild_id, member.id if isinstance(member, Member) else member, name, level, xp, total_xp))
         await self._connection.commit()
-    
-    @staticmethod
-    def version_info() -> tuple:
-        """|static method| Helper method that determines exactly what version of the library is being used. Can help with debugging. Mainly used when submitting a bug report on Github
-
-        Returns
-        -------
-        :class:`tuple`: A named tuple with the current build version and any notes relating to that build. This is only updated when significant (and sometimes subtle) changes are made to the library
-            
-            .. added:: v1.0.1
-        """
-        VersionInfo = collections.namedtuple('VersionInfo', ['build', 'notes'])
-        return VersionInfo(build='v1.0.1-a', notes=f'Initial release for methods DiscordLevelingSystem.insert() and DiscordLevelingSystem.add_record()')
     
     @staticmethod
     def _get_transfer(path: str, loop: asyncio.AbstractEventLoop):
