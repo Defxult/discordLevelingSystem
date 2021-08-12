@@ -528,7 +528,7 @@ class DiscordLevelingSystem:
         
         Raises
         ------
-        - `DiscordLevelingSystemError`: The value given from a parameter was not of the correct type. The database file was not empty. Or Your bot is not in the guild associated with :param:`guild_id`
+        - `DiscordLevelingSystemError`: The value given from a parameter was not of the correct type. The :param:`users` dict was empty. Or your bot is not in the guild associated with :param:`guild_id`
             
             .. added:: v1.0.1
         """
