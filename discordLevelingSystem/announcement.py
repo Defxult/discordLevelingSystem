@@ -123,9 +123,9 @@ class LevelUpAnnouncement:
     def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_ids: List[int]=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: float=None):
         self.message = message
         self.level_up_channel_ids = level_up_channel_ids
-        self._total_xp = None
-        self._level = None
-        self._rank = None
+        self._total_xp: int = None
+        self._level: int = None
+        self._rank: int = None
         self._send_kwargs = {
             'allowed_mentions' : allowed_mentions,
             'tts' : tts,
