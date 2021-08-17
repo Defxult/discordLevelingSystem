@@ -13,5 +13,5 @@ from .announcement import LevelUpAnnouncement
 from .leveling_system import DiscordLevelingSystem
 from .role_awards import RoleAward
 
-__version__ = '1.0.1'
+__version__ = '1.0.1-pr-a'
 __source__ = 'https://github.com/Defxult/discordLevelingSystem'
