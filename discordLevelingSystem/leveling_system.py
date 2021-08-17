@@ -130,17 +130,6 @@ class DiscordLevelingSystem:
         # v1.0.0
         self.active = True
     
-    @staticmethod
-    def version_info():
-        """|static method| Helper method that prints exactly what version of the library is being used. Can help with debugging. Mainly used when submitting a bug report on Github.
-        
-        Note: This is only updated when significant (and sometimes subtle) changes are made to the library
-            
-            .. added:: v1.0.1
-        """
-        VersionInfo = collections.namedtuple('VersionInfo', ['build', 'notes'])
-        print(VersionInfo(build='v1.0.1-a', notes='Initial release for methods DiscordLevelingSystem.insert() and DiscordLevelingSystem.add_record()'))
-    
     @property
     def rate(self) -> int:
         """The amount of messages each member can send before the cooldown triggers

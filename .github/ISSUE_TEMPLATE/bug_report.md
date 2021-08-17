@@ -27,5 +27,5 @@ Minimal code to reproduce the bug/error
 - [ ] This issue is not a duplicate
 
 **Version Info**
-Run method `DiscordLevelingSystem.version_info()` then copy & past the "build" number
-- [build number here]
+What version of the library are you using? `print(discordLevelingSystem.__version__)`
+- [version here]
