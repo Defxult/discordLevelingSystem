@@ -22,7 +22,7 @@ Minimal code to reproduce the bug/error
 ```
 
 **Checklist**
-- [ ] I have the required [intents](https://github.com/Defxult/discordLevelingSystem) enabled
+- [ ] I have the required [intents](https://github.com/Defxult/discordLevelingSystem#intents) enabled
 - [ ] This issue is not a duplicate
 
 **Version Info**
