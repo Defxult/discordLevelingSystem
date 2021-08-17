@@ -22,7 +22,6 @@ Minimal code to reproduce the bug/error
 ```
 
 **Checklist**
-- [ ] I have updated to the latest version (`v1.0.1`)
 - [ ] I have the required [intents](https://github.com/Defxult/discordLevelingSystem) enabled
 - [ ] This issue is not a duplicate
 
