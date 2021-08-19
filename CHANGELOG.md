@@ -5,6 +5,7 @@
 * Added the ability manually add a record to the database
   * `DiscordLevelingSystem.add_record(guild_id: int, member_id: int, member_name: str, level: int)`
 * Added method `MemberData.to_dict()`
+* Added function `discordLevelingSystem.version_info()` . This will be the standard way for getting the information about what version of the library you are using
 
 ## v1.0.0 » Aug. 9, 2021
 #### New Features
