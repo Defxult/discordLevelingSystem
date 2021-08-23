@@ -8,6 +8,9 @@
 * Added function `discordLevelingSystem.version_info()` . This will be the standard way for getting the information about what version of the library you are using
 
 ## v1.0.0 » Aug. 9, 2021
+<details>
+  <summary>Click to display changelog</summary>
+
 #### New Features
 * Added parameter `guild` for the below methods
   * This allows a more targeted check or removal for the specified member 
@@ -21,7 +24,14 @@
   * `DiscordLevelingSystem.active` - Enable/disable the leveling system ([docs](https://github.com/Defxult/discordLevelingSystem#attributes))
   * `RoleAward.mention` - The discord role mention string
 
+</details>
+
+
+
 ## v0.0.2 » Jun. 21, 2021
+<details>
+  <summary>Click to display changelog</summary>
+
 #### New Features
 * Added the ability for `LevelUpAnnouncement` messages to be embeds ([docs](https://github.com/Defxult/discordLevelingSystem#levelupannouncement))
 * Added the ability to have multiple `LevelUpAnnouncement` messages ([docs](https://github.com/Defxult/discordLevelingSystem#levelupannouncement))
@@ -92,5 +102,14 @@
   * Before: `DiscordLevelingSystem.get_record_count()`
   * After: `DiscordLevelingSystem.get_record_count(guild: Guild=None)`
 
+</details>
+
+
+
 ## v0.0.1 » Apr. 24, 2021
+<details>
+  <summary>Click to display changelog</summary>
+
 * Initial release
+
+</details>
