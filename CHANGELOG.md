@@ -1,4 +1,4 @@
-## v1.0.1 » Future release
+## v1.0.1 » Aug. 24, 2021
 #### New Features
 * Added the ability to insert your own leveling system data into the library. Typically used if you're currently using a json leveling system, but can be converted from any system as long as the necessary values are given (beta) ([docs](https://github.com/Defxult/discordLevelingSystem#inserting-your-own-leveling-system-information))
   * `DiscordLevelingSystem.insert(bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite: bool=False, show_results: bool=True)`
