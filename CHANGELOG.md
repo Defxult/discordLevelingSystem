@@ -1,4 +1,10 @@
+## v1.0.2 » Future Release
+#### Bug Fixes
+* Fixed an issue where properties `DiscordLevelingSystem.rate` & `DiscordLevelingSystem.per` wouldn't return their updated values if `DiscordLevelingSystem.change_cooldown()` was used
 ## v1.0.1 » Aug. 24, 2021
+<details>
+  <summary>Click to display changelog</summary>
+
 #### New Features
 * Added the ability to insert your own leveling system data into the library. Typically used if you're currently using a json leveling system, but can be converted from any system as long as the necessary values are given (beta) ([docs](https://github.com/Defxult/discordLevelingSystem#inserting-your-own-leveling-system-information))
   * `DiscordLevelingSystem.insert(bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite: bool=False, show_results: bool=True)`
@@ -6,6 +12,8 @@
   * `DiscordLevelingSystem.add_record(guild_id: int, member_id: int, member_name: str, level: int)`
 * Added method `MemberData.to_dict()`
 * Added function `discordLevelingSystem.version_info()` . This will be the standard way for getting the information about what version of the library you are using
+
+</details>
 
 ## v1.0.0 » Aug. 9, 2021
 <details>

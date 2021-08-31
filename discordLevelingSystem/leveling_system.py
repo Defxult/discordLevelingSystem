@@ -740,6 +740,8 @@ class DiscordLevelingSystem:
         """
         if rate <= 0 or per <= 0:   raise DiscordLevelingSystemError('Invalid rate or per. Values must be greater than zero')
         self._cooldown = CooldownMapping.from_cooldown(rate, per, BucketType.member)
+        self.__rate = rate
+        self.__per = per
 
     @db_file_exists
     @leaderboard_exists

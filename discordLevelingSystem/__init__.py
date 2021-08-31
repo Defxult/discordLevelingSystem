@@ -23,6 +23,6 @@ def version_info():
     """
     from collections import namedtuple
     VersionInfo = namedtuple('VersionInfo', ['version', 'releasetype', 'patch'])
-    return VersionInfo(version='1.0.2', releasetype='pre-release', patch=None)
+    return VersionInfo(version='1.0.2', releasetype='pre-release', patch='1a')
 
 __source__ = 'https://github.com/Defxult/discordLevelingSystem'
