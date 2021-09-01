@@ -62,6 +62,7 @@ bot = commands.Bot(..., intents=discord.Intents(messages=True, guilds=True, memb
 * `level_up_announcement`
 * `rate` (`int`) Read only property from the constructor
 * `per` (`float`) Read only property from the constructor
+* `database_file_path` (`str`) Read only property
 * `active` (`bool`) Enable/disable the leveling system. If `False`, nobody can gain XP when sending messages unless this is set back to `True`
 
 > NOTE: All attributes can be set during initialization
