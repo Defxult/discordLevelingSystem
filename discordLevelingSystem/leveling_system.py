@@ -132,24 +132,24 @@ class DiscordLevelingSystem:
     
     @property
     def rate(self) -> int:
-        """The amount of messages each member can send before the cooldown triggers
-
+        """
         Returns
         -------
-        :class:`int`
-        
+        :class:`int`:
+            The amount of messages each member can send before the cooldown triggers
+
             .. added:: v0.0.2
         """
         return self.__rate
     
     @property
     def per(self) -> float:
-        """The amount of seconds each member has to wait before gaining more XP, aka the cooldown
-
+        """
         Returns
         -------
-        :class:`float`
-
+        :class:`float`:
+            The amount of seconds each member has to wait before gaining more XP, aka the cooldown
+            
             .. added:: v0.0.2
         """
         return self.__per
@@ -160,7 +160,7 @@ class DiscordLevelingSystem:
         Returns
         -------
         :class:`str`:
-            The path of the current database file
+            The path of the current database file. Could be :class:`None` if the database connection was never set
         """
         return self._database_file_path
 
