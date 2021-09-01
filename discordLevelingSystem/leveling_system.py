@@ -86,17 +86,7 @@ class DiscordLevelingSystem:
     - `active`
     - `rate` (property)
     - `per` (property)
-    
-        .. changes::
-            v0.0.2
-                Added :attr:`_QUERY_NEW_MEMBER`
-                Added :attr:`_message_author`
-                Added :prop:`rate`
-                Added :prop:`per`
-                Added :class:`Bonus`
-                Removed awards integrity check and duplicate check with just check
-            v1.0.0
-                Added :attr:`active`
+    - `database_file_path` (property)
     """
     
     _QUERY_NEW_MEMBER = """
@@ -161,6 +151,8 @@ class DiscordLevelingSystem:
         -------
         :class:`str`:
             The path of the current database file. Could be :class:`None` if the database connection was never set
+
+            .. added:: v1.0.2
         """
         return self._database_file_path
 
