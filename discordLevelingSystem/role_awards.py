@@ -48,14 +48,6 @@ class RoleAward:
     - `level_requirement`
     - `role_name`
     - `mention`
-    
-        .. changes::
-            v0.0.2
-                Added :attr:`role_name`
-                Removed :attr:`_level_container`
-                Removed :attr:`_role_id_container`
-            v1.0.0
-                Added :attr:`mention`
     """
 
     __slots__ = ('role_id', 'level_requirement', 'role_name', 'mention')
@@ -63,7 +55,11 @@ class RoleAward:
     def __init__(self, role_id: int, level_requirement: int, role_name: str=None):
         self.role_id = role_id
         self.level_requirement = level_requirement
+        
+        # v0.0.2
         self.role_name = role_name
+        
+        # v1.0.0
         self.mention = f'<@&{role_id}>'
 
     def __repr__(self):
