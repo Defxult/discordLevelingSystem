@@ -1,6 +1,13 @@
 ## v1.0.2 » Future Release
+#### New Features
+* Added the ability to connect to a different database file while the leveling system is active
+  * `DiscordLevelingSystem.switch_connection(path: str)`
+* Added property `DiscordLevelingSystem.database_file_path`. Returns the current path of the active database file
 #### Bug Fixes
 * Fixed an issue where properties `DiscordLevelingSystem.rate` & `DiscordLevelingSystem.per` wouldn't return their updated values if `DiscordLevelingSystem.change_cooldown()` was used
+
+
+
 ## v1.0.1 » Aug. 24, 2021
 <details>
   <summary>Click to display changelog</summary>

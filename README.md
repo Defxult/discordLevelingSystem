@@ -400,6 +400,9 @@ bot.run(...)
 * `await DiscordLevelingSystem.sql_query_get(sql: str, parameters=None, fetch='ALL') -> Union[List[tuple], tuple]`
   * Query and return something from the database using SQL. The following columns are apart of the "leaderboard" table: guild_id, member_id, member_name, member_level, member_xp, member_total_xp
 ---
+* `await DiscordLevelingSystem.switch_connection(path: str)`
+  * Connect to a different leveling system database file
+---
 * `DiscordLevelingSystem.transfer(old: str, new: str, guild_id: int)`
   * *static method* Transfer the database records from a database file created from v0.0.1 to a blank database file created using v0.0.2+. If you were already using a v0.0.2+ database file, there's no need to use this method
 ---

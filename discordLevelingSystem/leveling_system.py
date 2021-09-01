@@ -154,6 +154,16 @@ class DiscordLevelingSystem:
         """
         return self.__per
     
+    @property
+    def database_file_path(self) -> str:
+        """
+        Returns
+        -------
+        :class:`str`:
+            The path of the current database file
+        """
+        return self._database_file_path
+
     class Bonus:
         """Set the roles that gives x amount of extra XP to the member. This is to be used with kwarg "bonus" in the :meth:`award_xp` method
 
@@ -309,6 +319,33 @@ class DiscordLevelingSystem:
         else:
             raise DatabaseFileNotFound(f'The database file in path {path!r} was not found')
 
+    async def switch_connection(self, path: str):
+        """|coro| Connect to a different leveling system database file
+
+        Parameter
+        ---------
+        path: :class:`str`
+            The location of the database file
+
+        Raises
+        ------
+        - `DatabaseFileNotFound`: The database file was not found
+
+            .. added:: v1.0.2
+        """
+        if all([os.path.exists(path), os.path.isfile(path), path.endswith('.db')]):
+            if self._database_file_path == path:
+                return
+            
+            # close the current connection before making a new one
+            await self._connection.close()
+
+            self._connection = await aiosqlite.connect(path)
+            self._cursor = await self._connection.cursor()
+            self._database_file_path = path
+        else:
+            raise DatabaseFileNotFound(f'The database file in path {path!r} was not found')
+    
     def _determine_no_xp(self, message: Message) -> bool:
         """Check if the channel the member is sending messages in is a no XP channel. This also checks if any of the roles they have is a no XP role
         
