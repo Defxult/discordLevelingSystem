@@ -216,8 +216,8 @@ class DiscordLevelingSystem:
     def create_database_file(path: str):
         """|static method| Create the database file and implement the SQL data for the database
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         path: :class:`str`
             The location to create the database file
         
@@ -291,8 +291,8 @@ class DiscordLevelingSystem:
     def connect_to_database_file(self, path: str):
         """Connect to the existing database file in the specified path
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         path: :class:`str`
             The location of the database file
         
@@ -314,8 +314,8 @@ class DiscordLevelingSystem:
     async def switch_connection(self, path: str):
         """|coro| Connect to a different leveling system database file
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         path: :class:`str`
             The location of the database file
 
@@ -514,10 +514,8 @@ class DiscordLevelingSystem:
     async def insert(self, bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite: bool=False, show_results: bool=True):
         """|coro| Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is
         insufficient because json files are not made to act as a database. Using a database file has many benefits over a json file
-
-        Note
-        ----
-        This method is currently in a beta stage. If you already have records in the database file and you want to insert your records on top of the records that already exist, it is suggested to backup that
+        
+        If you already have records in the database file and you want to insert your records on top of the records that already exist, it is suggested to backup that
         file using :meth:`DiscordLevelingSystem.backup_database_file()` first. If you don't have any records in your DiscordLevelingSystem database file, then there's no need to create a backup 
 
         Parameters
@@ -618,8 +616,8 @@ class DiscordLevelingSystem:
     def get_awards(self, guild: Union[Guild, int]=None) -> Union[Dict[int, List[RoleAward]], List[RoleAward]]:
         """Get all :class:`RoleAward`'s or only the :class:`RoleAward`'s assigned to the specified guild
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         guild: Union[:class:`discord.Guild`, :class:`int`]
             (optional) A guild object or a guild ID (defaults to :class:`None`)
         
@@ -779,8 +777,8 @@ class DiscordLevelingSystem:
         """|coro| Update names inside the database. This does not add anything new. It simply verifies if the name in the database matches their current name, and if they don't match, update
         the database name
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         guild: :class:`discord.Guild`
             A guild object
         
@@ -855,8 +853,8 @@ class DiscordLevelingSystem:
         """|coro| Removes the data for members that are no longer in the guild, thus reducing the database file size. It is recommended to have this method in a background loop
         in order to keep the database file free of records that are no longer in use
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         guild: :class:`discord.Guild`
             The guild records to clean
         
@@ -899,8 +897,8 @@ class DiscordLevelingSystem:
     async def reset_member(self, member: Member):
         """|coro| Sets the members XP, total XP, and level to zero
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: :class:`discord.Member`
             The member to reset
         
@@ -1023,8 +1021,8 @@ class DiscordLevelingSystem:
     async def raw_database_contents(self, guild: Guild=None) -> List[tuple]:
         """|coro| Returns everything in the database. Can specify which guild information will be extracted
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         guild: :class:`discord.Guild`
             (optional) The guild to extract the raw database contents from. If :class:`None`, information about all guilds will be extracted (defaults to :class:`None`)
         
@@ -1147,8 +1145,8 @@ class DiscordLevelingSystem:
     async def get_record_count(self, guild: Guild=None) -> int:
         """|coro| Get the amount of members that are registered in the database. If :param:`guild` is set to :class:`None`, all members in the database will be counted
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         guild: :class:`discord.Guild`
             (optional) The guild for which to count the amount of records (defaults to :class:`None`)
 
@@ -1180,8 +1178,8 @@ class DiscordLevelingSystem:
     async def next_level_up(self, member: Member) -> int:
         """|coro| Get the amount of XP needed for the specified member to level up
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: :class:`discord.Member`
             Member to get the amount of XP needed for a level up
         
@@ -1213,8 +1211,8 @@ class DiscordLevelingSystem:
     async def get_xp_for(self, member: Member) -> int:
         """|coro| Get the XP for the specified member
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: :class:`discord.Member`
             Member to get the XP for
         
@@ -1240,8 +1238,8 @@ class DiscordLevelingSystem:
     async def get_total_xp_for(self, member: Member) -> int:
         """|coro| Get the total XP for the specified member
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: :class:`discord.Member`
             Member to get the total XP for
         
@@ -1267,8 +1265,8 @@ class DiscordLevelingSystem:
     async def get_level_for(self, member: Member) -> int:
         """|coro| Get the level for the specified member
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: :class:`discord.Member`
             Member to get the level for
         
@@ -1294,8 +1292,8 @@ class DiscordLevelingSystem:
     async def get_data_for(self, member: Member) -> MemberData:
         """|coro| Get the :class:`MemberData` object that represents the specified member
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: :class:`discord.Member`
             The member to get the data for
         
@@ -1428,8 +1426,8 @@ class DiscordLevelingSystem:
     async def get_rank_for(self, member: Member) -> int:
         """|coro| Get the rank for the specified member
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         member: :class:`discord.Member`
             Member to get the rank for
         
