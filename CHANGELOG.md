@@ -1,8 +1,10 @@
 ## v1.0.2 » Future Release
 #### New Features
+* Added the event `on_dls_level_up`. This offers more capabilities compared to `LevelUpAnnouncement` ([docs](https://github.com/Defxult/discordLevelingSystem#events))
 * Added the ability to connect to a different database file while the leveling system is active
   * `DiscordLevelingSystem.switch_connection(path: str)`
 * Added property `DiscordLevelingSystem.database_file_path`. Returns the current path of the active database file
+* Added the `MemberData` class to `__init__` for easier access to the class. Should only be used for type hinting
 #### Bug Fixes
 * Fixed an issue where properties `DiscordLevelingSystem.rate` & `DiscordLevelingSystem.per` wouldn't return their updated values if `DiscordLevelingSystem.change_cooldown()` was used
 

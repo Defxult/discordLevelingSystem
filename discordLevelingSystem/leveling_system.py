@@ -76,6 +76,9 @@ class DiscordLevelingSystem:
     level_up_announcement: Union[:class:`LevelUpAnnouncement`, List[:class:`LevelUpAnnouncement`]]
         (optional) The message that is sent when someone levels up. If this is a list of :class:`LevelUpAnnouncement`, one is selected at random (defaults to :class:`LevelUpAnnouncement()`)
     
+    bot: Union[:class:`discord.ext.commands.AutoShardedBot`, :class:`discord.ext.commands.Bot`]
+        (optional) Your bot instance variable. Used only if you'd like to use the `on_dls_level_up` event (defaults to :class:`None`)
+    
     Attributes
     ----------
     - `no_xp_roles`
@@ -84,6 +87,7 @@ class DiscordLevelingSystem:
     - `stack_awards`
     - `level_up_announcement`
     - `active`
+    - `bot`
     - `rate` (property)
     - `per` (property)
     - `database_file_path` (property)
@@ -119,6 +123,9 @@ class DiscordLevelingSystem:
 
         # v1.0.0
         self.active = True
+
+        # v1.0.2
+        self.bot: Union[AutoShardedBot, Bot] = kwargs.get('bot')
     
     @property
     def rate(self) -> int:
@@ -1556,6 +1563,8 @@ class DiscordLevelingSystem:
                     Added :func:`send_announcement`
                     Removed raising of exception (AwardedRoleNotFound) to support multi-guild leveling
                     Removed raising of exception (LevelUpChannelNotFound) to support multi-guild level up channel IDs
+                v1.0.2
+                    Added handling for event `on_dls_level_up`
         """
         if leveled_up:
             member = message.author       
@@ -1633,6 +1642,9 @@ class DiscordLevelingSystem:
                             else:
                                 await member.add_roles(role_to_add)
                                 await member.remove_roles(role_to_remove)
+            
+            if self.bot is not None:
+                self.bot.dispatch('dls_level_up', member, message, md)
     
     def _handle_amount_param(self, arg):
         """Simple check to ensure the proper types are being used for parameter "amount" in method :meth:`DiscordLevelingSystem.award_xp()`

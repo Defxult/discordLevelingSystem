@@ -52,6 +52,7 @@ bot = commands.Bot(..., intents=discord.Intents(messages=True, guilds=True, memb
 | `announce_level_up` | `bool` | `True` | If `True`, level up messages will be sent when a member levels up
 | `stack_awards` | `bool` | `True` | If this is `True`, when the member levels up the assigned role award will be applied. If `False`, the previous role award will be removed and the level up assigned role will also be applied
 | `level_up_announcement` | `Union[LevelUpAnnouncement, List[LevelUpAnnouncement]]` | `LevelUpAnnouncement()` | The message that is sent when someone levels up. If this is a list of `LevelUpAnnouncement`, one is selected at random
+|`bot` | ` Union[AutoShardedBot, Bot]` | `None` | Your bot instance variable. Used only if you'd like to use the `on_dls_level_up` event
 
 ---
 ### Attributes
@@ -60,6 +61,7 @@ bot = commands.Bot(..., intents=discord.Intents(messages=True, guilds=True, memb
 * `announce_level_up`
 * `stack_awards`
 * `level_up_announcement`
+* `bot`
 * `rate` (`int`) Read only property from the constructor
 * `per` (`float`) Read only property from the constructor
 * `database_file_path` (`str`) Read only property
@@ -279,6 +281,25 @@ async def leaderboard(ctx):
     data = await lvl.each_member_data(ctx.guild, sort_by='rank')
     # show the leaderboard whichever way you'd like
 ```
+---
+## Events
+You can set an event to be called when a member levels up. Using the event is considered as an enhanced `LevelUpAnnouncement` because it provides more capabilities rather than simply sending a message with only text/an embed. The `on_dls_level_up` event takes three parameters:
+* `member` (`discord.Member`) The member that leveled up
+* `message` (`discord.Message`) The message that triggered the level up
+* `data` (`MemberData`) The database information for that member
+
+```py
+bot = commands.Bot(...)
+lvl = DiscordLevelingSystem(..., bot=bot) # your bot instance variable is needed
+
+@bot.event
+async def on_dls_level_up(member: discord.Member, message: discord.Message, data: MemberData):
+    # You can do a lot more here compared to LevelUpAnnouncement
+    # - create a level up image and send with with discord.File
+    # - call additional functions that you may need
+    # - access to all attributes/methods that are available with discord.Member and discord.Message
+```
+> NOTE: `LevelUpAnnouncement` & `on_dls_level_up` are not the same. Level up messages are sent by default by the library. If you'd only like to use `on_dls_level_up`, you need to disable level up announcements (`lvl.announce_level_up = False`)
 
 ---
 ## Full Example
