@@ -11,7 +11,9 @@ A library to implement a leveling system into a discord bot. Contains features s
 
 from .announcement import LevelUpAnnouncement
 from .leveling_system import DiscordLevelingSystem
+from .member_data import MemberData
 from .role_awards import RoleAward
+
 
 def version_info():
     """Shows the current version, release type, and patch of the library
