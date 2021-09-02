@@ -295,11 +295,11 @@ lvl = DiscordLevelingSystem(..., bot=bot) # your bot instance variable is needed
 @bot.event
 async def on_dls_level_up(member: discord.Member, message: discord.Message, data: MemberData):
     # You can do a lot more here compared to LevelUpAnnouncement
-    # - create a level up image and send with with discord.File
+    # - create a level up image and send it with discord.File
     # - call additional functions that you may need
-    # - access to all attributes/methods that are available with discord.Member and discord.Message
+    # - access to all attributes/methods that are available within discord.Member and discord.Message
 ```
-> NOTE: `LevelUpAnnouncement` & `on_dls_level_up` are not the same. Level up messages are sent by default by the library. If you'd only like to use `on_dls_level_up`, you need to disable level up announcements (`lvl.announce_level_up = False`)
+> NOTE: `LevelUpAnnouncement` & `on_dls_level_up` are not the same. Level up messages are sent by default by the library. If you'd to only use `on_dls_level_up`, you need to disable level up announcements (`lvl.announce_level_up = False`)
 
 ---
 ## Full Example
