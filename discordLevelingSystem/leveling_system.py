@@ -33,10 +33,10 @@ from inspect import cleandoc
 from typing import Dict, List, Optional, Tuple, Union
 
 import aiosqlite
-from discord import Embed, Guild, Member, Message, MessageType, Role
+from discord import Guild, Member, Message, MessageType, Role
 from discord.ext.commands import AutoShardedBot, Bot, BucketType, CooldownMapping
 
-from .announcement import AnnouncementMember, LevelUpAnnouncement
+from .announcement import LevelUpAnnouncement
 from .decorators import db_file_exists, leaderboard_exists, verify_leaderboard_integrity
 from .errors import *
 from .levels_xp_needed import *
@@ -132,8 +132,7 @@ class DiscordLevelingSystem:
         """
         Returns
         -------
-        :class:`int`:
-            The amount of messages each member can send before the cooldown triggers
+        :class:`int`: The amount of messages each member can send before the cooldown triggers
 
             .. added:: v0.0.2
         """
@@ -144,8 +143,7 @@ class DiscordLevelingSystem:
         """
         Returns
         -------
-        :class:`float`:
-            The amount of seconds each member has to wait before gaining more XP, aka the cooldown
+        :class:`float`: The amount of seconds each member has to wait before gaining more XP, aka the cooldown
             
             .. added:: v0.0.2
         """
@@ -156,8 +154,7 @@ class DiscordLevelingSystem:
         """
         Returns
         -------
-        :class:`str`:
-            The path of the current database file. Could be :class:`None` if the database connection was never set
+        :class:`str`: The path of the current database file. Could be :class:`None` if the database connection was never set
 
             .. added:: v1.0.2
         """
@@ -405,7 +402,7 @@ class DiscordLevelingSystem:
             raise DatabaseFileNotFound(f'The database file in path {path!r} was not found')
     
     @staticmethod
-    async def _execute_transer(db_from: 'Transfer', db_to: 'Transfer', guild_id: int):
+    async def _execute_transer(db_from: 'Transfer', db_to: 'Transfer', guild_id: int): # type: ignore
         """|coro static method| Copy the contents from the old database file (v0.0.1), to the new database file (v0.0.2+)
         
             .. added:: v0.0.2
