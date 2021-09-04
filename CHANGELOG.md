@@ -1,4 +1,4 @@
-## v1.0.2 » Future Release
+## v1.0.2 » Sept. 4, 2021
 #### New Features
 * Added the event `on_dls_level_up`. This offers more capabilities compared to `LevelUpAnnouncement` ([docs](https://github.com/Defxult/discordLevelingSystem#events))
 * Added the ability to connect to a different database file while the leveling system is active
