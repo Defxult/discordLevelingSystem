@@ -28,6 +28,7 @@ import json
 import os
 import random
 import shutil
+from collections.abc import Sequence
 from datetime import datetime
 from inspect import cleandoc
 from typing import Dict, List, Optional, Tuple, Union
@@ -50,34 +51,34 @@ class DiscordLevelingSystem:
     Parameters
     ----------
     rate: :class:`int`
-        (optional) The amount of messages each member can send before the cooldown triggers (defaults to 1)
+        The amount of messages each member can send before the cooldown triggers
 
     per: :class:`float`
-        (optional) The amount of seconds each member has to wait before gaining more XP, aka the cooldown (defaults to 60.0)
+        The amount of seconds each member has to wait before gaining more XP, aka the cooldown
     
-    awards: Union[Dict[:class:`int`, List[:class:`RoleAward`]], :class:`None`]
-        (optional) The role given to a member when they reach a :class:`RoleAward` level requirement (defaults to :class:`None`)
+    awards: Optional[Dict[:class:`int`, List[:class:`RoleAward`]]]
+        The role given to a member when they reach a :class:`RoleAward` level requirement
 
     Kwargs
     ------
-    no_xp_roles: List[:class:`int`]
-        (optional) A list of role ID's. Any member with any of those roles will not gain XP when sending messages (defaults to :class:`None`)
+    no_xp_roles: Sequence[:class:`int`]
+        A sequence of role ID's. Any member with any of those roles will not gain XP when sending messages (defaults to :class:`None`)
     
-    no_xp_channels: List[:class:`int`]
-        (optional) A list of text channel ID's. Any member sending messages in any of those text channels will not gain XP (defaults to :class:`None`)
+    no_xp_channels: Sequence[:class:`int`]
+        A sequence of text channel ID's. Any member sending messages in any of those text channels will not gain XP (defaults to :class:`None`)
     
     announce_level_up: :class:`bool`
-        (optional) If `True`, level up messages will be sent when a member levels up (defaults to `True`)
+        If `True`, level up messages will be sent when a member levels up (defaults to `True`)
 
     stack_awards: :class:`bool`
-        (optional) If this is `True`, when the member levels up the assigned role award will be applied. If `False`, the previous role award will be removed
+        If this is `True`, when the member levels up the assigned role award will be applied. If `False`, the previous role award will be removed
         and the level up assigned role will also be applied (defaults to `True`)
 
-    level_up_announcement: Union[:class:`LevelUpAnnouncement`, List[:class:`LevelUpAnnouncement`]]
-        (optional) The message that is sent when someone levels up. If this is a list of :class:`LevelUpAnnouncement`, one is selected at random (defaults to :class:`LevelUpAnnouncement()`)
+    level_up_announcement: Union[:class:`LevelUpAnnouncement`, Sequence[:class:`LevelUpAnnouncement`]]
+        The message that is sent when someone levels up. If this is a list of :class:`LevelUpAnnouncement`, one is selected at random (defaults to :class:`LevelUpAnnouncement()`)
     
     bot: Union[:class:`discord.ext.commands.AutoShardedBot`, :class:`discord.ext.commands.Bot`]
-        (optional) Your bot instance variable. Used only if you'd like to use the `on_dls_level_up` event (defaults to :class:`None`)
+        Your bot instance variable. Used only if you'd like to use the `on_dls_level_up` event (defaults to :class:`None`)
     
     Attributes
     ----------
@@ -98,7 +99,7 @@ class DiscordLevelingSystem:
         VALUES (?, ?, ?, ?, ?, ?)
     """
 
-    def __init__(self, rate: int=1, per: float=60.0, awards: Union[Dict[int, List[RoleAward]], None]=None, **kwargs):
+    def __init__(self, rate: int=1, per: float=60.0, awards: Optional[Union[Dict[int, List[RoleAward]]]]=None, **kwargs):
         if rate <= 0 or per <= 0:   raise DiscordLevelingSystemError('Invalid rate or per. Values must be greater than zero')
         self.__rate = rate
         self.__per = per
@@ -106,11 +107,11 @@ class DiscordLevelingSystem:
         RoleAward._check(awards)
         self._awards = awards
 
-        self.no_xp_roles: List[int] = kwargs.get('no_xp_roles')
-        self.no_xp_channels: List[int] = kwargs.get('no_xp_channels')
+        self.no_xp_roles: Optional[Sequence[int]] = kwargs.get('no_xp_roles')
+        self.no_xp_channels: Optional[Sequence[int]] = kwargs.get('no_xp_channels')
         self.announce_level_up: bool = kwargs.get('announce_level_up', True)
         self.stack_awards: bool = kwargs.get('stack_awards', True)
-        self.level_up_announcement: Union[LevelUpAnnouncement, List[LevelUpAnnouncement]] = kwargs.get('level_up_announcement', LevelUpAnnouncement())
+        self.level_up_announcement: Union[LevelUpAnnouncement, Sequence[LevelUpAnnouncement]] = kwargs.get('level_up_announcement', LevelUpAnnouncement())
 
         self._cooldown = CooldownMapping.from_cooldown(rate, per, BucketType.member)
         self._connection: aiosqlite.Connection = None
@@ -171,7 +172,7 @@ class DiscordLevelingSystem:
 
         Parameters
         ----------
-        role_ids: List[:class:`int`]
+        role_ids: Sequence[:class:`int`]
             The roles a member must have to be able to get bonus XP. They only need to have one of these roles to get the bonus
 
         bonus_amount: :class:`int`
@@ -204,7 +205,7 @@ class DiscordLevelingSystem:
         """
         __slots__ = ('role_ids', 'bonus_amount', 'multiply')
 
-        def __init__(self, role_ids: List[int], bonus_amount: int, multiply: bool):
+        def __init__(self, role_ids: Sequence[int], bonus_amount: int, multiply: bool):
             if len(role_ids) >= 1:
                 self.role_ids = role_ids
                 self.bonus_amount = bonus_amount
@@ -214,7 +215,7 @@ class DiscordLevelingSystem:
                     raise DiscordLevelingSystemError('Parameter "bonus_amount" cannot be greater than 3 when parameter "multiply" is True')
                 
             else:
-                raise DiscordLevelingSystemError('When setting the role_ids for bonus XP, the role ID list cannot be empty')
+                raise DiscordLevelingSystemError('When setting the role_ids for bonus XP, the role ID sequence cannot be empty')
         
     @staticmethod
     def create_database_file(path: str):
@@ -409,7 +410,6 @@ class DiscordLevelingSystem:
         """
         try:
             from_result = await db_from.connection.execute_fetchall('SELECT * FROM leaderboard')
-            to_result = await db_to.connection.execute_fetchall('SELECT * FROM leaderboard')
         except aiosqlite.OperationalError:
             raise DiscordLevelingSystemError('One of the databases is missing the "leaderboard" table when attempting to transfer')
         else:
@@ -617,13 +617,13 @@ class DiscordLevelingSystem:
         else:
             raise DiscordLevelingSystemError(f'Your bot is not in guild {guild_id}')
     
-    def get_awards(self, guild: Union[Guild, int]=None) -> Union[Dict[int, List[RoleAward]], List[RoleAward]]:
+    def get_awards(self, guild: Optional[Union[Guild, int]]=None) -> Union[Dict[int, List[RoleAward]], List[RoleAward]]:
         """Get all :class:`RoleAward`'s or only the :class:`RoleAward`'s assigned to the specified guild
 
         Parameters
         ----------
-        guild: Union[:class:`discord.Guild`, :class:`int`]
-            (optional) A guild object or a guild ID (defaults to :class:`None`)
+        guild: Optional[Union[:class:`discord.Guild`, :class:`int`]]
+            A guild object or a guild ID
         
         Returns
         -------
@@ -820,16 +820,16 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def wipe_database(self, guild: Guild=None, *, intentional: bool=False):
+    async def wipe_database(self, guild: Optional[Guild]=None, *, intentional: bool=False):
         """|coro| Delete EVERYTHING from the database. If :param:`guild` is specified, only the information related to that guild will be deleted
 
         Parameters
         ----------
-        guild: :class:`discord.Guild`
-            (optional) The guild for which all information that is related to that guild will be deleted. If :class:`None`, everything will be deleted (defaults to :class:`None`)
+        guild: Optional[:class:`discord.Guild`]
+            The guild for which all information that is related to that guild will be deleted. If :class:`None`, everything will be deleted
 
         intentional: :class:`bool`
-            (optional) A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone (defaults to `False`)
+            A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone
 
         Raises
         ------
@@ -928,7 +928,7 @@ class DiscordLevelingSystem:
             The guild for which everyone will be reset. If this is set to :class:`None`, everyone in the entire database will be reset
         
         intentional: :class:`bool`
-            (optional) A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone (defaults to `False`)
+            A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone
 
         Raises
         ------
@@ -1022,13 +1022,13 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def raw_database_contents(self, guild: Guild=None) -> List[tuple]:
+    async def raw_database_contents(self, guild: Optional[Guild]=None) -> List[tuple]:
         """|coro| Returns everything in the database. Can specify which guild information will be extracted
 
         Parameters
         ----------
-        guild: :class:`discord.Guild`
-            (optional) The guild to extract the raw database contents from. If :class:`None`, information about all guilds will be extracted (defaults to :class:`None`)
+        guild: Optional[:class:`discord.Guild`]
+            The guild to extract the raw database contents from. If :class:`None`, information about all guilds will be extracted
         
         Returns
         -------
@@ -1061,7 +1061,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def remove_from_database(self, member: Union[Member, int], guild: Guild=None) -> Optional[bool]:
+    async def remove_from_database(self, member: Union[Member, int], guild: Optional[Guild]=None) -> Optional[bool]:
         """|coro| Remove a member from the database. This is not guild specific although it can be if :param:`guild` is specified
 
         Parameters
@@ -1069,9 +1069,9 @@ class DiscordLevelingSystem:
         member: Union[:class:`discord.Member`, :class:`int`]
             The member to remove. Can be the member object or that members ID
 
-        guild: :class:`discord.Guild`
-            (optional) If this parameter is given, it will remove the record of the specified member only from the specified guild record. If :class:`None`, it will remove
-            all records no matter the guild (defaults to :class:`None`)
+        guild: Optional[:class:`discord.Guild`]
+            If this parameter is given, it will remove the record of the specified member only from the specified guild record. If :class:`None`, it will remove
+            all records no matter the guild
         
         Returns
         -------
@@ -1106,7 +1106,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def is_in_database(self, member: Union[Member, int], guild: Guild=None) -> bool:
+    async def is_in_database(self, member: Union[Member, int], guild: Optional[Guild]=None) -> bool:
         """|coro| A quick check to see if a member is in the database. This is not guild specific although it can be if :param:`guild` is specified
 
         Parameters
@@ -1114,8 +1114,8 @@ class DiscordLevelingSystem:
         member: Union[:class:`discord.Member`, :class:`int`]
             The member to check for. Can be the member object or that members ID
         
-        guild: :class:`discord.Guild`
-            (optional) The guild to check if the member is registered in (defaults to :class:`None`)
+        guild: Optional[:class:`discord.Guild`]
+            The guild to check if the member is registered in
         
         Returns
         -------
@@ -1146,13 +1146,13 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def get_record_count(self, guild: Guild=None) -> int:
+    async def get_record_count(self, guild: Optional[Guild]=None) -> int:
         """|coro| Get the amount of members that are registered in the database. If :param:`guild` is set to :class:`None`, all members in the database will be counted
 
         Parameters
         ----------
-        guild: :class:`discord.Guild`
-            (optional) The guild for which to count the amount of records (defaults to :class:`None`)
+        guild: Optional[:class:`discord.Guild`]
+            The guild for which to count the amount of records
 
         Returns
         -------
@@ -1329,7 +1329,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def each_member_data(self, guild: Guild, sort_by: str=None) -> List[MemberData]:
+    async def each_member_data(self, guild: Guild, sort_by: Optional[str]=None) -> List[MemberData]:
         """|coro| Return each member in the database as a :class:`MemberData` object for easy access to their XP, level, etc.
 
         Parameters
@@ -1337,8 +1337,8 @@ class DiscordLevelingSystem:
         guild: :class:`discord.Guild`
             A guild object
         
-        sort_by: :class:`str`
-            (optional) Return each member data sorted by: 
+        sort_by: Optional[:class:`str`]
+            Return each member data sorted by: 
         
         - "name"
         - "level"
@@ -1346,7 +1346,7 @@ class DiscordLevelingSystem:
         - "rank"
         - :class:`None`
         
-        If :class:`None`, it will return in the order they were added to the database (defaults to :class:`None`)
+        If :class:`None`, it will return in the order they were added to the database
         
         Returns
         -------
@@ -1458,7 +1458,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def sql_query_get(self, sql: str, parameters: Tuple[Union[str, int]]=None, fetch: Union[str, int]='ALL') -> Union[List[tuple], tuple]:
+    async def sql_query_get(self, sql: str, parameters: Optional[Tuple[Union[str, int]]]=None, fetch: Union[str, int]='ALL') -> Union[List[tuple], tuple]:
         """|coro| Query and return something from the database using SQL. The following columns are apart of the "leaderboard" table:
 
         - guild_id
@@ -1473,11 +1473,11 @@ class DiscordLevelingSystem:
         sql: :class:`str`
             SQL string used to query the database
         
-        parameters: Tuple[Union[:class:`str`, :class:`int`]]
-            (optional) The parameters used for the database query (defaults to :class:`None`)
+        parameters: Optional[Tuple[Union[:class:`str`, :class:`int`]]]
+            The parameters used for the database query
         
         fetch: Union[:class:`str`, :class:`int`]
-            (optional) The amount of rows you would like back from the query. Options: 'ALL', 'ONE', or an integer value that is greater than zero (defaults to 'ALL')
+            The amount of rows you would like back from the query. Options: 'ALL', 'ONE', or an integer value that is greater than zero
         
         Returns
         -------
@@ -1586,7 +1586,7 @@ class DiscordLevelingSystem:
             if self.announce_level_up:
                 
                 # set the values for the level up announcement
-                lua: LevelUpAnnouncement = random.choice(self.level_up_announcement) if isinstance(self.level_up_announcement, list) else self.level_up_announcement
+                lua: LevelUpAnnouncement = random.choice(self.level_up_announcement) if isinstance(self.level_up_announcement, Sequence) else self.level_up_announcement
                 lua._total_xp = md.total_xp
                 lua._level = md.level
                 lua._rank = md.rank
@@ -1685,26 +1685,26 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def award_xp(self, *, amount: Union[int, List[int]]=[15, 25], message: Message, refresh_name: bool=True, **kwargs):
+    async def award_xp(self, *, amount: Union[int, Sequence[int]]=[15, 25], message: Message, refresh_name: bool=True, **kwargs):
         """|coro| Give XP to the member that sent a message
 
         Parameters
         ----------
-        amount: Union[:class:`int`, List[:class:`int`]]
-            (optional) The amount of XP to award to the member per message. Must be from 1-25. Can be a list with a minimum and maximum length of two. If :param:`amount` is a list of two integers, it will randomly
-            pick a number in between those numbers including the numbers provided (defaults to a :class:`list` with values `[15, 25]`)
+        amount: Union[:class:`int`, Sequence[:class:`int`]]
+            The amount of XP to award to the member per message. Must be from 1-25. Can be a sequence with a minimum and maximum length of two. If :param:`amount` is a sequence of two integers, it will randomly
+            pick a number in between those numbers including the numbers provided
         
         message: :class:`discord.Message`
             A message object
         
         refresh_name: :class:`bool`
-            (optional) Everytime the member sends a message, check if their name still matches the name in the database. If it doesn't match, update the database to match their current name. It is
-            suggested to leave this as `True` so the database can always have the most up-to-date record (defaults to `True`)
+            Everytime the member sends a message, check if their name still matches the name in the database. If it doesn't match, update the database to match their current name. It is
+            suggested to leave this as `True` so the database can always have the most up-to-date record
 
         Kwargs
         ------
         bonus: :class:`DiscordLevelingSystem.Bonus`
-            Set the bonus values. Read the :class:`DiscordLevelingSystem.Bonus` doc string for more details
+            Set the bonus values. Read the :class:`DiscordLevelingSystem.Bonus` doc string for more details (defaults to :class:`None`)
         
         Raises
         ------
