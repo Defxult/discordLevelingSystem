@@ -32,11 +32,11 @@ from .errors import DiscordLevelingSystemError
 default_message = '[$mention], you are now **level [$level]!**'
 default_mentions = AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)
 
-#+ If I ever need to import discord.Guild, this class needs to be renamed. Or better yet, `import discord.Guild as <something>`
-class Guild:
+
+class AnnouncementMemberGuild:
     """Helper class for :class:`AnnouncementMember`
     
-        .. added:: v1.0.3 (moved from :class:`AnnouncementMember`)
+        .. added:: v1.0.3 (moved from :class:`AnnouncementMember`, was just :class:`Guild`)
     """
     icon_url: ClassVar[str] = '[$g_icon_url]'
     id: ClassVar[str] = '[$g_id]'
@@ -61,7 +61,7 @@ class AnnouncementMember:
     name: ClassVar[str] = '[$name]'
     nick: ClassVar[str] = '[$nick]'
     
-    Guild: ClassVar[Guild] = Guild
+    Guild: ClassVar[AnnouncementMemberGuild] = AnnouncementMemberGuild
 
 class LevelUpAnnouncement:
     """A helper class for setting up messages that are sent when someone levels up
@@ -130,7 +130,7 @@ class LevelUpAnnouncement:
     TOTAL_XP: ClassVar[str] = '[$total_xp]'
     LEVEL: ClassVar[str] = '[$level]'
     RANK: ClassVar[str] = '[$rank]'
-    Member: ClassVar[AnnouncementMember] = AnnouncementMember()
+    Member: ClassVar[AnnouncementMember] = AnnouncementMember
 
     def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_ids: Optional[Sequence[int]]=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: Optional[float]=None):
         self.message = message
