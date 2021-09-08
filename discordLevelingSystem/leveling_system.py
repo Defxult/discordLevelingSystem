@@ -1395,7 +1395,7 @@ class DiscordLevelingSystem:
                         return await result_to_memberdata(result)
 
                     elif sort_by == 'rank':
-                        def convert(md: MemberData):
+                        def convert(md: MemberData) -> MemberData:
                             """Set the rank to an :class:`int` value of 0 because it is not possible to sort a list of :class:`int` that has :class:`None` values"""
                             if md.rank is None:
                                 md.rank = 0
@@ -1411,7 +1411,7 @@ class DiscordLevelingSystem:
                         with_rank = [md for md in sorted_converted if md.rank != 0]
                         pre_final = with_rank + no_rank
     
-                        def zero_to_none(md: MemberData):
+                        def zero_to_none(md: MemberData) -> MemberData:
                             """If they're not in the guild anymore, I don't want their rank to be presented as zero because that implies they are still in the guild, but just has
                             a rank of zero. Setting it back to :class:`None` makes it more readable and draws further implication that they're no longer in the guild
                             """

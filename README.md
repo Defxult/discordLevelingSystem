@@ -118,7 +118,7 @@ You can assign roles to the system so when someone levels up to a certain level,
 * `role_name`
 * `mention` (`str`) The discord role mention string
 
-When creating role awards, all role ID's and level requirements must be unique. Level requirements must also be in ascending order. It is also possible to assign different role awards for different guilds. If you don't want any role awards, set the `awards` parameter to `None`. When setting `awards`, it accepts a `dict` where the keys are guild IDs and the values are a `list` of `RoleAward`
+When creating role awards, all role IDs and level requirements must be unique. Level requirements must also be in ascending order. It is also possible to assign different role awards for different guilds. If you don't want any role awards, set the `awards` parameter to `None`. When setting `awards`, it accepts a `dict` where the keys are guild IDs and the values are a `list` of `RoleAward`
 <div align="left"><sub>EXAMPLE</sub></div>
 
 ```py
@@ -190,7 +190,7 @@ The below markdown attributes takes the information from a `discord.Member` obje
 ```py
 from discordLevelingSystem import DiscordLevelingSystem, LevelUpAnnouncement
 
-embed = discord.Embed(color=discord.Color.blue())
+embed = discord.Embed()
 embed.set_author(name=LevelUpAnnouncement.Member.name, icon_url=LevelUpAnnouncement.Member.avatar_url)
 embed.description = f'Congrats {LevelUpAnnouncement.Member.mention}! You are now level {LevelUpAnnouncement.LEVEL} 😎'
 
@@ -226,8 +226,8 @@ Method `award_xp` is how members gain XP. This method is placed inside the `on_m
 * `refresh_name` (`bool`) Everytime the member sends a message, check if their name still matches the name in the database. If it doesn't match, update the database to match their current name. It is suggested to leave this as `True` so the database can always have the most up-to-date record.
 
 ### Kwargs for award_xp
-* `bonus` (`DiscordLevelingSystem.Bonus`) Used to set the roles that will award bonus XP.
   * `class Bonus(role_ids: List[int], bonus_amount: int, multiply: bool)`
+* `bonus` (`DiscordLevelingSystem.Bonus`) Used to set the roles that will be awarded bonus XP.
   * **Parameters of the DiscordLevelingSystem.Bonus constructor**
     * `role_ids` (`List[int]`) The role(s) a member must have to be able to get bonus XP. They only need to have one of these roles to get the bonus
     * `bonus_amount` (`int`) Amount of extra XP to be awarded
@@ -299,7 +299,7 @@ async def on_dls_level_up(member: discord.Member, message: discord.Message, data
     # - call additional functions that you may need
     # - access to all attributes/methods that are available within discord.Member and discord.Message
 ```
-> NOTE: `LevelUpAnnouncement` & `on_dls_level_up` are not the same. Level up messages are sent by default by the library. If you'd to only use `on_dls_level_up`, you need to disable level up announcements (`lvl.announce_level_up = False`)
+> NOTE: `LevelUpAnnouncement` and `on_dls_level_up` are not the same. Level up messages are sent by default by the library. If you'd like to only use `on_dls_level_up`, you need to disable level up announcements (`lvl.announce_level_up = False`)
 
 ---
 ## Full Example
