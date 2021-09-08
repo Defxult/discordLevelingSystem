@@ -32,26 +32,36 @@ from .errors import DiscordLevelingSystemError
 default_message = '[$mention], you are now **level [$level]!**'
 default_mentions = AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)
 
+#+ If I ever need to import discord.Guild, this class needs to be renamed. Or better yet, `import discord.Guild as <something>`
+class Guild:
+    """Helper class for :class:`AnnouncementMember`
+    
+        .. added:: v1.0.3 (moved from :class:`AnnouncementMember`)
+    """
+    icon_url: ClassVar[str] = '[$g_icon_url]'
+    id: ClassVar[str] = '[$g_id]'
+    name: ClassVar[str] = '[$g_name]'
+
 class AnnouncementMember:
     """Helper class for :class:`LevelUpAnnouncement`
     
         .. added:: v0.0.2
+        .. changes::
+            v1.0.3
+                Replaced the guild class. Added it as a variable instead (Guild class is now separate)
     """
-    avatar_url = '[$avatar_url]'
-    created_at = '[$created_at]'
-    default_avatar_url = '[$default_avatar_url]'
-    discriminator = '[$discriminator]'
-    display_name = '[$display_name]'
-    id = '[$id]'
-    joined_at = '[$joined_at]'
-    mention = '[$mention]'
-    name = '[$name]'
-    nick = '[$nick]'
-
-    class Guild:
-        icon_url = '[$g_icon_url]'
-        id = '[$g_id]'
-        name = '[$g_name]'
+    avatar_url: ClassVar[str] = '[$avatar_url]'
+    created_at: ClassVar[str] = '[$created_at]'
+    default_avatar_url: ClassVar[str] = '[$default_avatar_url]'
+    discriminator: ClassVar[str] = '[$discriminator]'
+    display_name: ClassVar[str] = '[$display_name]'
+    id: ClassVar[str] = '[$id]'
+    joined_at: ClassVar[str] = '[$joined_at]'
+    mention: ClassVar[str] = '[$mention]'
+    name: ClassVar[str] = '[$name]'
+    nick: ClassVar[str] = '[$nick]'
+    
+    Guild: ClassVar[Guild] = Guild
 
 class LevelUpAnnouncement:
     """A helper class for setting up messages that are sent when someone levels up
@@ -116,10 +126,11 @@ class LevelUpAnnouncement:
                 Removed :attr:`LevelUpAnnouncement.XP`
                 Added :attr:`LevelUpAnnouncement.Member`
     """
-    TOTAL_XP = '[$total_xp]'
-    LEVEL = '[$level]'
-    RANK = '[$rank]'
-    Member: AnnouncementMember = AnnouncementMember()
+    
+    TOTAL_XP: ClassVar[str] = '[$total_xp]'
+    LEVEL: ClassVar[str] = '[$level]'
+    RANK: ClassVar[str] = '[$rank]'
+    Member: ClassVar[AnnouncementMember] = AnnouncementMember()
 
     def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_ids: Optional[Sequence[int]]=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: Optional[float]=None):
         self.message = message
