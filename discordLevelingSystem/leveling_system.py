@@ -1643,7 +1643,7 @@ class DiscordLevelingSystem:
             if self.bot is not None:
                 self.bot.dispatch('dls_level_up', member, message, md)
     
-    def _handle_amount_param(self, arg):
+    def _handle_amount_param(self, arg: Union[int, Sequence[int]]):
         """Simple check to ensure the proper types are being used for parameter "amount" in method :meth:`DiscordLevelingSystem.award_xp()`
         
             .. changes::
@@ -1651,36 +1651,38 @@ class DiscordLevelingSystem:
                     Added check to ensure the first value is larger than the next
                     Added check to ensure the each value is unique
                     Changed the value range from 1-100 to 1-25
+                v1.0.3
+                    Changed from list to Sequence
         """
-        if isinstance(arg, (int, list)):
+        if isinstance(arg, (int, Sequence)):
             if isinstance(arg, int):
                 # ensures the values are from 1-25
                 if arg <= 0 or arg > 25:
                     raise DiscordLevelingSystemError('Parameter "amount" can only be a value from 1-25')
             else:
-                # ensures there are only 2 values in the list
+                # ensures there are only 2 values in the sequence
                 if len(arg) != 2:
-                    raise DiscordLevelingSystemError('Parameter "amount" list must only have two values')
+                    raise DiscordLevelingSystemError('Parameter "amount" sequence must only have two values')
                 
-                # ensures all values in the list are of type int
+                # ensures all values in the sequence are of type int
                 for item in arg:
-                    if type(item) is not int:
-                        raise DiscordLevelingSystemError('Parameter "amount" list, all values must be of type int')
+                    if not isinstance(item, int):
+                        raise DiscordLevelingSystemError('Parameter "amount" sequence, all values must be of type int')
                 
-                # ensures all values in the list are >= 1 and <= 25
+                # ensures all values in the sequence are >= 1 and <= 25
                 for item in arg:
                     if item <= 0 or item > 25:
-                        raise DiscordLevelingSystemError('Parameter "amount" list, all values can only be from 1-25')
+                        raise DiscordLevelingSystemError('Parameter "amount" sequence, all values can only be from 1-25')
                 
                 # ensures each value is unique
                 if arg[0] == arg[1]:
-                    raise DiscordLevelingSystemError('Parameter "amount" list expects both values to be unique')
+                    raise DiscordLevelingSystemError('Parameter "amount" sequence expects both values to be unique')
                 
                 # ensures the first value is larger than the next
                 if arg[1] < arg[0]:
-                    raise DiscordLevelingSystemError('Parameter "amount" list expected value 1 to be larger than value 2')
+                    raise DiscordLevelingSystemError('Parameter "amount" sequence expected value 1 to be larger than value 2')
         else:
-            raise DiscordLevelingSystemError(f'Parameter "amount" expected int or list, got {arg.__class__.__name__}')
+            raise DiscordLevelingSystemError(f'Parameter "amount" expected int or Sequence, got {arg.__class__.__name__}')
     
     @db_file_exists
     @leaderboard_exists
@@ -1724,11 +1726,11 @@ class DiscordLevelingSystem:
             return
         else:
             self._handle_amount_param(arg=amount)
-            if isinstance(amount, list):
+            if isinstance(amount, Sequence):
                 amount = random.randint(amount[0], amount[1])
             
             # bonus XP
-            bonus = kwargs.get('bonus')
+            bonus: DiscordLevelingSystem.Bonus = kwargs.get('bonus')
             if bonus:
                 for role_id in bonus.role_ids:
                     role = message.guild.get_role(role_id)

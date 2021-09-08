@@ -51,7 +51,7 @@ bot = commands.Bot(..., intents=discord.Intents(messages=True, guilds=True, memb
 | `no_xp_channels` | `Sequence[int]` | `None` | A sequence of text channel ID's. Any member sending messages in any of those text channels will not gain XP
 | `announce_level_up` | `bool` | `True` | If `True`, level up messages will be sent when a member levels up
 | `stack_awards` | `bool` | `True` | If this is `True`, when the member levels up the assigned role award will be applied. If `False`, the previous role award will be removed and the level up assigned role will also be applied
-| `level_up_announcement` | `Union[LevelUpAnnouncement, Sequence[LevelUpAnnouncement]]` | `LevelUpAnnouncement()` | The message that is sent when someone levels up. If this is a list of `LevelUpAnnouncement`, one is selected at random
+| `level_up_announcement` | `Union[LevelUpAnnouncement, Sequence[LevelUpAnnouncement]]` | `LevelUpAnnouncement()` | The message that is sent when someone levels up. If this is a sequence of `LevelUpAnnouncement`, one is selected at random
 |`bot` | ` Union[AutoShardedBot, Bot]` | `None` | Your bot instance variable. Used only if you'd like to use the `on_dls_level_up` event
 
 ---
