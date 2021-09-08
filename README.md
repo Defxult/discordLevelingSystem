@@ -7,7 +7,7 @@ $ pip install git+https://github.com/Defxult/discordLevelingSystem.git
 ```
 You must have [Git](https://git-scm.com/) installed in order to do this. With that said, the current README.md documentation represents the GitHub version of this library. If you are using the PyPI version of this library, it is suggested to read the README.md that matches your PyPI version [here](https://github.com/Defxult/discordLevelingSystem/releases) because documentation may have changed.
 
-* `GitHub: v1.0.2`
+* `GitHub: v1.0.3`
 * `PyPI: v1.0.2`
 
 ## How to install
@@ -42,16 +42,16 @@ bot = commands.Bot(..., intents=discord.Intents(messages=True, guilds=True, memb
 ### Parameters of the DiscordLevelingSystem constructor
 * `rate` (`int`) The amount of messages each member can send before the cooldown triggers
 * `per` (`float`) The amount of seconds each member has to wait before gaining more XP, aka the cooldown
-* `awards` (`Union[Dict[int, List[RoleAward]], None]`) The role given to a member when they reach a `RoleAward` level requirement
+* `awards` (`Dict[int, List[RoleAward]]`) The role given to a member when they reach a `RoleAward` level requirement
 ---
 ### Kwargs of the DiscordLevelingSystem constructor
 | Name | Type | Default Value | Info
 |------|------|---------------|-----
-| `no_xp_roles` | `List[int]` | `None` | A list of role ID's. Any member with any of those roles will not gain XP when sending messages
-| `no_xp_channels` | `List[int]` | `None` | A list of text channel ID's. Any member sending messages in any of those text channels will not gain XP
+| `no_xp_roles` | `Sequence[int]` | `None` | A sequence of role ID's. Any member with any of those roles will not gain XP when sending messages
+| `no_xp_channels` | `Sequence[int]` | `None` | A sequence of text channel ID's. Any member sending messages in any of those text channels will not gain XP
 | `announce_level_up` | `bool` | `True` | If `True`, level up messages will be sent when a member levels up
 | `stack_awards` | `bool` | `True` | If this is `True`, when the member levels up the assigned role award will be applied. If `False`, the previous role award will be removed and the level up assigned role will also be applied
-| `level_up_announcement` | `Union[LevelUpAnnouncement, List[LevelUpAnnouncement]]` | `LevelUpAnnouncement()` | The message that is sent when someone levels up. If this is a list of `LevelUpAnnouncement`, one is selected at random
+| `level_up_announcement` | `Union[LevelUpAnnouncement, Sequence[LevelUpAnnouncement]]` | `LevelUpAnnouncement()` | The message that is sent when someone levels up. If this is a list of `LevelUpAnnouncement`, one is selected at random
 |`bot` | ` Union[AutoShardedBot, Bot]` | `None` | Your bot instance variable. Used only if you'd like to use the `on_dls_level_up` event
 
 ---
@@ -110,7 +110,7 @@ You can assign roles to the system so when someone levels up to a certain level,
 ### Parameters of the RoleAward constructor
 * `role_id` (`int`) ID of the role that is to be awarded.
 * `level_requirement` (`int`) What level is required for a member to be awarded the role.
-* `role_name` (`str`) An optional name. Nothing is done with this value, it is used for visual identification purposes only.
+* `role_name` (`str`) A name you can set for the award. Nothing is done with this value, it is used for visual identification purposes only.
 ---
 ### Attributes
 * `role_id`
@@ -118,7 +118,7 @@ You can assign roles to the system so when someone levels up to a certain level,
 * `role_name`
 * `mention` (`str`) The discord role mention string
 
-When creating role awards, all role ID's and level requirements must be unique. Level requirements must also be in ascending order. It is also possible to assign different role awards for different guilds. If you don't want any role awards, set the `awards` parameter to `None`. When setting `awards`, it accepts a `dict` where the keys are guild IDs and the values are a `list` of `RoleAward`
+When creating role awards, all role IDs and level requirements must be unique. Level requirements must also be in ascending order. It is also possible to assign different role awards for different guilds. If you don't want any role awards, set the `awards` parameter to `None`. When setting `awards`, it accepts a `dict` where the keys are guild IDs and the values are a `list` of `RoleAward`
 <div align="left"><sub>EXAMPLE</sub></div>
 
 ```py
@@ -154,7 +154,7 @@ Level up announcements are for when you want to implement your own level up mess
 
 * `message` (`Union[str, discord.Embed]`) The message that is sent when someone levels up. Defaults to `"<mention>, you are now **level <level>!**"`
 
-* `level_up_channel_ids` (`List[int]`) The text channel IDs where all level up messages will be sent for each server. If `None`, the level up message will be sent in the channel where they sent the message (example below).
+* `level_up_channel_ids` (`Sequence[int]`) The text channel IDs where all level up messages will be sent for each server. If `None`, the level up message will be sent in the channel where they sent the message (example below).
 
 * `allowed_mentions` (`discord.AllowedMentions`) Used to determine who can be pinged in the level up message. Defaults to `discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)`
 
@@ -190,7 +190,7 @@ The below markdown attributes takes the information from a `discord.Member` obje
 ```py
 from discordLevelingSystem import DiscordLevelingSystem, LevelUpAnnouncement
 
-embed = discord.Embed(color=discord.Color.blue())
+embed = discord.Embed()
 embed.set_author(name=LevelUpAnnouncement.Member.name, icon_url=LevelUpAnnouncement.Member.avatar_url)
 embed.description = f'Congrats {LevelUpAnnouncement.Member.mention}! You are now level {LevelUpAnnouncement.LEVEL} 😎'
 
@@ -198,7 +198,7 @@ announcement = LevelUpAnnouncement(embed)
 
 lvl = DiscordLevelingSystem(..., level_up_announcement=announcement)
 
-# NOTE: You can have multiple level up announcements by setting the parameter to a list of LevelUpAnnouncement
+# NOTE: You can have multiple level up announcements by setting the parameter to a sequence of LevelUpAnnouncement
 lvl = DiscordLevelingSystem(..., level_up_announcement=[announcement_1, announcement_2, ...])
 ```
 When it comes to `level_up_channel_ids`, you can set a designated channel for each server. If you don't set a level up channel ID for a specific server, the level up message will be sent in the channel where the member leveled up. You don't have to specify a level up channel ID for each server unless you'd like to.
@@ -221,15 +221,15 @@ Method `award_xp` is how members gain XP. This method is placed inside the `on_m
 
 
 ### Parameters for award_xp
-* `amount` (`Union[int, List[int]]`) The amount of XP to award to the member per message. Must be from 1-25. Can be a list with a minimum and maximum length of two. If `amount` is a list of two integers, it will randomly pick a number in between those numbers including the numbers provided.
+* `amount` (`Union[int, Sequence[int]]`) The amount of XP to award to the member per message. Must be from 1-25. Can be a sequence with a minimum and maximum length of two. If `amount` is a sequence of two integers, it will randomly pick a number in between those numbers including the numbers provided.
 * `message` (`discord.Message`) A discord message object
 * `refresh_name` (`bool`) Everytime the member sends a message, check if their name still matches the name in the database. If it doesn't match, update the database to match their current name. It is suggested to leave this as `True` so the database can always have the most up-to-date record.
 
 ### Kwargs for award_xp
-* `bonus` (`DiscordLevelingSystem.Bonus`) Used to set the roles that will award bonus XP.
-  * `class Bonus(role_ids: List[int], bonus_amount: int, multiply: bool)`
+* `bonus` (`DiscordLevelingSystem.Bonus`) Used to set the roles that will be awarded bonus XP.
+  * `class Bonus(role_ids: Sequence[int], bonus_amount: int, multiply: bool)`
   * **Parameters of the DiscordLevelingSystem.Bonus constructor**
-    * `role_ids` (`List[int]`) The role(s) a member must have to be able to get bonus XP. They only need to have one of these roles to get the bonus
+    * `role_ids` (`Sequence[int]`) The role(s) a member must have to be able to get bonus XP. They only need to have one of these roles to get the bonus
     * `bonus_amount` (`int`) Amount of extra XP to be awarded
     * `multiply` (`bool`) If set to `True`, this will operate on a x2, x3 basis. Meaning if you have the awarded XP amount set to 10 and you want the bonus XP role to be awarded 20, it must be set to 2, not 10. If `False`, it operates purely on the given value. Meaning if you have the awarded XP set to 10 and you want the bonus XP role to be awarded 20, it must be set to 10.
 
@@ -299,7 +299,7 @@ async def on_dls_level_up(member: discord.Member, message: discord.Message, data
     # - call additional functions that you may need
     # - access to all attributes/methods that are available within discord.Member and discord.Message
 ```
-> NOTE: `LevelUpAnnouncement` & `on_dls_level_up` are not the same. Level up messages are sent by default by the library. If you'd to only use `on_dls_level_up`, you need to disable level up announcements (`lvl.announce_level_up = False`)
+> NOTE: `LevelUpAnnouncement` and `on_dls_level_up` are not the same. Level up messages are sent by default by the library. If you'd like to only use `on_dls_level_up`, you need to disable level up announcements (`lvl.announce_level_up = False`)
 
 ---
 ## Full Example

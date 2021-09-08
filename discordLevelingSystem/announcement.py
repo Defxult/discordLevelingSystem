@@ -22,7 +22,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from typing import List, Union
+from collections.abc import Sequence
+from typing import ClassVar, Optional, Union
 
 from discord import AllowedMentions, Embed
 
@@ -31,26 +32,36 @@ from .errors import DiscordLevelingSystemError
 default_message = '[$mention], you are now **level [$level]!**'
 default_mentions = AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)
 
+
+class AnnouncementMemberGuild:
+    """Helper class for :class:`AnnouncementMember`
+    
+        .. added:: v1.0.3 (moved from :class:`AnnouncementMember`, was just :class:`Guild`)
+    """
+    icon_url: ClassVar[str] = '[$g_icon_url]'
+    id: ClassVar[str] = '[$g_id]'
+    name: ClassVar[str] = '[$g_name]'
+
 class AnnouncementMember:
     """Helper class for :class:`LevelUpAnnouncement`
     
         .. added:: v0.0.2
+        .. changes::
+            v1.0.3
+                Replaced the guild class. Added it as a variable instead (Guild class is now separate)
     """
-    avatar_url = '[$avatar_url]'
-    created_at = '[$created_at]'
-    default_avatar_url = '[$default_avatar_url]'
-    discriminator = '[$discriminator]'
-    display_name = '[$display_name]'
-    id = '[$id]'
-    joined_at = '[$joined_at]'
-    mention = '[$mention]'
-    name = '[$name]'
-    nick = '[$nick]'
-
-    class Guild:
-        icon_url = '[$g_icon_url]'
-        id = '[$g_id]'
-        name = '[$g_name]'
+    avatar_url: ClassVar[str] = '[$avatar_url]'
+    created_at: ClassVar[str] = '[$created_at]'
+    default_avatar_url: ClassVar[str] = '[$default_avatar_url]'
+    discriminator: ClassVar[str] = '[$discriminator]'
+    display_name: ClassVar[str] = '[$display_name]'
+    id: ClassVar[str] = '[$id]'
+    joined_at: ClassVar[str] = '[$joined_at]'
+    mention: ClassVar[str] = '[$mention]'
+    name: ClassVar[str] = '[$name]'
+    nick: ClassVar[str] = '[$nick]'
+    
+    Guild: ClassVar[AnnouncementMemberGuild] = AnnouncementMemberGuild
 
 class LevelUpAnnouncement:
     """A helper class for setting up messages that are sent when someone levels up
@@ -58,19 +69,19 @@ class LevelUpAnnouncement:
     Parameters
     ----------
     message: Union[:class:`str`, :class:`discord.Embed`]
-        (optional) The message that is sent when someone levels up (defaults to `"<mention>, you are now **level <level>!**"`)
+        The message that is sent when someone levels up (defaults to `"<mention>, you are now **level <level>!**"`)
     
-    level_up_channel_ids: List[:class:`int`]
-        (optional) The text channel IDs where all level up messages will be sent for each server. If :class:`None`, the level up message will be sent in the channel where they sent the message (defaults to :class:`None`)
+    level_up_channel_ids: Optional[Sequence[:class:`int`]]
+        The text channel IDs where all level up messages will be sent for each server. If :class:`None`, the level up message will be sent in the channel where they sent the message
     
     allowed_mentions: :class:`discord.AllowedMentions`
-        (optional) The :class:`discord.AllowedMentions` object that is used to determine who can be pinged in the level up message (defaults to `AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)`)
+        The :class:`discord.AllowedMentions` object that is used to determine who can be pinged in the level up message (defaults to `AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)`)
     
     tts: :class:`bool`
-        (optional) When the level up message is sent, have discord read the level up message aloud (defaults to `False`)
+        When the level up message is sent, have discord read the level up message aloud
     
-    delete_after: :class:`float`
-        (optional) Delete the level up message after an x amount of seconds (defaults to :class:`None`)
+    delete_after: Optional[:class:`float`]
+        Delete the level up message after an x amount of seconds
     
     Attributes
     ----------
@@ -115,12 +126,13 @@ class LevelUpAnnouncement:
                 Removed :attr:`LevelUpAnnouncement.XP`
                 Added :attr:`LevelUpAnnouncement.Member`
     """
-    TOTAL_XP = '[$total_xp]'
-    LEVEL = '[$level]'
-    RANK = '[$rank]'
-    Member: AnnouncementMember = AnnouncementMember()
+    
+    TOTAL_XP: ClassVar[str] = '[$total_xp]'
+    LEVEL: ClassVar[str] = '[$level]'
+    RANK: ClassVar[str] = '[$rank]'
+    Member: ClassVar[AnnouncementMember] = AnnouncementMember
 
-    def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_ids: List[int]=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: float=None):
+    def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_ids: Optional[Sequence[int]]=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: Optional[float]=None):
         self.message = message
         self.level_up_channel_ids = level_up_channel_ids
         self._total_xp: int = None

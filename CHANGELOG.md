@@ -1,4 +1,13 @@
+## v1.0.3 » Future Release
+#### New Features
+* Added more `typing.Optional` for parameters. Implemented the use of `typing.ClassVar` and `collections.abc.Sequence`. A handful of parameters that specified a `List[x]` never really *needed* to be a list. All parameters that specified a `List[x]` has been changed to `Sequence[x]` but parameters that still require a list are still type hinted as `List[x]`
+
+
+
 ## v1.0.2 » Sept. 4, 2021
+<details>
+  <summary>Click to display changelog</summary>
+
 #### New Features
 * Added the event `on_dls_level_up`. This offers more capabilities compared to `LevelUpAnnouncement` ([docs](https://github.com/Defxult/discordLevelingSystem#events))
 * Added the ability to connect to a different database file while the leveling system is active
@@ -7,7 +16,7 @@
 * Added the `MemberData` class to `__init__` for easier access to the class. Should only be used for type hinting
 #### Bug Fixes
 * Fixed an issue where properties `DiscordLevelingSystem.rate` & `DiscordLevelingSystem.per` wouldn't return their updated values if `DiscordLevelingSystem.change_cooldown()` was used
-
+</details>
 
 
 ## v1.0.1 » Aug. 24, 2021

@@ -23,7 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from collections import Counter
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 from .errors import ImproperRoleAwardOrder, RoleAwardError
 
@@ -39,8 +39,8 @@ class RoleAward:
     level_requirement: :class:`int`
         What level is required for a member to be awarded the role
     
-    role_name: :class:`str`
-        (optional) An optional name. Nothing is done with this value, it is used for visual identification purposes only (defaults to :class:`None`)
+    role_name: Optional[:class:`str`]
+        A name you can set for the award. Nothing is done with this value, it is used for visual identification purposes only
     
     Attributes
     ----------
@@ -52,7 +52,7 @@ class RoleAward:
 
     __slots__ = ('role_id', 'level_requirement', 'role_name', 'mention')
 
-    def __init__(self, role_id: int, level_requirement: int, role_name: str=None):
+    def __init__(self, role_id: int, level_requirement: int, role_name: Optional[str]=None):
         self.role_id = role_id
         self.level_requirement = level_requirement
         
