@@ -1,7 +1,10 @@
-from discord.ext import commands
+import discord
 from discordLevelingSystem import DiscordLevelingSystem, RoleAward, LevelUpAnnouncement
+from discord.ext import commands 
 
-bot = commands.Bot(...)
+TOKEN = "" #your bot's token here
+
+bot = commands.Bot(command_prefix="!")
 
 main_guild_id = 850809412011950121
 
@@ -15,12 +18,13 @@ my_awards = {
 
 announcement = LevelUpAnnouncement(f'{LevelUpAnnouncement.Member.mention} just leveled up to level {LevelUpAnnouncement.LEVEL} 😎')
 
-# DiscordLevelingSystem.create_database_file(r'C:\Users\Defxult\Documents') database file already created
+# DiscordLevelingSystem.create_database_file(r'C:\Users\Infinix\Documents') database file already created
+
 lvl = DiscordLevelingSystem(rate=1, per=60.0, awards=my_awards, level_up_announcement=announcement)
-lvl.connect_to_database_file(r'C:\Users\Defxult\Documents\DiscordLevelingSystem.db')
+lvl.connect_to_database_file(r'C:\Users\Infinix\Documents\DiscordLevelingSystem.db')
 
 @bot.event
 async def on_message(message):
     await lvl.award_xp(amount=15, message=message)
 
-bot.run(...)
+bot.run(TOKEN)
