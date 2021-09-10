@@ -14,7 +14,6 @@ async def leaderboard(ctx):
   
   embed = discord.Embed(title=f"Leaderboard for {ctx.guild.id}", color=discord.Color.green())
   embed.set_thumbnail(ctx.guild.icon_url)
-  embed.set_footer(text=f"Rank in the server: {data.rank}")
   
   num = 1
   for names in data:
