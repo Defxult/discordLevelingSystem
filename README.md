@@ -42,7 +42,7 @@ bot = commands.Bot(..., intents=discord.Intents(messages=True, guilds=True, memb
 ### Parameters of the DiscordLevelingSystem constructor
 * `rate` (`int`) The amount of messages each member can send before the cooldown triggers
 * `per` (`float`) The amount of seconds each member has to wait before gaining more XP, aka the cooldown
-* `awards` (`Dict[int, List[RoleAward]]`) The role given to a member when they reach a `RoleAward` level requirement
+* `awards` (`Optional[Dict[int, List[RoleAward]]]`) The role given to a member when they reach a `RoleAward` level requirement
 ---
 ### Kwargs of the DiscordLevelingSystem constructor
 | Name | Type | Default Value | Info
@@ -110,7 +110,7 @@ You can assign roles to the system so when someone levels up to a certain level,
 ### Parameters of the RoleAward constructor
 * `role_id` (`int`) ID of the role that is to be awarded.
 * `level_requirement` (`int`) What level is required for a member to be awarded the role.
-* `role_name` (`str`) A name you can set for the award. Nothing is done with this value, it is used for visual identification purposes only.
+* `role_name` (`Optional[str]`) A name you can set for the award. Nothing is done with this value, it is used for visual identification purposes only.
 ---
 ### Attributes
 * `role_id`
@@ -154,13 +154,13 @@ Level up announcements are for when you want to implement your own level up mess
 
 * `message` (`Union[str, discord.Embed]`) The message that is sent when someone levels up. Defaults to `"<mention>, you are now **level <level>!**"`
 
-* `level_up_channel_ids` (`Sequence[int]`) The text channel IDs where all level up messages will be sent for each server. If `None`, the level up message will be sent in the channel where they sent the message (example below).
+* `level_up_channel_ids` (`Optional[Sequence[int]]`) The text channel IDs where all level up messages will be sent for each server. If `None`, the level up message will be sent in the channel where they sent the message (example below).
 
 * `allowed_mentions` (`discord.AllowedMentions`) Used to determine who can be pinged in the level up message. Defaults to `discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)`
 
 * `tts` (`bool`) When the level up message is sent, have discord read the level up message aloud.
 
-* `delete_after` (`float`) Delete the level up message after an x amount of seconds.
+* `delete_after` (`Optional[float]`) Delete the level up message after an x amount of seconds.
 
 ### Class Attributes
 The `LevelUpAnnouncement` class provides a set of markdown attributes for you to use so you can access certain information in a level up message.

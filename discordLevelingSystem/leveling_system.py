@@ -99,7 +99,7 @@ class DiscordLevelingSystem:
         VALUES (?, ?, ?, ?, ?, ?)
     """
 
-    def __init__(self, rate: int=1, per: float=60.0, awards: Optional[Union[Dict[int, List[RoleAward]]]]=None, **kwargs):
+    def __init__(self, rate: int=1, per: float=60.0, awards: Optional[Dict[int, List[RoleAward]]]=None, **kwargs):
         if rate <= 0 or per <= 0:   raise DiscordLevelingSystemError('Invalid rate or per. Values must be greater than zero')
         self.__rate = rate
         self.__per = per
