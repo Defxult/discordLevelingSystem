@@ -216,7 +216,26 @@ class DiscordLevelingSystem:
                 
             else:
                 raise DiscordLevelingSystemError('When setting the role_ids for bonus XP, the role ID sequence cannot be empty')
-        
+    
+    @staticmethod
+    def get_xp_for_level(level: int) -> int:
+        """|static method| Returns the total amount of XP needed for the specified level. Levels go from 0-100
+
+        Returns
+        -------
+        :class:`int`
+
+        Raises
+        ------
+        - `DiscordLevelingSystemError`: The level specified does not exist
+
+            .. added:: v1.0.3
+        """
+        try:
+            return LEVELS_AND_XP[str(level)]
+        except KeyError:
+            raise DiscordLevelingSystemError(f'Levels only go from 0-100, {level} is not a valid level')
+    
     @staticmethod
     def create_database_file(path: str):
         """|static method| Create the database file and implement the SQL data for the database

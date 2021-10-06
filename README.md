@@ -389,6 +389,9 @@ bot.run(...)
 * `await DiscordLevelingSystem.get_xp_for(member: Member) -> int`
   * Get the XP for the specified member
 ---
+* `DiscordLevelingSystem.get_xp_for_level(level: int) -> int`
+  * *static method* Returns the total amount of XP needed for the specified level. Levels go from 0-100
+---
 * `await DiscordLevelingSystem.insert(bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite=False, show_results=True)`
   * Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is insufficient because json files are not made to act as a database. Using an actual database file has many benefits over a json file
 ---
