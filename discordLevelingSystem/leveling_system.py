@@ -221,6 +221,11 @@ class DiscordLevelingSystem:
     def get_xp_for_level(level: int) -> int:
         """|static method| Returns the total amount of XP needed for the specified level. Levels go from 0-100
 
+        Parameters
+        ----------
+        level: :class:`int`
+            The level XP information to retrieve
+
         Returns
         -------
         :class:`int`
@@ -1503,7 +1508,7 @@ class DiscordLevelingSystem:
         Union[List[:class:`tuple`], :class:`tuple`]:
 
         - Using `fetch='ALL'` returns List[:class:`tuple`]
-        - Using `'fetch='ONE'` returns :class:`tuple`
+        - Using `fetch='ONE'` returns :class:`tuple`
         - Using `fetch=4` returns List[:class:`tuple`] with only four values
         
         Can also return an empty list if the query was valid but got nothing from it
