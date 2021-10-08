@@ -338,101 +338,380 @@ bot.run(...)
 <details>
     <summary>Click to show all methods</summary>
 
-* `await DiscordLevelingSystem.add_record(guild_id: int, member_id: int, member_name: str, level: int)`
-  * Manually add a record to the database. If the record already exists (the `guild_id` and `member_id` was found), only the level will be updated. If there were no records that matched those values, all provided information will be added
----
-* `await DiscordLevelingSystem.add_xp(member: Member, amount: int)`
-  * Give XP to a member. This also changes their level so it matches the associated XP
----
-* `await DiscordLevelingSystem.award_xp(*, amount=[15,25], message: Message, refresh_name=True, **kwargs)`
-  * Give XP to the member that sent a message
----
-* `DiscordLevelingSystem.backup_database_file(path: str, with_timestamp=False)`
-  * Create a copy of the database file to the specified path. If a copy of the backup file is already in the specified path it will be overwritten
----
-* `await DiscordLevelingSystem.change_cooldown(rate: int, per: float)`
-  * Update the cooldown rate
----
-* `await DiscordLevelingSystem.clean_database(guild: Guild) -> int`
-  * Removes the data for members that are no longer in the guild, thus reducing the database file size. It is recommended to have this method in a background loop in order to keep the database file free of records that are no longer in use
----
-* `DiscordLevelingSystem.connect_to_database_file(path: str)`
-  * Connect to the existing database file in the specified path
----
-* `DiscordLevelingSystem.create_database_file(path: str)`
-  * *static method* Create the database file and implement the SQL data for the database
----
-* `await DiscordLevelingSystem.each_member_data(guild: Guild, sort_by=None) -> List[MemberData]`
-  * Return each member in the database as a `MemberData` object for easy access to their XP, level, etc. You can sort the data with `sort_by` with the following values: "name", "level", "xp", "rank"
----
-* `await DiscordLevelingSystem.export_as_json(path: str, guild: Union[Guild, None])`
-  * Export a json file that represents the database to the path specified
----
-* `DiscordLevelingSystem.get_awards(guild=None) -> Union[Dict[int, List[RoleAward]], List[RoleAward]]`
-  * Get all `RoleAward`'s or only the `RoleAward`'s assigned to the specified guild
----
-* `await DiscordLevelingSystem.get_data_for(member: Member) -> MemberData`
-  * Get the `MemberData` object that represents the specified member
----
-* `await DiscordLevelingSystem.get_level_for(member: Member) -> int`
-  * Get the level for the specified member
----
-* `await DiscordLevelingSystem.get_rank_for(member: Member) -> int`
-  * Get the rank for the specified member
----
-* `await DiscordLevelingSystem.get_record_count(guild=None) -> int`
-  * Get the amount of members that are registered in the database. If `guild` is set to `None`, ALL members in the database will be counted
----
-* `await DiscordLevelingSystem.get_total_xp_for(member: Member) -> int`
-  * Get the total XP for the specified member
----
-* `await DiscordLevelingSystem.get_xp_for(member: Member) -> int`
-  * Get the XP for the specified member
----
-* `DiscordLevelingSystem.get_xp_for_level(level: int) -> int`
-  * *static method* Returns the total amount of XP needed for the specified level. Levels go from 0-100
----
-* `await DiscordLevelingSystem.insert(bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite=False, show_results=True)`
-  * Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is insufficient because json files are not made to act as a database. Using an actual database file has many benefits over a json file
----
-* `await DiscordLevelingSystem.is_in_database(member: Union[Member, int], guild=None) -> bool`
-  * A quick check to see if a member is in the database. This is not guild specific although it can be if `guild` is specified
----
-* `await DiscordLevelingSystem.next_level_up(member: Member) -> int`
-  * Get the amount of XP needed for the specified member to level up
----
-* `await DiscordLevelingSystem.raw_database_contents(guild=None) -> List[tuple]`
-  * Returns everything in the database. Can specify which guild information will be extracted
----
-* `await DiscordLevelingSystem.refresh_names(guild: Guild) -> int`
-  * Update names inside the database. This does not add anything new. It simply verifies if the name in the database matches their current name, and if they don't match, update the database name
----
-* `await DiscordLevelingSystem.remove_from_database(member: Union[Member, int], guild=None) -> bool`
-  * Remove a member from the database. This is not guild specific although it can be if `guild` is specified
----
-* `await DiscordLevelingSystem.remove_xp(member: Member, amount: int)`
-  * Remove XP from a member. This also changes their level so it matches the associated XP
----
-* `await DiscordLevelingSystem.reset_everyone(guild: Union[Guild, None], *, intentional=False)`
-  * Sets EVERYONES XP, total XP, and level to zero in the database. Can specify which guild to reset
----
-* `await DiscordLevelingSystem.reset_member(member: Member)`
-  * Sets the members XP, total XP, and level to zero
----
-* `await DiscordLevelingSystem.set_level(member: Member, level: int)`
-  * Sets the level for the member. This also changes their total XP so it matches the associated level
----
-* `await DiscordLevelingSystem.sql_query_get(sql: str, parameters=None, fetch='ALL') -> Union[List[tuple], tuple]`
-  * Query and return something from the database using SQL. The following columns are apart of the "leaderboard" table: guild_id, member_id, member_name, member_level, member_xp, member_total_xp
----
-* `await DiscordLevelingSystem.switch_connection(path: str)`
-  * Connect to a different leveling system database file
----
-* `DiscordLevelingSystem.transfer(old: str, new: str, guild_id: int)`
-  * *static method* Transfer the database records from a database file created from v0.0.1 to a blank database file created using v0.0.2+. If you were already using a v0.0.2+ database file, there's no need to use this method
----
-* `await DiscordLevelingSystem.wipe_database(guild=None, *, intentional=False)`
-  * Delete EVERYTHING from the database. If `guild` is specified, only the information related to that guild will be deleted
+* *await* **add_record**(`guild_id, member_id, member_name, level`) - Manually add a record to the database. If the record already exists (the `guild_id` and `member_id` was found), only the level will be updated. If there were no records that matched those values, all provided information will be added
+  * **Parameters**
+    * **guild_id** (`int`) The guild ID to register
+    * **member_id** (`int`) The member ID to register
+    * **member_name** (`str`) The member name to register
+    * **level** (`int`) The member level to register. Must be from 0-100
+  * **Raises**
+    * `DiscordLevelingSystemError` - The value given from a parameter was not of the correct type or "level" was not 0-100
+
+
+* *await* **add_xp**(`member, amount`) - Give XP to a member. This also changes their level so it matches the associated XP
+  * **Parameters**
+    * **member** (`discord.Member`) The member to give XP to
+    * **amount** (`int`) Amount of XP to give to the member
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `DiscordLevelingSystemError` - Parameter "amount" was less than or equal to zero. The minimum value is 1 
+
+
+* *await* **award_xp**(`*, amount = [15, 25], message, refresh_name = True, **kwargs`) - Give XP to the member that sent a message
+  * **Parameters**
+    * **amount** (`Union[int, Sequence[int]]`)
+    * **message** (`discord.Message`) A message object
+    * **refresh_name** (`bool`) Everytime the member sends a message, check if their name still matches the name in the database. If it doesn't match, update the database to match their current name. It is suggested to leave this as `True` so the database can always have the most up-to-date record
+  * **Kwargs**
+    * **bonus** (`DiscordLevelingSystem.Bonus`) Set the bonus values. Read the `DiscordLevelingSystem.Bonus` doc string for more details (defaults to `None`)
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* **backup_database_file**(`path, with_timestamp = False`) - Create a copy of the database file to the specified path. If a copy of the backup file is already in the specified path it will be overwritten
+  * **Parameters**
+    * **path** (`str`) The path to copy the database file to
+    * **with_timestamp** (`bool`) Creates a unique file name that has the date and time of when the backup file was created. This is useful when you want multiple backup files
+  * **Raises**
+    * `DiscordLevelingSystemError` - Path doesn't exist or points to another file
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **change_cooldown**(`rate, per`) - Update the cooldown rate
+  * **Parameters**
+    * **rate** (`int`) The amount of messages each member can send before the cooldown triggers
+    * **per** (`float`) The amount of seconds each member has to wait before gaining more XP, aka the cooldown
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `DiscordLevelingSystemError` - The rate or per value was not greater than zero
+
+
+* *await* **clean_database**(`guild`) - Removes the data for members that are no longer in the guild, thus reducing the database file size. It is recommended to have this method in a background loop in order to keep the database file free of records that are no longer in use
+  * **Parameters**
+    * **guild** (`discord.Guild`) The guild records to clean
+  * **Returns**
+    * (`Optional[int]`) The amount of records that were removed from the database
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* **connect_to_database_file**(`path`) - Connect to the existing database file in the specified path
+  * **Parameters**
+    * **path** (`str`) The location of the database file
+  * **Raises**
+    * `ConnectionFailure` - Attempted to connect to the database file when the event loop is already running
+    * `DatabaseFileNotFound` - The database file was not found
+
+
+* *static method* **create_database_file**(`path`) - Create the database file and implement the SQL data for the database
+  * **Parameters**
+    * **path** (`str`) The location to create the database file
+  * **Raises**
+    * `ConnectionFailure` - Attempted to create the database file when the event loop is already running
+    * `DiscordLevelingSystemError` - The path does not exist or the path points to a file instead of a directory
+
+
+* *await* **each_member_data**(`guild, sort_by = None`) - Return each member in the database as a `MemberData` object for easy access to their XP, level, etc. You can sort the data with `sort_by` with the below values
+  * **Parameters**
+    * **guild** (`discord.Guild`) A guild object
+    * **sort_by** (`Optional[str]`) Return each member sorted by: "name", "level", "xp", "rank". If `None`, it will return in the order they were added to the database
+  * **Returns**
+    * `List[MemberData]`
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `DiscordLevelingSystemError` - The value of `sort_by` was not recognized or `guild` was not of type `discord.Guild`
+
+
+* *await* **export_as_json**(`path, guild`) - Export a json file that represents the database to the path specified
+  * **Parameters**
+    * **path** (`str`) Path to copy the json file to
+    * **guild** (`discord.Guild`) The guild for which the data should be extracted from. If `None`, all guild information will be extracted from the database
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `DiscordLevelingSystemError` - The path does not exist or does not point to a directory
+
+
+* **get_awards**(`guild = None`) - Get all `RoleAward`'s or only the `RoleAward`'s assigned to the specified guild
+  * **Parameters**
+    * **guild** (`Optional[Union[discord.Guild, int]]`) A guild object or a guild ID
+  * **Returns**
+    * (`Union[Dict[int, List[RoleAward]], List[RoleAward]]`) If `guild` is `None`, this return the awards `dict` that was set in constructor. If `guild` is specified, it returns a List[`RoleAward`] that matches the specified guild ID. Can also return `None` if awards were never set or if the awards for the specified guild was not found
+
+
+* *await* **get_data_for**(`member`) - Get the `MemberData` object that represents the specified member
+  * **Parameters**
+    * **member** (`discord.Member`) The member to get the data for
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **get_level_for**(`member`) - Get the level for the specified member
+  * **Parameters**
+    * **member** (`discord.Member`) Member to get the level for
+  * **Returns**
+    * (`int`) Can be `None` if the member isn't in the database
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **get_rank_for**(`member`) - Get the rank for the specified member
+  * **Parameters**
+    * **member** (`discord.Member`) Member to get the rank for
+  * **Returns**
+    * (`int`) Can be `None` if the member isn't ranked yet
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **get_record_count**(`guild = None`) - Get the amount of members that are registered in the database. If `guild` is set to `None`, ALL members in the database will be counted
+  * **Parameters**
+    * **guild** (`Optional[discord.Guild]`) The guild for which to count the amount of records
+  * **Returns**
+    * (`int`)
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **get_total_xp_for**(`member`) - Get the total XP for the specified member
+  * **Parameters**
+    * **member** (`discord.Member`) Member to get the total XP for
+  * **Returns**
+    * (`int`) Can be `None` if the member isn't in the database
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **get_xp_for**(`member`) - Get the XP for the specified member
+  * **Parameters**
+    * **member** (`discord.Member`) Member to get the XP for
+  * **Returns**
+    * (`int`) Can be `None` if the member isn't in the database
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *static method* **get_xp_for_level**(`level`) - Returns the total amount of XP needed for the specified level. Levels go from 0-100
+  * **Parameters**
+    * **level** (`int`) The level XP information to retrieve
+  * **Returns**
+    * (`int`)
+  * **Raises**
+    * `DiscordLevelingSystemError` - The level specified does not exist
+
+
+* *await* **insert**(`bot, guild_id, users, using, overwrite = False, show_results = True`) - Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is insufficient because json files are not made to act as a database. Using an actual database file has many benefits over a json file
+  * **Parameters**
+    * **bot** (`Union[discord.ext.commands.Bot, discord.ext.commands.AutoShardedBot]`) Your bot instance variable
+    * **guild_id** (`int`) ID of the guild that you used your leveling system with
+    * **users** (`Dict[int, int]`) This is the information that will be added to the database. The keys are user ID's, and the values are the users total XP or level. Note: This library only uses levels 0-100 and XP 0-1899250. If any number in this dict are over the levels/XP threshold, it is implicitly set back to this libraries maximum value
+    * **using** (`str`) What structure your leveling system used. Options: "xp" or "levels". Some leveling systems give users only XP and they are ranked up based on that XP value. Others use a combination of levels and XP. If all the values in the `users` dict are based on XP, set this to "xp". If they are based on a users level, set this to "levels"
+    * **overwrite** (`bool`) If a user you've specified in the `users` dict already has a record in the database, overwrite their current record with the one your inserting
+    * **show_results** (`bool`) Print the results for how many of the `users` were successfully added to the database file. If any are unsuccessful, their ID along with the value you provided will also be shown
+  * **Raises**
+      * `DiscordLevelingSystemError` - The value given from a parameter was not of the correct type. The `users` dict was empty. Or your bot is not in the guild associated with `guild_id`       
+
+
+* *await* **is_in_database**(`member, guild = None`) - A quick check to see if a member is in the database. This is not guild specific although it can be if `guild` is specified
+  * **Parameters**
+    * **member** (`Union[discord.Member, int]`) The member to check for. Can be the member object or that members ID
+    * **guild** (`Optional[discord.Guild]`) The guild to check if the member is registered in
+  * **Returns**
+    * (`bool`)
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `DiscordLevelingSystemError` - Parameter `member` was not of type `discord.Member` or `int`
+
+
+* *await* **next_level_up**(`member`) - Get the amount of XP needed for the specified member to level up
+  * **Parameters**
+    * **member** (`discord.Member`) Member to get the amount of XP needed for a level up
+  * **Returns**
+    * (`int`) Returns 0 if the member is currently at max level. Can return `None` if the member is not in the database.
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **raw_database_contents**(`guild = None`) - Returns everything in the database. Can specify which guild information will be extracted
+  * **Parameters**
+    * **guild** (`Optional[discord.Guild]`) The guild to extract the raw database contents from. If `None`, information about all guilds will be extracted
+  * **Returns**
+    * `List[tuple]` The tuples inside the list represents each row of the database:
+      * Index 0 is the guild ID
+      * Index 1 is their ID
+      * Index 2 is their name
+      * Index 3 is their level
+      * Index 4 is their XP
+      * Index 5 is their total xp
+      * Can be an empty list if nothing is in the database
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **refresh_names**(`guild`) - Update names inside the database. This does not add anything new. It simply verifies if the name in the database matches their current name, and if they don't match, update the database name
+  * **Parameters**
+    * **guild** (`discord.Guild`) A guild object
+  * **Returns**
+    * `(Optional[int])` The amount of records in the database that were updated
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **remove_from_database**(`member, guild = None`) - Remove a member from the database. This is not guild specific although it can be if `guild` is specified
+  * **Parameters**
+    * **member** (`Union[discord.Member, int]`) The member to remove. Can be the member object or that members ID
+    * **guild** (`Optional[discord.Guild]`) If this parameter is given, it will remove the record of the specified member only from the specified guild record. If `None`, it will remove all records no matter the guild
+  * **Returns**
+    * (`Optional[bool]`) Returns `True` if the member was successfully removed from the database. `False` if the member was not in the database so there was nothing to remove
+  * **Raises**
+      * `DatabaseFileNotFound` - The database file was not found
+      * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+      * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+      * `DiscordLevelingSystemError` - Parameter `member` was not of type `discord.Member` or `int`
+      * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
+* *await* **remove_xp**(`member, amount`) - Remove XP from a member. This also changes their level so it matches the associated XP
+  * **Parameters**
+      * **member** (`discord.Member`) The member to remove XP from
+      * **amount** (`int`) Amount of XP to remove from the member
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `DiscordLevelingSystemError` - Parameter "amount" was less than or equal to zero. The minimum value is 1
+
+
+* *await* **reset_everyone**(`guild, *, intentional = False`) - Sets EVERYONES XP, total XP, and level to zero in the database. Can specify which guild to reset
+  * **Parameters**
+      * **guild** (`Union[discord.Guild, None]`) The guild for which everyone will be reset. If this is set to `None`, everyone in the entire database will be reset
+      * **intentional** (`bool`) A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `FailSafe` - "intentional" argument for this method was set to `False` in case you called this method by mistake
+
+
+* *await* **reset_member**(`member`) - Sets the members XP, total XP, and level to zero
+  * **Parameters**
+    * **member** (`discord.Member`) The member to reset
+  * **Raises**
+    * `DatabaseFileNotFound` The database file was not found
+    * `LeaderboardNotFound` Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` Attempted to use a method that requires a connection to a database file
+
+
+* *await* **set_level**(`member, level`) - Sets the level for the member. This also changes their total XP so it matches the associated level
+  * **Parameters**
+    * **member** (`discord.Member`) The member who's level will be set
+    * **level** (`int`) Level to set. Must be from 0-100     
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `DiscordLevelingSystemError` - Parameter "level" was not from 0-100
+
+
+* *await* **sql_query_get**(`sql, parameters = None, fetch = 'ALL'`) - Query and return something from the database using SQL. The following columns are apart of the "leaderboard" table: guild_id, member_id, member_name, member_level, member_xp, member_total_xp
+  * **Parameters**
+    * **sql** (`str`) SQL string used to query the database
+    * **parameters** (`Optional[Tuple[Union[str ,int]]]`) The parameters used for the database query
+    * **fetch** (`Union[str, int]`) The amount of rows you would like back from the query. Options: 'ALL', 'ONE', or an integer value that is greater than zero
+  * **Returns**
+    * (`Union[List[tuple], tuple]`)
+      * Using `fetch='ALL'` returns `List[tuple]`
+      * Using `fetch='ONE'` returns `tuple`
+      * Using `fetch=4` returns `List[tuple]` with only four values
+      * Can also return an empty list if the query was valid but got nothing from it
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `DiscordLevelingSystemError` - Argument "fetch" was the wrong type or used an invalid value
+    * `aiosqlite.Error` - Base aiosqlite error. Multiple errors can arise from this if the SQL query was invalid
+
+
+* *await* **switch_connection**(`path`) - Connect to a different leveling system database file
+  * **Parameters**
+    * **path** (`str`) The location of the database file
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+
+
+* *static method* **transfer**(`old, new, guild_id`) - Transfer the database records from a database file created from v0.0.1 to a blank database file created using v0.0.2+. If you were already using a v0.0.2+ database file, there's no need to use this method
+  * **Parameters**
+    * **old** (`str`) The path of the v0.0.1 database file
+    * **new** (`str`) The path of the v0.0.2+ database file
+    * **guild_id** (`int`) ID of the guild that was originally used with this library
+  * **Raises**
+    - `ConnectionFailure` - The event loop is already running
+    - `DatabaseFileNotFound` - "old" or "new" database file was not found
+    - `DiscordLevelingSystemError` - One of the databases is missing the "leaderboard" table. A v0.0.2+ database file contains records, or there was an attempt to transfer records from a v0.0.2+ file to another v0.0.2+ file
+
+
+* *await* **wipe_database**(`guild = None, *, intentional = False`) - Delete EVERYTHING from the database. If `guild` is specified, only the information related to that guild will be deleted
+  * **Parameters**
+    * **guild** (`Optional[discord.Guild]`) The guild for which all information that is related to that guild will be deleted. If `None`, everything will be deleted
+    * **intentional** (`bool`) A simple kwarg to try and ensure that this action is indeed what you want to do. Once executed, this cannot be undone
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+    * `FailSafe` - "intentional" argument for this method was set to `False` in case you called this method by mistake
 
 </details>
 
