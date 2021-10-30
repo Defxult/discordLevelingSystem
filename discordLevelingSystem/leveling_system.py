@@ -1362,15 +1362,7 @@ class DiscordLevelingSystem:
             A guild object
         
         sort_by: Optional[:class:`str`]
-            Return each member data sorted by: 
-        
-        - "name"
-        - "level"
-        - "xp"
-        - "rank"
-        - :class:`None`
-        
-        If :class:`None`, it will return in the order they were added to the database
+            Return each member data sorted by: "name", "level", "xp", "rank", or :class:`None`. If :class:`None`, it will return in the order they were added to the database
         
         Returns
         -------

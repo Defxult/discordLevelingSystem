@@ -18,7 +18,7 @@ from .role_awards import RoleAward
 def version_info():
     """Shows the current version, release type, and patch of the library
     - `version` Current version of the library
-    - `releasetype` Either "final" (the PyPI version) or "pre-release" (the Github version)
+    - `releasetype` Either "final" (the PyPI version) or "pre-release" (the GitHub version)
     - `patch` The last significant bug fix
 
     >>> print(discordLevelingSystem.version_info())
