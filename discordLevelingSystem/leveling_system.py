@@ -1353,7 +1353,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def each_member_data(self, guild: Guild, sort_by: Optional[str]=None) -> List[MemberData]:
+    async def each_member_data(self, guild: Guild, sort_by: Optional[str]=None, limit: Optional[int]=None) -> List[MemberData]:
         """|coro| Return each member in the database as a :class:`MemberData` object for easy access to their XP, level, etc.
 
         Parameters
@@ -1363,6 +1363,9 @@ class DiscordLevelingSystem:
         
         sort_by: Optional[:class:`str`]
             Return each member data sorted by: "name", "level", "xp", "rank", or :class:`None`. If :class:`None`, it will return in the order they were added to the database
+        
+        limit: Optional[:class:`int`]
+            Restrict the amount of records returned to the specified amount
         
         Returns
         -------
@@ -1375,6 +1378,10 @@ class DiscordLevelingSystem:
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         - `DiscordLevelingSystemError`: The value of :param:`sort_by` was not recognized or :param:`guild` was not of type :class:`discord.Guild`
+
+            .. changes::
+                v1.0.3
+                    Added :param:`limit`
         """
         if not isinstance(guild, Guild):
             raise DiscordLevelingSystemError(f'Parameter "guild" expected discord.Guild got {guild.__class__.__name__}')
@@ -1390,7 +1397,7 @@ class DiscordLevelingSystem:
                     if member:
                         rank = await self.get_rank_for(member) # if the member is None (no longer in guild), rank will be None. This is intentional
                     data.append(MemberData(m_id, m_name, m_level, m_xp, m_total_xp, rank))
-                return data
+                return data if limit is None else data[:limit]
 
             if not sort_by:
                 result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ?', (guild.id,))

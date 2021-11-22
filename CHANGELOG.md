@@ -2,7 +2,9 @@
 #### New Features
 * Added more `typing.Optional` for parameters. Implemented the use of `typing.ClassVar` and `collections.abc.Sequence`. A handful of parameters that specified a `List[x]` never really *needed* to be a list. All parameters that specified a `List[x]` has been changed to `Sequence[x]`, but parameters that still require a list are still type hinted as `List[x]`
 * Added the ability to get the total amount of XP needed for a level
-  * `DiscordLevelingSystem.get_xp_for_level(level: int)` 
+  * `DiscordLevelingSystem.get_xp_for_level(level: int)`
+* Added the ability to limit the amount of records returned from a member data query
+  * `DiscordLevelingSystem.each_member_data(..., limit: Optional[int] = None)`
 
 
 

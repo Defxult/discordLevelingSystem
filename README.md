@@ -252,7 +252,7 @@ Accessing the raw information inside the database file can look a bit messy if y
 
 * Associated methods
   * `await DiscordLevelingSystem.get_data_for(member: Member) -> MemberData`
-  * `await DiscordLevelingSystem.each_member_data(guild: Guild, sort_by=None) -> List[MemberData]`
+  * `await DiscordLevelingSystem.each_member_data(guild: Guild, sort_by=None, limit=None) -> List[MemberData]`
 
 ### Attributes
 * `id_number` (`int`) The members ID
@@ -423,10 +423,11 @@ bot.run(...)
     * `DiscordLevelingSystemError` - The path does not exist or the path points to a file instead of a directory
 
 
-* *await* **each_member_data**(`guild, sort_by = None`) - Return each member in the database as a `MemberData` object for easy access to their XP, level, etc. You can sort the data with `sort_by` with the below values
+* *await* **each_member_data**(`guild, sort_by = None, limit = None`) - Return each member in the database as a `MemberData` object for easy access to their XP, level, etc. You can sort the data with `sort_by` with the below values
   * **Parameters**
     * **guild** (`discord.Guild`) A guild object
     * **sort_by** (`Optional[str]`) Return each member sorted by: "name", "level", "xp", "rank". If `None`, it will return in the order they were added to the database
+    * **limit** (`Optional[int]`) Restrict the amount of records returned to the specified amount
   * **Returns**
     * `List[MemberData]`
   * **Raises**
