@@ -1,3 +1,15 @@
+## Important Notice
+As a lot of you may now, the development of discord.py has ended. Discord will be pushing breaking changes to their API in the future, so it would be unwise to stick with a library that is no longer being maintained. With that said, a lot of developers are searching for alternatives to replace discord.py. There are plenty of forks out there, but from what I've seen a majority of developers are migrating over to [pycord](https://github.com/Pycord-Development/pycord). I've tested pycord with this library and it works well. Pycord is the Discord library I have chosen to continue development of this library. Pycord has a release date of January 7, 2022. After further testing (most likely a few days after), discordLevelingSystem 1.3 will be released to PyPI.
+
+What happens to discordLevelingSystem on January 7, 2022?
+* Support for discord.py will end
+* A separate branch will be made for discord.py (aka versions <=1.0.2) so users still have access to the old code if they wish to use it; although it will not be maintained
+* This library will be solely dependant on pycord
+
+The current GitHub version (v1.0.3) still supports discord.py. It's not until the official release of pycord where major code changes (if any) will take place. If you've already switched to pycord, v1.0.3 should work because I've already done some testing on my end.
+
+---
+
 A library to implement a leveling system into a discord bot. One of the most popular discord bots out there is MEE6 and it's leveling system. This library provides ways to easily implement one for yourself. It uses SQLite (aiosqlite) to locally query things such as their XP, rank, and level. Various amounts of other methods and classes are also provided so you can access or remove contents from the database file.
 
 ## GitHub Updates vs PyPI Updates
