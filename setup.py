@@ -9,6 +9,7 @@ classifiers = [
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
     'Topic :: Software Development :: Libraries',
     'Topic :: Software Development :: Libraries :: Python Modules'
 ]
@@ -27,6 +28,10 @@ tags = [
     'leveling',
     'level up',
     'level system',
+    'mee6',
+    #> uncomment when released
+    # 'pycord',
+    # 'py-cord',
     'rank',
     'ranking',
     'role award',
@@ -51,4 +56,5 @@ setup(
     keywords=tags,
     packages=find_packages(),
     install_requires=['discord.py>=1.4.0', 'aiosqlite>=0.17.0']
+    #! update to pycord 2.0.0 when released
 )
