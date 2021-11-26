@@ -25,7 +25,7 @@ DEALINGS IN THE SOFTWARE.
 from collections.abc import Sequence
 from typing import ClassVar, Optional, Union
 
-from discord import AllowedMentions, Embed
+from discord import AllowedMentions, Embed, Member as DMember
 
 from .errors import DiscordLevelingSystemError
 
@@ -49,11 +49,13 @@ class AnnouncementMember:
         .. changes::
             v1.1.0
                 Replaced the guild class. Added it as a variable instead (Guild class is now separate)
+                Added :attr:`display_avatar_url`
     """
     avatar_url: ClassVar[str] = '[$avatar_url]'
     created_at: ClassVar[str] = '[$created_at]'
     default_avatar_url: ClassVar[str] = '[$default_avatar_url]'
     discriminator: ClassVar[str] = '[$discriminator]'
+    display_avatar_url: ClassVar[str] = '[$display_avatar_url]'
     display_name: ClassVar[str] = '[$display_name]'
     id: ClassVar[str] = '[$id]'
     joined_at: ClassVar[str] = '[$joined_at]'
@@ -102,6 +104,7 @@ class LevelUpAnnouncement:
     - `LevelUpAnnouncement.Member.created_at`
     - `LevelUpAnnouncement.Member.default_avatar_url`
     - `LevelUpAnnouncement.Member.discriminator`
+    - `LevelUpAnnouncement.Member.display_avatar_url`
     - `LevelUpAnnouncement.Member.display_name`
     - `LevelUpAnnouncement.Member.id`
     - `LevelUpAnnouncement.Member.joined_at`
@@ -158,17 +161,23 @@ class LevelUpAnnouncement:
             to_convert = to_convert.replace(mrkd, str(value))
         return to_convert
     
-    def _convert_member_markdown(self, to_convert: str, message_author) -> str:
+    def _convert_member_markdown(self, to_convert: str, message_author: DMember) -> str:
         """Convert the member markdown text to the value it represents
 
             .. added:: v0.0.2
+            .. changes::
+                v1.1.0
+                    Updated `discord.Member.avatar_url` -> `discord.Member.avatar.url`
+                    Updated `discord.Guild.icon_url` -> `discord.Guild.icon.url`
+                    Added `discord.Member.display_avatar.url`
         """
         markdowns = {
             # member
-            AnnouncementMember.avatar_url : message_author.avatar_url,
+            AnnouncementMember.avatar_url : message_author.avatar.url,
             AnnouncementMember.created_at : message_author.created_at,
-            AnnouncementMember.default_avatar_url : message_author.default_avatar_url,
+            AnnouncementMember.default_avatar_url : message_author.default_avatar.url,
             AnnouncementMember.discriminator : message_author.discriminator,
+            AnnouncementMember.display_avatar_url : message_author.display_avatar.url,
             AnnouncementMember.display_name : message_author.display_name,
             AnnouncementMember.id : message_author.id,
             AnnouncementMember.joined_at : message_author.joined_at,
@@ -177,7 +186,7 @@ class LevelUpAnnouncement:
             AnnouncementMember.nick : message_author.nick,
 
             # guild
-            AnnouncementMember.Guild.icon_url : message_author.guild.icon_url,
+            AnnouncementMember.Guild.icon_url : message_author.guild.icon.url,
             AnnouncementMember.Guild.id : message_author.guild.id,
             AnnouncementMember.Guild.name : message_author.guild.name
         }
@@ -185,7 +194,7 @@ class LevelUpAnnouncement:
             to_convert = to_convert.replace(mrkd, str(value))
         return to_convert
     
-    def _parse_message(self, message: Union[str, Embed], message_author) -> Union[str, Embed]:
+    def _parse_message(self, message: Union[str, Embed], message_author: DMember) -> Union[str, Embed]:
         """
             .. changes::
                 v0.0.2

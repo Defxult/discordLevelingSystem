@@ -1,11 +1,11 @@
 ## v1.0.3 » Future Release
 #### New Features
 * Added more `typing.Optional` for parameters. Implemented the use of `typing.ClassVar` and `collections.abc.Sequence`. A handful of parameters that specified a `List[x]` never really *needed* to be a list. All parameters that specified a `List[x]` has been changed to `Sequence[x]`, but parameters that still require a list are still type hinted as `List[x]`
+* Added `LevelUpAnnouncement.Member.display_avatar_url`. Used to access member avatars that are guild specific
 * Added the ability to get the total amount of XP needed for a level
   * `DiscordLevelingSystem.get_xp_for_level(level: int)`
 * Added the ability to limit the amount of records returned from a member data query
   * `DiscordLevelingSystem.each_member_data(..., limit: Optional[int] = None)`
-
 
 
 ## v1.0.2 » Sept. 4, 2021

@@ -187,6 +187,7 @@ The below markdown attributes takes the information from a `discord.Member` obje
 * `LevelUpAnnouncement.Member.created_at`
 * `LevelUpAnnouncement.Member.default_avatar_url`
 * `LevelUpAnnouncement.Member.discriminator`
+* `LevelUpAnnouncement.Member.display_avatar_url`
 * `LevelUpAnnouncement.Member.display_name`
 * `LevelUpAnnouncement.Member.id`
 * `LevelUpAnnouncement.Member.joined_at`
