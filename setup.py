@@ -55,6 +55,6 @@ setup(
     license='MIT',
     keywords=tags,
     packages=find_packages(),
-    install_requires=['discord.py>=1.4.0', 'aiosqlite>=0.17.0']
+    install_requires=['aiosqlite>=0.17.0']
     #! update to pycord 2.0.0 when released
 )
