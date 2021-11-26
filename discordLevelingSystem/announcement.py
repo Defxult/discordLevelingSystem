@@ -36,7 +36,7 @@ default_mentions = AllowedMentions(everyone=False, users=True, roles=False, repl
 class AnnouncementMemberGuild:
     """Helper class for :class:`AnnouncementMember`
     
-        .. added:: v1.0.3 (moved from :class:`AnnouncementMember`, was just :class:`Guild`)
+        .. added:: v1.1.0 (moved from :class:`AnnouncementMember`, was just :class:`Guild`)
     """
     icon_url: ClassVar[str] = '[$g_icon_url]'
     id: ClassVar[str] = '[$g_id]'
@@ -47,7 +47,7 @@ class AnnouncementMember:
     
         .. added:: v0.0.2
         .. changes::
-            v1.0.3
+            v1.1.0
                 Replaced the guild class. Added it as a variable instead (Guild class is now separate)
     """
     avatar_url: ClassVar[str] = '[$avatar_url]'
@@ -95,7 +95,7 @@ class LevelUpAnnouncement:
     - `LevelUpAnnouncement.LEVEL`: The members current level
     - `LevelUpAnnouncement.RANK`: The members current rank
     
-    You can access a reduced version of discord.py's `discord.Member` object via the :class:`LevelUpAnnouncement.Member` attribute. That attribute (class) contains the following information
+    You can access a reduced version of pycord's `discord.Member` object via the :class:`LevelUpAnnouncement.Member` attribute. That attribute (class) contains the following information
     about a member and the guild
 
     - `LevelUpAnnouncement.Member.avatar_url`

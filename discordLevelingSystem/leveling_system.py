@@ -46,7 +46,7 @@ from .role_awards import RoleAward
 
 
 class DiscordLevelingSystem:
-    """A local discord.py leveling system powered by SQLite
+    """A local pycord leveling system powered by SQLite
 
     Parameters
     ----------
@@ -234,7 +234,7 @@ class DiscordLevelingSystem:
         ------
         - `DiscordLevelingSystemError`: The level specified does not exist
 
-            .. added:: v1.0.3
+            .. added:: v1.1.0
         """
         try:
             return LEVELS_AND_XP[str(level)]
@@ -1380,7 +1380,7 @@ class DiscordLevelingSystem:
         - `DiscordLevelingSystemError`: The value of :param:`sort_by` was not recognized or :param:`guild` was not of type :class:`discord.Guild`
 
             .. changes::
-                v1.0.3
+                v1.1.0
                     Added :param:`limit`
         """
         if not isinstance(guild, Guild):
@@ -1674,7 +1674,7 @@ class DiscordLevelingSystem:
                     Added check to ensure the first value is larger than the next
                     Added check to ensure the each value is unique
                     Changed the value range from 1-100 to 1-25
-                v1.0.3
+                v1.1.0
                     Changed from list to Sequence
         """
         if isinstance(arg, (int, Sequence)):
