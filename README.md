@@ -170,6 +170,7 @@ The `LevelUpAnnouncement` class provides a set of markdown attributes for you to
 The below markdown attributes takes the information from a `discord.Member` object so you can access member information in the level up message.
 
 * `LevelUpAnnouncement.Member.avatar_url`
+* `LevelUpAnnouncement.Member.banner_url`
 * `LevelUpAnnouncement.Member.created_at`
 * `LevelUpAnnouncement.Member.default_avatar_url`
 * `LevelUpAnnouncement.Member.discriminator`

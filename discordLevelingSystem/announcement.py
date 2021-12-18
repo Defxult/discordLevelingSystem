@@ -50,8 +50,10 @@ class AnnouncementMember:
             v1.1.0
                 Replaced the guild class. Added it as a variable instead (Guild class is now separate)
                 Added :attr:`display_avatar_url`
+                Added :attr:`banner_url`
     """
     avatar_url: ClassVar[str] = '[$avatar_url]'
+    banner_url: ClassVar[str] = '[$banner_url]'
     created_at: ClassVar[str] = '[$created_at]'
     default_avatar_url: ClassVar[str] = '[$default_avatar_url]'
     discriminator: ClassVar[str] = '[$discriminator]'
@@ -101,6 +103,7 @@ class LevelUpAnnouncement:
     about a member and the guild
 
     - `LevelUpAnnouncement.Member.avatar_url`
+    - `LevelUpAnnouncement.Member.banner_url`
     - `LevelUpAnnouncement.Member.created_at`
     - `LevelUpAnnouncement.Member.default_avatar_url`
     - `LevelUpAnnouncement.Member.discriminator`
@@ -170,10 +173,12 @@ class LevelUpAnnouncement:
                     Updated `discord.Member.avatar_url` -> `discord.Member.avatar.url`
                     Updated `discord.Guild.icon_url` -> `discord.Guild.icon.url`
                     Added `discord.Member.display_avatar.url`
+                    Added `discord.Member.banner.url`
         """
         markdowns = {
             # member
             AnnouncementMember.avatar_url : message_author.avatar.url,
+            AnnouncementMember.banner_url : message_author.banner.url if message_author.banner is not None else None,
             AnnouncementMember.created_at : message_author.created_at,
             AnnouncementMember.default_avatar_url : message_author.default_avatar.url,
             AnnouncementMember.discriminator : message_author.discriminator,
