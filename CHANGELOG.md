@@ -13,6 +13,7 @@ As a lot of you may know, the development of discord.py has ended. Discord will 
 * Added the ability to get the `dict` that represents the leveling systems level/XP requirement process
   * `DiscordLevelingSystem.levels_and_xp()`
 * Added `__repr__` to the `DiscordLevelingSystem.Bonus` class
+* Added `__all__` for the library itself (`from discordLevelingSystem import *`)
 
 ## v1.0.2 » Sept. 4, 2021
 <details>
