@@ -217,7 +217,7 @@ class LevelUpAnnouncement:
             new_dict_embed = {}
             temp_formatted = []
 
-            def e_dict_to_converted(embed_value: dict):
+            def e_dict_to_converted(embed_value: dict) -> dict:
                 """If the value from the :class:`discord.Embed` dictionary contains a :class:`LevelUpAnnouncement` markdown, convert the markdown to it's 
                 associated value and return it for use
                     

@@ -219,7 +219,9 @@ class DiscordLevelingSystem:
     
     @staticmethod
     def get_xp_for_level(level: int) -> int:
-        """|static method| Returns the total amount of XP needed for the specified level. Levels go from 0-100
+        """|static method|
+        
+        Returns the total amount of XP needed for the specified level. Levels go from 0-100
 
         Parameters
         ----------
@@ -242,8 +244,10 @@ class DiscordLevelingSystem:
             raise DiscordLevelingSystemError(f'Levels only go from 0-100, {level} is not a valid level')
     
     @staticmethod
-    def create_database_file(path: str):
-        """|static method| Create the database file and implement the SQL data for the database
+    def create_database_file(path: str) -> None:
+        """|static method|
+        
+        Create the database file and implement the SQL data for the database
         
         Parameters
         ----------
@@ -284,7 +288,7 @@ class DiscordLevelingSystem:
         else:
             raise DiscordLevelingSystemError(f'The path {path!r} does not exist or that path directs to a file when it is suppose to path to a directory')
     
-    def backup_database_file(self, path: str, with_timestamp: bool=False):
+    def backup_database_file(self, path: str, with_timestamp: bool=False) -> None:
         """Create a copy of the database file to the specified path. If a copy of the backup file is already in the specified path it will be overwritten
         
         Parameters
@@ -317,7 +321,7 @@ class DiscordLevelingSystem:
         else:
             raise DiscordLevelingSystemError(f'When attempting to backup the database file, the path "{path}" does not exist or points to another file')
     
-    def connect_to_database_file(self, path: str):
+    def connect_to_database_file(self, path: str) -> None:
         """Connect to the existing database file in the specified path
         
         Parameters
@@ -340,8 +344,10 @@ class DiscordLevelingSystem:
         else:
             raise DatabaseFileNotFound(f'The database file in path {path!r} was not found')
 
-    async def switch_connection(self, path: str):
-        """|coro| Connect to a different leveling system database file
+    async def switch_connection(self, path: str) -> None:
+        """|coro|
+        
+        Connect to a different leveling system database file
 
         Parameters
         ----------
@@ -394,7 +400,7 @@ class DiscordLevelingSystem:
 
         return any([has_no_xp_role, in_no_xp_channel])        
     
-    async def _update_record(self, member: Union[Member, int], level: int, xp: int, total_xp: int, guild_id: int, name: str=None, **kwargs):
+    async def _update_record(self, member: Union[Member, int], level: int, xp: int, total_xp: int, guild_id: int, name: str=None, **kwargs) -> None:
         maybe_new_record = kwargs.get('maybe_new_record', False)
         if maybe_new_record and not name:
             raise Exception('kwarg "name" needs to be set when adding a new record')
@@ -410,7 +416,7 @@ class DiscordLevelingSystem:
         await self._connection.commit()
     
     @staticmethod
-    def _get_transfer(path: str, loop: asyncio.AbstractEventLoop):
+    def _get_transfer(path: str, loop: asyncio.AbstractEventLoop) -> None:
         """|static method| Connect to the target database file in the specified path and return a named tuple of the connection and cursor
         
             .. added:: v0.0.2
@@ -427,7 +433,7 @@ class DiscordLevelingSystem:
             raise DatabaseFileNotFound(f'The database file in path {path!r} was not found')
     
     @staticmethod
-    async def _execute_transer(db_from: 'Transfer', db_to: 'Transfer', guild_id: int): # type: ignore
+    async def _execute_transer(db_from: 'Transfer', db_to: 'Transfer', guild_id: int) -> None: # type: ignore
         """|coro static method| Copy the contents from the old database file (v0.0.1), to the new database file (v0.0.2+)
         
             .. added:: v0.0.2
@@ -472,8 +478,10 @@ class DiscordLevelingSystem:
                 raise DiscordLevelingSystemError('The "transfer" method is only to be used with transfering the data from the database file from version 0.0.1. If you were already using a database file from version 0.0.2+, there is no need to use this method')
     
     @staticmethod
-    def transfer(old: str, new: str, guild_id: int):
-        """|static method| Transfer the database records from a database file created from v0.0.1 to a blank database file created using v0.0.2+. If you were already using a v0.0.2+
+    def transfer(old: str, new: str, guild_id: int) -> None:
+        """|static method|
+        
+        Transfer the database records from a database file created from v0.0.1 to a blank database file created using v0.0.2+. If you were already using a v0.0.2+
         database file, there's no need to use this method
 
         See the following link about transfers: https://github.com/Defxult/discordLevelingSystem#migrating-from-v001-to-v002
@@ -505,8 +513,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def add_record(self, guild_id: int, member_id: int, member_name: str, level: int):
-        """|coro| Manually add a record to the database. If the record already exists (the :param:`guild_id` and :param:`member_id` was found), only the level will be updated. If there were no records that matched
+    async def add_record(self, guild_id: int, member_id: int, member_name: str, level: int) -> None:
+        """|coro|
+        
+        Manually add a record to the database. If the record already exists (the :param:`guild_id` and :param:`member_id` was found), only the level will be updated. If there were no records that matched
         those values, all provided information will be added
 
         Parameters
@@ -539,8 +549,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def insert(self, bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite: bool=False, show_results: bool=True):
-        """|coro| Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is
+    async def insert(self, bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite: bool=False, show_results: bool=True) -> None:
+        """|coro|
+        
+        Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is
         insufficient because json files are not made to act as a database. Using a database file has many benefits over a json file
         
         If you already have records in the database file and you want to insert your records on top of the records that already exist, it is suggested to backup that
@@ -671,8 +683,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def add_xp(self, member: Member, amount: int):
-        """|coro| Give XP to a member. This also changes their level so it matches the associated XP
+    async def add_xp(self, member: Member, amount: int) -> None:
+        """|coro|
+        
+        Give XP to a member. This also changes their level so it matches the associated XP
 
         Parameters
         ----------
@@ -708,8 +722,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def remove_xp(self, member: Member, amount: int):
-        """|coro| Remove XP from a member. This also changes their level so it matches the associated XP
+    async def remove_xp(self, member: Member, amount: int) -> None:
+        """|coro|
+        
+        Remove XP from a member. This also changes their level so it matches the associated XP
 
         Parameters
         ----------
@@ -745,8 +761,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def set_level(self, member: Member, level: int):
-        """|coro| Sets the level for the member. This also changes their total XP so it matches the associated level
+    async def set_level(self, member: Member, level: int) -> None:
+        """|coro|
+        
+        Sets the level for the member. This also changes their total XP so it matches the associated level
         
         Parameters
         ----------
@@ -774,8 +792,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def change_cooldown(self, rate: int, per: float):
-        """|coro| Update the cooldown rate
+    async def change_cooldown(self, rate: int, per: float) -> None:
+        """|coro|
+        
+        Update the cooldown rate
         
         Parameters
         ----------
@@ -802,7 +822,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def refresh_names(self, guild: Guild) -> Optional[int]:
-        """|coro| Update names inside the database. This does not add anything new. It simply verifies if the name in the database matches their current name, and if they don't match, update
+        """|coro|
+        
+        Update names inside the database. This does not add anything new. It simply verifies if the name in the database matches their current name, and if they don't match, update
         the database name
         
         Parameters
@@ -812,8 +834,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        Optional[:class:`int`]:
-            The amount of records in the database that were updated
+        Optional[:class:`int`]: The amount of records in the database that were updated
 
         Raises
         ------
@@ -844,8 +865,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def wipe_database(self, guild: Optional[Guild]=None, *, intentional: bool=False):
-        """|coro| Delete EVERYTHING from the database. If :param:`guild` is specified, only the information related to that guild will be deleted
+    async def wipe_database(self, guild: Optional[Guild]=None, *, intentional: bool=False) -> None:
+        """|coro|
+        
+        Delete EVERYTHING from the database. If :param:`guild` is specified, only the information related to that guild will be deleted
 
         Parameters
         ----------
@@ -878,7 +901,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def clean_database(self, guild: Guild) -> Optional[int]:
-        """|coro| Removes the data for members that are no longer in the guild, thus reducing the database file size. It is recommended to have this method in a background loop
+        """|coro|
+        
+        Removes the data for members that are no longer in the guild, thus reducing the database file size. It is recommended to have this method in a background loop
         in order to keep the database file free of records that are no longer in use
 
         Parameters
@@ -922,8 +947,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def reset_member(self, member: Member):
-        """|coro| Sets the members XP, total XP, and level to zero
+    async def reset_member(self, member: Member) -> None:
+        """|coro|
+        
+        Sets the members XP, total XP, and level to zero
         
         Parameters
         ----------
@@ -943,8 +970,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def reset_everyone(self, guild: Union[Guild, None], *, intentional: bool=False):
-        """|coro| Sets EVERYONES XP, total XP, and level to zero in the database. Can specify which guild to reset
+    async def reset_everyone(self, guild: Union[Guild, None], *, intentional: bool=False) -> None:
+        """|coro|
+        
+        Sets EVERYONES XP, total XP, and level to zero in the database. Can specify which guild to reset
 
         Parameters
         ----------
@@ -976,8 +1005,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def export_as_json(self, path: str, guild: Union[Guild, None]):
-        """|coro| Export a json file that represents the database to the path specified
+    async def export_as_json(self, path: str, guild: Union[Guild, None]) -> None:
+        """|coro|
+        
+        Export a json file that represents the database to the path specified
         
         Parameters
         ----------
@@ -1046,8 +1077,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def raw_database_contents(self, guild: Optional[Guild]=None) -> List[tuple]:
-        """|coro| Returns everything in the database. Can specify which guild information will be extracted
+    async def raw_database_contents(self, guild: Optional[Guild]=None) -> List[Tuple[int, int, str, int, int, int]]:
+        """|coro|
+        
+        Returns everything in the database. Can specify which guild information will be extracted
 
         Parameters
         ----------
@@ -1056,8 +1089,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        List[:class:`tuple`]:
-            The tuples inside the list represents each row of the database:
+        List[Tuple[:class:`int`, :class:`int`, :class:`str`, :class:`int`, :class:`int`, :class:`int`]]: The tuples inside the list represents each row of the database:
         
         - Index 0 is the guild ID
         - Index 1 is their ID
@@ -1086,7 +1118,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def remove_from_database(self, member: Union[Member, int], guild: Optional[Guild]=None) -> Optional[bool]:
-        """|coro| Remove a member from the database. This is not guild specific although it can be if :param:`guild` is specified
+        """|coro|
+        
+        Remove a member from the database. This is not guild specific although it can be if :param:`guild` is specified
 
         Parameters
         ----------
@@ -1099,8 +1133,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        Optional[:class:`bool`]:
-            Returns `True` if the member was successfully removed from the database. `False` if the member was not in the database so there was nothing to remove
+        Optional[:class:`bool`]: Returns `True` if the member was successfully removed from the database. `False` if the member was not in the database so there was nothing to remove
 
         Raises
         ------
@@ -1131,7 +1164,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def is_in_database(self, member: Union[Member, int], guild: Optional[Guild]=None) -> bool:
-        """|coro| A quick check to see if a member is in the database. This is not guild specific although it can be if :param:`guild` is specified
+        """|coro|
+        
+        A quick check to see if a member is in the database. This is not guild specific although it can be if :param:`guild` is specified
 
         Parameters
         ----------
@@ -1171,7 +1206,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def get_record_count(self, guild: Optional[Guild]=None) -> int:
-        """|coro| Get the amount of members that are registered in the database. If :param:`guild` is set to :class:`None`, all members in the database will be counted
+        """|coro|
+        
+        Get the amount of members that are registered in the database. If :param:`guild` is set to :class:`None`, all members in the database will be counted
 
         Parameters
         ----------
@@ -1204,7 +1241,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def next_level_up(self, member: Member) -> int:
-        """|coro| Get the amount of XP needed for the specified member to level up
+        """|coro|
+        
+        Get the amount of XP needed for the specified member to level up
         
         Parameters
         ----------
@@ -1213,9 +1252,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`:
-            Returns 0 if the member is currently at max level.
-            Can return :class:`None` if the member is not in the database.
+        :class:`int`: Returns 0 if the member is currently at max level. Can return :class:`None` if the member is not in the database.
 
         Raises
         ------
@@ -1237,7 +1274,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def get_xp_for(self, member: Member) -> int:
-        """|coro| Get the XP for the specified member
+        """|coro|
+        
+        Get the XP for the specified member
         
         Parameters
         ----------
@@ -1246,8 +1285,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`:
-            Can be :class:`None` if the member isn't in the database
+        :class:`int`: Can be :class:`None` if the member isn't in the database
 
         Raises
         ------
@@ -1264,7 +1302,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def get_total_xp_for(self, member: Member) -> int:
-        """|coro| Get the total XP for the specified member
+        """|coro|
+        
+        Get the total XP for the specified member
         
         Parameters
         ----------
@@ -1273,8 +1313,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`:
-            Can be :class:`None` if the member isn't in the database
+        :class:`int`: Can be :class:`None` if the member isn't in the database
 
         Raises
         ------
@@ -1291,7 +1330,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def get_level_for(self, member: Member) -> int:
-        """|coro| Get the level for the specified member
+        """|coro|
+        
+        Get the level for the specified member
         
         Parameters
         ----------
@@ -1300,8 +1341,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`:
-            Can be :class:`None` if the member isn't in the database
+        :class:`int`: Can be :class:`None` if the member isn't in the database
 
         Raises
         ------
@@ -1318,7 +1358,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def get_data_for(self, member: Member) -> MemberData:
-        """|coro| Get the :class:`MemberData` object that represents the specified member
+        """|coro|
+        
+        Get the :class:`MemberData` object that represents the specified member
         
         Parameters
         ----------
@@ -1327,8 +1369,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`MemberData`:
-            Can return :class:`None` if the member was not found in the database
+        :class:`MemberData`: Can return :class:`None` if the member was not found in the database
 
         Raises
         ------
@@ -1354,7 +1395,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def each_member_data(self, guild: Guild, sort_by: Optional[str]=None, limit: Optional[int]=None) -> List[MemberData]:
-        """|coro| Return each member in the database as a :class:`MemberData` object for easy access to their XP, level, etc.
+        """|coro|
+        
+        Return each member in the database as a :class:`MemberData` object for easy access to their XP, level, etc.
 
         Parameters
         ----------
@@ -1451,7 +1494,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def get_rank_for(self, member: Member) -> int:
-        """|coro| Get the rank for the specified member
+        """|coro|
+        
+        Get the rank for the specified member
         
         Parameters
         ----------
@@ -1460,8 +1505,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`:
-            Can be :class:`None` if the member isn't ranked yet
+        :class:`int`: Can be :class:`None` if the member isn't ranked yet
 
         Raises
         ------
@@ -1482,7 +1526,9 @@ class DiscordLevelingSystem:
     @leaderboard_exists
     @verify_leaderboard_integrity
     async def sql_query_get(self, sql: str, parameters: Optional[Tuple[Union[str, int]]]=None, fetch: Union[str, int]='ALL') -> Union[List[tuple], tuple]:
-        """|coro| Query and return something from the database using SQL. The following columns are apart of the "leaderboard" table:
+        """|coro|
+        
+        Query and return something from the database using SQL. The following columns are apart of the "leaderboard" table:
 
         - guild_id
         - member_id
@@ -1557,7 +1603,7 @@ class DiscordLevelingSystem:
         else:
             return guild_awards[last_award_idx]
     
-    async def _refresh_name(self, message: Message):
+    async def _refresh_name(self, message: Message) -> None:
         """|coro| If the members current database name doesn't match the name that's on discord, update the name in the database
 
             .. NOTE
@@ -1570,7 +1616,7 @@ class DiscordLevelingSystem:
                 await cursor.execute('UPDATE leaderboard SET member_name = ? WHERE member_id = ? AND guild_id = ?', (str(message.author), message.author.id, message.author.guild.id))
                 await self._connection.commit()
     
-    async def _handle_level_up(self, message: Message, md: MemberData, leveled_up: bool):
+    async def _handle_level_up(self, message: Message, md: MemberData, leveled_up: bool) -> None:
         """|coro| Gives/removes roles from members that leveled up and met the :class:`RoleAward` requirement. This also sends the level up message
         
             .. changes::
@@ -1666,7 +1712,7 @@ class DiscordLevelingSystem:
             if self.bot is not None:
                 self.bot.dispatch('dls_level_up', member, message, md)
     
-    def _handle_amount_param(self, arg: Union[int, Sequence[int]]):
+    def _handle_amount_param(self, arg: Union[int, Sequence[int]]) -> None:
         """Simple check to ensure the proper types are being used for parameter "amount" in method :meth:`DiscordLevelingSystem.award_xp()`
         
             .. changes::
@@ -1710,8 +1756,10 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def award_xp(self, *, amount: Union[int, Sequence[int]]=[15, 25], message: Message, refresh_name: bool=True, **kwargs):
-        """|coro| Give XP to the member that sent a message
+    async def award_xp(self, *, amount: Union[int, Sequence[int]]=[15, 25], message: Message, refresh_name: bool=True, **kwargs) -> None:
+        """|coro|
+        
+        Give XP to the member that sent a message
 
         Parameters
         ----------
