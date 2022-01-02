@@ -8,6 +8,10 @@ As a lot of you may know, the development of discord.py has ended. Discord will 
   * `DiscordLevelingSystem.get_xp_for_level(level: int)`
 * Added the ability to limit the amount of records returned from a member data query
   * `DiscordLevelingSystem.each_member_data(..., limit: Optional[int] = None)`
+* Added the ability to get the next level for a member
+  * `DiscordLevelingSystem.next_level(member: discord.Member)`
+* Added the ability to get the `dict` that represents the leveling systems level/XP requirement process
+  * `DiscordLevelingSystem.levels_and_xp()`
 * Added `__repr__` to the `DiscordLevelingSystem.Bonus` class
 
 ## v1.0.2 » Sept. 4, 2021

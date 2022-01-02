@@ -221,6 +221,19 @@ class DiscordLevelingSystem:
                 raise DiscordLevelingSystemError('When setting the role_ids for bonus XP, the role ID sequence cannot be empty')
     
     @staticmethod
+    def levels_and_xp() -> Dict[str, int]:
+        """|static method|
+        
+        Get the raw :class:`dict` representation for the amount of levels/XP in the system. The keys in the :class:`dict` returned is each level, and the values are the amount of XP needed to be
+        awarded that level
+        
+        Returns
+        -------
+        Dict[:class:`str`, :class:`int`]
+        """
+        return LEVELS_AND_XP.copy()
+    
+    @staticmethod
     def get_xp_for_level(level: int) -> int:
         """|static method|
         
@@ -1272,6 +1285,40 @@ class DiscordLevelingSystem:
         else:
             details = _next_level_details(data.level)
             return details.xp_needed - data.xp
+    
+    @db_file_exists
+    @leaderboard_exists
+    @verify_leaderboard_integrity
+    async def next_level(self, member: Member) -> int:
+        """|coro|
+        
+        Get the next level for the specified member
+        
+        Parameters
+        ----------
+        member: :class:`discord.Member`
+            Member to get the next level for
+        
+        Returns
+        -------
+        :class:`int`: If the member is currently max level (100), it will return 100. This can also return :class:`None` if the member is not in the database
+
+        Raises
+        ------
+        - `DatabaseFileNotFound`: The database file was not found
+        - `LeaderboardNotFound`: Table "leaderboard" in the database file is missing
+        - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
+        - `NotConnected`: Attempted to use a method that requires a connection to a database file
+        """
+        data = await self.get_data_for(member)
+        if not data:
+            return None
+        else:
+            next_level = data.level + 1
+            if next_level > MAX_LEVEL:
+                return MAX_LEVEL
+            else:
+                return next_level
     
     @db_file_exists
     @leaderboard_exists

@@ -562,6 +562,23 @@ bot.run(...)
     * `DiscordLevelingSystemError` - Parameter `member` was not of type `discord.Member` or `int`
 
 
+* *await static method* **levels_and_xp**( ) -  Get the raw `dict` representation for the amount of levels/XP in the system. The keys in the `dict` returned is each level, and the values are the amount of XP needed to be awarded that level
+  * **Returns**
+    * (`Dict[str, int]`)
+
+
+* *await* **next_level**(`member`) - Get the next level for the specified member
+  * **Parameters**
+    * **member** (`discord.Member`) Member to get the next level for
+  * **Returns**
+    * (`int`) If the member is currently max level (100), it will return 100. This can also return `None` if the member is not in the database
+  * **Raises**
+    * `DatabaseFileNotFound` - The database file was not found
+    * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
+    * `ImproperLeaderboard` - Leaderboard table was altered. Components changed or deleted
+    * `NotConnected` - Attempted to use a method that requires a connection to a database file
+
+
 * *await* **next_level_up**(`member`) - Get the amount of XP needed for the specified member to level up
   * **Parameters**
     * **member** (`discord.Member`) Member to get the amount of XP needed for a level up
