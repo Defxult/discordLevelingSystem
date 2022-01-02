@@ -205,6 +205,9 @@ class DiscordLevelingSystem:
         """
         __slots__ = ('role_ids', 'bonus_amount', 'multiply')
 
+        def __repr__(self):
+            return f'<Bonus role_ids={self.role_ids} bonus_amount={self.bonus_amount} multiply={self.multiply}>'
+
         def __init__(self, role_ids: Sequence[int], bonus_amount: int, multiply: bool):
             if len(role_ids) >= 1:
                 self.role_ids = role_ids
