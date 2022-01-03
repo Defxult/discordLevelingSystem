@@ -230,6 +230,8 @@ class DiscordLevelingSystem:
         Returns
         -------
         Dict[:class:`str`, :class:`int`]
+
+            .. added:: v1.1.0
         """
         return LEVELS_AND_XP.copy()
     
@@ -1309,16 +1311,15 @@ class DiscordLevelingSystem:
         - `LeaderboardNotFound`: Table "leaderboard" in the database file is missing
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
+        
+            .. added:: v1.1.0
         """
         data = await self.get_data_for(member)
         if not data:
             return None
         else:
             next_level = data.level + 1
-            if next_level > MAX_LEVEL:
-                return MAX_LEVEL
-            else:
-                return next_level
+            return MAX_LEVEL if next_level > MAX_LEVEL else next_level
     
     @db_file_exists
     @leaderboard_exists
