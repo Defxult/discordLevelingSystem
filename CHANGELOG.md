@@ -1,5 +1,6 @@
 ## v1.1.0 » After pycord 2.0 officially releases
-As a lot of you may know, the development of discord.py has ended. Discord will be pushing breaking changes to their API in the future, so it would be unwise to stick with a library that is no longer being maintained. With that said, a lot of developers are searching for alternatives to replace discord.py. There are plenty of forks out there, but from what I've seen a majority of developers are migrating over to [pycord](https://github.com/Pycord-Development/pycord). I've tested pycord with this library and it works well. Pycord is the Discord library I have chosen to continue development of this library. Versions 1.1.0+ will be using pycord
+#### Library Change
+* With the discontinuation of discord.py, this library is now dependent on [pycord](https://github.com/Pycord-Development/pycord)
 #### New Features
 * Added more `typing.Optional` for parameters. Implemented the use of `typing.ClassVar` and `collections.abc.Sequence`. A handful of parameters that specified a `List[x]` never really *needed* to be a list. All parameters that specified a `List[x]` has been changed to `Sequence[x]`, but parameters that still require a list are still type hinted as `List[x]`
 * Added `LevelUpAnnouncement.Member.display_avatar_url`. Used to access member avatars that are guild specific
