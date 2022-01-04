@@ -460,6 +460,8 @@ bot.run(...)
 * *await* **get_data_for**(`member`) - Get the `MemberData` object that represents the specified member
   * **Parameters**
     * **member** (`discord.Member`) The member to get the data for
+  * **Returns**
+    * (`MemberData`) Can be `None` if the member isn't in the database
   * **Raises**
     * `DatabaseFileNotFound` - The database file was not found
     * `LeaderboardNotFound` - Table "leaderboard" in the database file is missing
@@ -595,7 +597,7 @@ bot.run(...)
   * **Parameters**
     * **guild** (`Optional[discord.Guild]`) The guild to extract the raw database contents from. If `None`, information about all guilds will be extracted
   * **Returns**
-    * `List[tuple]` The tuples inside the list represents each row of the database:
+    * `List[Tuple[int, int, str, int, int, int]]` The tuples inside the list represents each row of the database:
       * Index 0 is the guild ID
       * Index 1 is their ID
       * Index 2 is their name
