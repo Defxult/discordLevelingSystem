@@ -564,7 +564,7 @@ bot.run(...)
     * `DiscordLevelingSystemError` - Parameter `member` was not of type `discord.Member` or `int`
 
 
-* *await static method* **levels_and_xp**( ) -  Get the raw `dict` representation for the amount of levels/XP in the system. The keys in the `dict` returned is each level, and the values are the amount of XP needed to be awarded that level
+* *static method* **levels_and_xp**( ) -  Get the raw `dict` representation for the amount of levels/XP in the system. The keys in the `dict` returned is each level, and the values are the amount of XP needed to be awarded that level
   * **Returns**
     * (`Dict[str, int]`)
 
