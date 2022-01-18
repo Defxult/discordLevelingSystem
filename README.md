@@ -13,7 +13,7 @@ The GitHub version of this library will always have the latest changes, fixes, a
 
   * pycord 2.0 development version is needed
   ```
-  $ pip install git+hhttps://github.com/Pycord-Development/pycord
+  $ pip install git+https://github.com/Pycord-Development/pycord
   ```
 
 * `PyPI: v1.0.2`
