@@ -1,7 +1,7 @@
 A library to implement a leveling system into a discord bot. One of the most popular discord bots out there is MEE6 and it's leveling system. This library provides ways to easily implement one for yourself. It uses SQLite (aiosqlite) to locally query things such as their XP, rank, and level. Various amounts of other methods and classes are also provided so you can access or remove contents from the database file.
 
 ## Important Notice
-With the discontinuation of discord.py, this library now uses [pycord](https://github.com/Pycord-Development/pycord) as it's primary Discord library. If you're still using discord.py, check out the [discord.py-support](https://github.com/Defxult/discordLevelingSystem/tree/discord.py-support) branch.
+With the discontinuation of discord.py, as of `v1.1.0` this library now uses [pycord](https://github.com/Pycord-Development/pycord) as it's primary Discord library. If you're still using discord.py, check out the [discord.py-support](https://github.com/Defxult/discordLevelingSystem/tree/discord.py-support) branch.
 
 ## GitHub Updates vs PyPI Updates
 The GitHub version of this library will always have the latest changes, fixes, and additions before the [PyPI](https://pypi.org/project/discordLevelingSystem/) version. You can install the GitHub version by following the instructions below. The current README.md documentation represents the GitHub version of this library. If you are using the PyPI version of this library, it is suggested to read the README.md that matches your PyPI version [here](https://github.com/Defxult/discordLevelingSystem/releases) because documentation may have changed.
