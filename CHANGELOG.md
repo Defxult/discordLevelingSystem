@@ -2,7 +2,6 @@
 #### Library Change
 * With the discontinuation of discord.py, this library is now dependent on [pycord](https://github.com/Pycord-Development/pycord)
 #### New Features
-* Added more `typing.Optional` for parameters. Implemented the use of `typing.ClassVar` and `collections.abc.Sequence`. A handful of parameters that specified a `List[x]` never really *needed* to be a list. All parameters that specified a `List[x]` has been changed to `Sequence[x]`, but parameters that still require a list are still type hinted as `List[x]`
 * Added `LevelUpAnnouncement.Member.display_avatar_url`. Used to access member avatars that are guild specific
 * Added `LevelUpAnnouncement.Member.banner_url`. Used to access member banners
 * Added the ability to get the total amount of XP needed for a level
@@ -13,8 +12,10 @@
   * `DiscordLevelingSystem.next_level(member: discord.Member)`
 * Added the ability to get the `dict` that represents the leveling systems level/XP requirement process
   * `DiscordLevelingSystem.levels_and_xp()`
+#### Miscellaneous
 * Added `__repr__` to the `DiscordLevelingSystem.Bonus` class
 * Added `__all__` for the library itself (`from discordLevelingSystem import *`)
+* Added more `typing.Optional` for parameters. Implemented the use of `typing.ClassVar` and `collections.abc.Sequence`. A handful of parameters that specified a `List[x]` never really *needed* to be a list. All parameters that specified a `List[x]` has been changed to `Sequence[x]`, but parameters that still require a list are still type hinted as `List[x]`
 
 ## v1.0.2 » Sept. 4, 2021
 <details>
