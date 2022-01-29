@@ -29,9 +29,8 @@ tags = [
     'level up',
     'level system',
     'mee6',
-    #> uncomment when released
-    # 'pycord',
-    # 'py-cord',
+    'pycord',
+    'py-cord',
     'rank',
     'ranking',
     'role award',
