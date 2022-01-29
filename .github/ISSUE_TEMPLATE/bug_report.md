@@ -21,9 +21,11 @@ Minimal code to reproduce the bug/error
 [traceback here]
 ```
 
-**Checklist**
+**Required Checklist**
+- [ ] My Python version is 3.8 or higher
+- [ ] I am using discordLevelingSystem v1.1.0 or higher
+- [ ] I am using Pycord v2.0 or higher
 - [ ] I have the required [intents](https://github.com/Defxult/discordLevelingSystem#intents) enabled
-- [ ] This issue is not a duplicate
 
 **Version Info**
 What version of the library are you using? `print(discordLevelingSystem.version_info())`
