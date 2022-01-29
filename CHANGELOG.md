@@ -1,4 +1,4 @@
-## v1.1.0 » After pycord 2.0 officially releases
+## v1.1.0 » Jan. 29, 2022
 #### Library Change
 * With the discontinuation of discord.py, this library is now dependent on [pycord](https://github.com/Pycord-Development/pycord)
 #### New Features
