@@ -3,10 +3,10 @@
   <summary>Click to display changelog</summary> -->
 
 #### Library Change
-* The developer of discord.py has decided to revive the project. Since this library was originally dependent on discord.py, as of this version it no longer dependent on pycord, and will be using discord.py 2.0 and higher for the duration of this library.
+* The developer of discord.py has decided to revive the project. Since this library was originally dependent on discord.py, as of this version it is no longer dependent on pycord and will be using discord.py 2.0 or higher for the duration of this library.
 
 #### New Features
-* Added a shortcut method to function `version_info()`
+* Added a shortcut method to function `discordLevelingSystem.version_info()`. Instead of importing the namespace, simply use the class `DiscordLevelingSystem` to quickly access the same information.
   * `DiscordLevelingSystem.version_info()`
 * Parameter `path` is now optional in method `DiscordLevelingSystem.create_database_file()`. If left as `None`, the database file is created in the current working directory.
 
