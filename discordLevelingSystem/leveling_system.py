@@ -31,7 +31,7 @@ import shutil
 from collections.abc import Sequence
 from datetime import datetime
 from inspect import cleandoc
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, NamedTuple, Optional, Tuple, Union
 
 import aiosqlite
 from discord import Guild, Member, Message, MessageType, Role
@@ -113,20 +113,21 @@ class DiscordLevelingSystem:
         self.stack_awards: bool = kwargs.get('stack_awards', True)
         self.level_up_announcement: Union[LevelUpAnnouncement, Sequence[LevelUpAnnouncement]] = kwargs.get('level_up_announcement', LevelUpAnnouncement())
 
+        self._connection: Optional[aiosqlite.Connection] = None
+        self._cursor: Optional[aiosqlite.Cursor] = None
+        
         self._cooldown = CooldownMapping.from_cooldown(rate, per, BucketType.member)
-        self._connection: aiosqlite.Connection = None
-        self._cursor: aiosqlite.Cursor = None
         self._loop = asyncio.get_event_loop()
-        self._database_file_path: str = None
+        self._database_file_path: Optional[str] = None
 
         # v0.0.2
-        self._message_author: Member = None
+        self._message_author: Optional[Member] = None
 
         # v1.0.0
         self.active = True
 
         # v1.0.2
-        self.bot: Union[AutoShardedBot, Bot] = kwargs.get('bot')
+        self.bot: Optional[Union[AutoShardedBot, Bot]] = kwargs.get('bot')
     
     @property
     def rate(self) -> int:
@@ -151,11 +152,11 @@ class DiscordLevelingSystem:
         return self.__per
     
     @property
-    def database_file_path(self) -> str:
+    def database_file_path(self) -> Optional[str]:
         """
         Returns
         -------
-        :class:`str`: The path of the current database file. Could be :class:`None` if the database connection was never set
+        Optional[:class:`str`]: The path of the current database file. Could be :class:`None` if the database connection was never set
 
             .. added:: v1.0.2
         """
@@ -383,7 +384,8 @@ class DiscordLevelingSystem:
                 return
             
             # close the current connection before making a new one
-            await self._connection.close()
+            if self._connection is not None:
+                await self._connection.close()
 
             self._connection = await aiosqlite.connect(path)
             self._cursor = await self._connection.cursor()
@@ -410,7 +412,7 @@ class DiscordLevelingSystem:
             return True
 
         if self.no_xp_roles:
-            all_member_role_ids = [role.id for role in message.author.roles]
+            all_member_role_ids = [role.id for role in message.author.roles] # type: ignore / will always be `discord.Member` because all DM messages are ignored by the lib
             for no_xp_role_id in self.no_xp_roles:
                 if no_xp_role_id in all_member_role_ids:
                     has_no_xp_role = True
@@ -418,7 +420,7 @@ class DiscordLevelingSystem:
 
         return any([has_no_xp_role, in_no_xp_channel])        
     
-    async def _update_record(self, member: Union[Member, int], level: int, xp: int, total_xp: int, guild_id: int, name: str=None, **kwargs) -> None:
+    async def _update_record(self, member: Union[Member, int], level: int, xp: int, total_xp: int, guild_id: int, name: Optional[str]=None, **kwargs) -> None:
         maybe_new_record = kwargs.get('maybe_new_record', False)
         if maybe_new_record and not name:
             raise Exception('kwarg "name" needs to be set when adding a new record')
@@ -427,14 +429,14 @@ class DiscordLevelingSystem:
         # object because that method really only needs the ID to operate on the correct guild. Since this method has no :class:`discord.Guild` object, just make a false guild
         # object so :meth:`DiscordLevelingSystem.is_in_database` will work as intended
         FakeGuild = collections.namedtuple('FakeGuild', 'id')
-        if await self.is_in_database(member, guild=FakeGuild(id=guild_id)):
-            await self._cursor.execute('UPDATE leaderboard SET member_level = ?, member_xp = ?, member_total_xp = ? WHERE member_id = ? AND guild_id = ?', (level, xp, total_xp, member.id if isinstance(member, Member) else member, guild_id))
+        if await self.is_in_database(member, guild=FakeGuild(id=guild_id)): # type: ignore / it's a fake guild, so yes, it's not compatible with `discord.Guild`
+            await self._cursor.execute('UPDATE leaderboard SET member_level = ?, member_xp = ?, member_total_xp = ? WHERE member_id = ? AND guild_id = ?', (level, xp, total_xp, member.id if isinstance(member, Member) else member, guild_id)) # type: ignore
         else:
-            await self._cursor.execute(DiscordLevelingSystem._QUERY_NEW_MEMBER, (guild_id, member.id if isinstance(member, Member) else member, name, level, xp, total_xp))
-        await self._connection.commit()
+            await self._cursor.execute(DiscordLevelingSystem._QUERY_NEW_MEMBER, (guild_id, member.id if isinstance(member, Member) else member, name, level, xp, total_xp)) # type: ignore
+        await self._connection.commit() # type: ignore
     
     @staticmethod
-    def _get_transfer(path: str, loop: asyncio.AbstractEventLoop) -> None:
+    def _get_transfer(path: str, loop: asyncio.AbstractEventLoop) -> NamedTuple:
         """|static method| Connect to the target database file in the specified path and return a named tuple of the connection and cursor
         
             .. added:: v0.0.2
@@ -655,7 +657,8 @@ class DiscordLevelingSystem:
                         {len(successfully_added)} out of {len(users)} users were successfully added to the database file
                     """)
                     if successfully_added:
-                        data: List[MemberData] = [str(await self.get_data_for(stored_member)) for stored_member in successfully_added]
+                        MemberDataStringRepr = str
+                        data: List[MemberDataStringRepr] = [str(await self.get_data_for(stored_member)) for stored_member in successfully_added]
                         joined_data = '\n'.join(data)
                         stats += f'\n\nThe below {len(successfully_added)} user(s) are now apart of the Discord Leveling System and are represented as a MemberData object\n{joined_data}'
                     
@@ -671,7 +674,7 @@ class DiscordLevelingSystem:
         else:
             raise DiscordLevelingSystemError(f'Your bot is not in guild {guild_id}')
     
-    def get_awards(self, guild: Optional[Union[Guild, int]]=None) -> Union[Dict[int, List[RoleAward]], List[RoleAward]]:
+    def get_awards(self, guild: Optional[Union[Guild, int]]=None) -> Optional[Union[Dict[int, List[RoleAward]], List[RoleAward]]]:
         """Get all :class:`RoleAward`'s or only the :class:`RoleAward`'s assigned to the specified guild
 
         Parameters
@@ -681,7 +684,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        Union[Dict[:class:`int`, List[:class:`RoleAward`]], List[:class:`RoleAward`]]: If :param:`guild` is :class:`None`, this returns the awards :class:`dict` that was set in constructor. If :param:`guild`
+        Optional[Union[Dict[:class:`int`, List[:class:`RoleAward`]], List[:class:`RoleAward`]]]: If :param:`guild` is :class:`None`, this returns the awards :class:`dict` that was set in constructor. If :param:`guild`
         is specified, it returns a List[:class:`RoleAward`] that matches the specified guild ID. Can also return :class:`None` if awards were never set or if the awards for the specified guild was not found
         
             .. added:: v1.0.0
@@ -839,7 +842,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def refresh_names(self, guild: Guild) -> Optional[int]:
+    async def refresh_names(self, guild: Guild) -> int:
         """|coro|
         
         Update names inside the database. This does not add anything new. It simply verifies if the name in the database matches their current name, and if they don't match, update
@@ -852,7 +855,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        Optional[:class:`int`]: The amount of records in the database that were updated
+        :class:`int`: The amount of records in the database that were updated
 
         Raises
         ------
@@ -861,7 +864,7 @@ class DiscordLevelingSystem:
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         """
-        async with self._connection.execute('SELECT member_id, member_name FROM leaderboard WHERE guild_id = ?', (guild.id,)) as cursor:
+        async with self._connection.execute('SELECT member_id, member_name FROM leaderboard WHERE guild_id = ?', (guild.id,)) as cursor: # type: ignore
             result = await cursor.fetchall()
             names_updated = 0
             if result:
@@ -876,7 +879,7 @@ class DiscordLevelingSystem:
                             names_updated += 1
                 else: 
                     await cursor.executemany('UPDATE leaderboard SET member_name = ? WHERE member_id = ? AND guild_id = ?', to_execute)
-                    await self._connection.commit()
+                    await self._connection.commit() # type: ignore
 
             return names_updated
     
@@ -909,16 +912,16 @@ class DiscordLevelingSystem:
                     Added :param:`guild`
         """
         if intentional:
-            if guild:   await self._cursor.execute('DELETE FROM leaderboard WHERE guild_id = ?', (guild.id,))
-            else:       await self._cursor.execute('DELETE FROM leaderboard')
-            await self._connection.commit()
+            if guild:   await self._cursor.execute('DELETE FROM leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
+            else:       await self._cursor.execute('DELETE FROM leaderboard') # type: ignore
+            await self._connection.commit() # type: ignore
         else:
             raise FailSafe
     
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def clean_database(self, guild: Guild) -> Optional[int]:
+    async def clean_database(self, guild: Guild) -> int:
         """|coro|
         
         Removes the data for members that are no longer in the guild, thus reducing the database file size. It is recommended to have this method in a background loop
@@ -931,8 +934,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        Optional[:class:`int`]:
-            The amount of records that were removed from the database
+        :class:`int`: The amount of records that were removed from the database
         
         Raises
         ------
@@ -945,7 +947,7 @@ class DiscordLevelingSystem:
                 v0.0.2
                     Replaced :param:`all_members` with :param:`guild`
         """
-        result = await self._connection.execute_fetchall('SELECT member_id FROM leaderboard WHERE guild_id = ?', (guild.id,))
+        result = await self._connection.execute_fetchall('SELECT member_id FROM leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
         all_ids = [i[0] for i in result]
         to_execute = []
         records_removed = 0
@@ -958,8 +960,8 @@ class DiscordLevelingSystem:
                 records_removed += 1
         else:
             if records_removed:
-                await self._cursor.executemany('DELETE FROM leaderboard WHERE member_id = ? AND guild_id = ?', to_execute)
-                await self._connection.commit()
+                await self._cursor.executemany('DELETE FROM leaderboard WHERE member_id = ? AND guild_id = ?', to_execute) # type: ignore
+                await self._connection.commit() # type: ignore
             return records_removed
     
     @db_file_exists
@@ -982,8 +984,8 @@ class DiscordLevelingSystem:
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         """
-        await self._cursor.execute('UPDATE leaderboard SET member_level = 0, member_xp = 0, member_total_xp = 0 WHERE member_id = ? AND guild_id = ?', (member.id, member.guild.id))
-        await self._connection.commit()
+        await self._cursor.execute('UPDATE leaderboard SET member_level = 0, member_xp = 0, member_total_xp = 0 WHERE member_id = ? AND guild_id = ?', (member.id, member.guild.id)) # type: ignore
+        await self._connection.commit() # type: ignore
     
     @db_file_exists
     @leaderboard_exists
@@ -1014,9 +1016,9 @@ class DiscordLevelingSystem:
                     Added :param:`guild`
         """
         if intentional:
-            if guild: await self._cursor.execute('UPDATE leaderboard SET member_level = 0, member_xp = 0, member_total_xp = 0 WHERE guild_id = ?', (guild.id,))
-            else:     await self._cursor.execute('UPDATE leaderboard SET member_level = 0, member_xp = 0, member_total_xp = 0')
-            await self._connection.commit()
+            if guild: await self._cursor.execute('UPDATE leaderboard SET member_level = 0, member_xp = 0, member_total_xp = 0 WHERE guild_id = ?', (guild.id,)) # type: ignore
+            else:     await self._cursor.execute('UPDATE leaderboard SET member_level = 0, member_xp = 0, member_total_xp = 0') # type: ignore
+            await self._connection.commit() # type: ignore
         else:
             raise FailSafe
     
@@ -1053,7 +1055,7 @@ class DiscordLevelingSystem:
             path = os.path.join(path, 'discord_leveling_system.json')
             container = []
             if guild:
-                data = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ?', (guild.id,))
+                data = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
                 levels = {}
                 for m_id, m_name, m_lvl, m_xp, m_total_xp in data:
                     levels = {
@@ -1069,7 +1071,7 @@ class DiscordLevelingSystem:
                         json.dump(container, fp, indent=4)
             
             else:
-                data = await self._connection.execute_fetchall('SELECT * FROM leaderboard')
+                data = await self._connection.execute_fetchall('SELECT * FROM leaderboard') # type: ignore
                 for info in data:
                     guild_id = info[0]
                     member_id = info[1]
@@ -1129,8 +1131,8 @@ class DiscordLevelingSystem:
                 v0.0.2
                     Added :param:`guild`
         """
-        if guild:   return await self._connection.execute_fetchall('SELECT * FROM leaderboard WHERE guild_id = ?', (guild.id,))
-        else:       return await self._connection.execute_fetchall('SELECT * FROM leaderboard')
+        if guild:   return await self._connection.execute_fetchall('SELECT * FROM leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
+        else:       return await self._connection.execute_fetchall('SELECT * FROM leaderboard') # type: ignore
     
     @db_file_exists
     @leaderboard_exists
@@ -1172,8 +1174,8 @@ class DiscordLevelingSystem:
                 query = 'DELETE FROM leaderboard WHERE member_id = ? AND guild_id = ?' if guild else 'DELETE FROM leaderboard WHERE member_id = ?'
                 params = (member_id, guild.id) if guild else (member_id,)
                 
-                await self._cursor.execute(query, params)
-                await self._connection.commit()
+                await self._cursor.execute(query, params) # type: ignore
+                await self._connection.commit() # type: ignore
             return removable
         else:
             raise DiscordLevelingSystemError(f'Parameter "member" expected discord.Member or int, got {member.__class__.__name__}')
@@ -1215,7 +1217,7 @@ class DiscordLevelingSystem:
         query = 'SELECT * FROM leaderboard WHERE member_id = ? AND guild_id = ?' if guild else 'SELECT * FROM leaderboard WHERE member_id = ?'
         params = (arg, guild.id) if guild else (arg,)
         
-        async with self._connection.execute(query, params) as cursor:
+        async with self._connection.execute(query, params) as cursor: # type: ignore
             result = await cursor.fetchone()
             if result: return True
             else: return False
@@ -1248,17 +1250,17 @@ class DiscordLevelingSystem:
                 v0.0.2
                     Added :param:`guild`
         """
-        if guild:   await self._cursor.execute('SELECT COUNT(*) from leaderboard WHERE guild_id = ?', (guild.id,))
-        else:       await self._cursor.execute('SELECT COUNT(*) from leaderboard')
+        if guild:   await self._cursor.execute('SELECT COUNT(*) from leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
+        else:       await self._cursor.execute('SELECT COUNT(*) from leaderboard') # type: ignore
         
-        result = await self._cursor.fetchone()
+        result = await self._cursor.fetchone() # type: ignore
         if result: return result[0]
         else: return 0
     
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def next_level_up(self, member: Member) -> int:
+    async def next_level_up(self, member: Member) -> Optional[int]:
         """|coro|
         
         Get the amount of XP needed for the specified member to level up
@@ -1270,7 +1272,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`: Returns 0 if the member is currently at max level. Can return :class:`None` if the member is not in the database.
+        Optional[:class:`int`]: Returns 0 if the member is currently at max level. Can return :class:`None` if the member is not in the database.
 
         Raises
         ------
@@ -1286,12 +1288,12 @@ class DiscordLevelingSystem:
             return 0
         else:
             details = _next_level_details(data.level)
-            return details.xp_needed - data.xp
+            return details.xp_needed - data.xp # type: ignore / attr exists
     
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def next_level(self, member: Member) -> int:
+    async def next_level(self, member: Member) -> Optional[int]:
         """|coro|
         
         Get the next level for the specified member
@@ -1303,7 +1305,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`: If the member is currently max level (100), it will return 100. This can also return :class:`None` if the member is not in the database
+        Optional[:class:`int`]: If the member is currently max level (100), it will return 100. This can also return :class:`None` if the member is not in the database
 
         Raises
         ------
@@ -1324,7 +1326,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def get_xp_for(self, member: Member) -> int:
+    async def get_xp_for(self, member: Member) -> Optional[int]:
         """|coro|
         
         Get the XP for the specified member
@@ -1336,7 +1338,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`: Can be :class:`None` if the member isn't in the database
+        Optional[:class:`int`]: Can be :class:`None` if the member isn't in the database
 
         Raises
         ------
@@ -1352,7 +1354,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def get_total_xp_for(self, member: Member) -> int:
+    async def get_total_xp_for(self, member: Member) -> Optional[int]:
         """|coro|
         
         Get the total XP for the specified member
@@ -1364,7 +1366,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`: Can be :class:`None` if the member isn't in the database
+        Optional[:class:`int`]: Can be :class:`None` if the member isn't in the database
 
         Raises
         ------
@@ -1380,7 +1382,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def get_level_for(self, member: Member) -> int:
+    async def get_level_for(self, member: Member) -> Optional[int]:
         """|coro|
         
         Get the level for the specified member
@@ -1392,7 +1394,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`: Can be :class:`None` if the member isn't in the database
+        Optional[:class:`int`]: Can be :class:`None` if the member isn't in the database
 
         Raises
         ------
@@ -1408,7 +1410,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def get_data_for(self, member: Member) -> MemberData:
+    async def get_data_for(self, member: Member) -> Optional[MemberData]:
         """|coro|
         
         Get the :class:`MemberData` object that represents the specified member
@@ -1420,7 +1422,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`MemberData`: Can return :class:`None` if the member was not found in the database
+        Optional[:class:`MemberData`]: Can return :class:`None` if the member was not found in the database
 
         Raises
         ------
@@ -1429,7 +1431,7 @@ class DiscordLevelingSystem:
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         """
-        async with self._connection.execute('SELECT * FROM leaderboard WHERE member_id = ? AND guild_id = ?', (member.id, member.guild.id)) as cursor:
+        async with self._connection.execute('SELECT * FROM leaderboard WHERE member_id = ? AND guild_id = ?', (member.id, member.guild.id)) as cursor: # type: ignore
             result = await cursor.fetchone()
             if result:
                 m_id = result[1]
@@ -1494,21 +1496,21 @@ class DiscordLevelingSystem:
                 return data if limit is None else data[:limit]
 
             if not sort_by:
-                result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ?', (guild.id,))
+                result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
                 return await result_to_memberdata(result)
             else:
                 sort_by = sort_by.lower()
                 if sort_by in ('name', 'level', 'xp', 'rank'):
                     if sort_by == 'name':
-                        result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ? ORDER BY member_name COLLATE NOCASE', (guild.id,))
+                        result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ? ORDER BY member_name COLLATE NOCASE', (guild.id,)) # type: ignore
                         return await result_to_memberdata(result)
                     
                     elif sort_by == 'level':
-                        result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ? ORDER BY member_level DESC', (guild.id,))
+                        result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ? ORDER BY member_level DESC', (guild.id,)) # type: ignore
                         return await result_to_memberdata(result)
                     
                     elif sort_by == 'xp':
-                        result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ? ORDER BY member_total_xp DESC', (guild.id,))
+                        result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ? ORDER BY member_total_xp DESC', (guild.id,)) # type: ignore
                         return await result_to_memberdata(result)
 
                     elif sort_by == 'rank':
@@ -1518,11 +1520,11 @@ class DiscordLevelingSystem:
                                 md.rank = 0
                             return md
                         
-                        result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ?', (guild.id,))
+                        result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
                         all_data: List[MemberData] = await result_to_memberdata(result)
                         
                         converted = [convert(md) for md in all_data] # convert the data so it can be sorted properly
-                        sorted_converted = sorted(converted, key=lambda md: md.rank)
+                        sorted_converted = sorted(converted, key=lambda md: md.rank) # type: ignore
 
                         no_rank = [md for md in sorted_converted if md.rank == 0]
                         with_rank = [md for md in sorted_converted if md.rank != 0]
@@ -1544,7 +1546,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def get_rank_for(self, member: Member) -> int:
+    async def get_rank_for(self, member: Member) -> Optional[int]:
         """|coro|
         
         Get the rank for the specified member
@@ -1556,7 +1558,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        :class:`int`: Can be :class:`None` if the member isn't ranked yet
+        Optional[:class:`int`]: Can be :class:`None` if the member isn't ranked yet
 
         Raises
         ------
@@ -1565,7 +1567,7 @@ class DiscordLevelingSystem:
         - `ImproperLeaderboard`: Leaderboard table was altered. Components changed or deleted
         - `NotConnected`: Attempted to use a method that requires a connection to a database file
         """
-        result = await self._connection.execute_fetchall('SELECT member_id FROM leaderboard WHERE guild_id = ? ORDER BY member_total_xp DESC', (member.guild.id,))
+        result = await self._connection.execute_fetchall('SELECT member_id FROM leaderboard WHERE guild_id = ? ORDER BY member_total_xp DESC', (member.guild.id,)) # type: ignore
         all_ids = [m_id[0] for m_id in result]
         try:
             rank = all_ids.index(member.id) + 1
@@ -1621,17 +1623,17 @@ class DiscordLevelingSystem:
         if isinstance(fetch, str):
             fetch = fetch.upper()
             if fetch in ('ALL', 'ONE'):
-                async with self._connection.execute(sql, parameters) as cursor:
+                async with self._connection.execute(sql, parameters) as cursor: # type: ignore
                     if fetch == 'ALL':
-                        return await cursor.fetchall()
+                        return await cursor.fetchall() # type: ignore
                     elif fetch == 'ONE':
-                        return await cursor.fetchone()
+                        return await cursor.fetchone() # type: ignore
             else:
                 raise DiscordLevelingSystemError(f'Fetch {fetch!r} not recognized')
         elif isinstance(fetch, int):
             if fetch > 0:
-                async with self._connection.execute(sql, parameters) as cursor:
-                    return await cursor.fetchmany(fetch)
+                async with self._connection.execute(sql, parameters) as cursor: # type: ignore
+                    return await cursor.fetchmany(fetch) # type: ignore
             else:
                 raise DiscordLevelingSystemError('Argument "fetch" must be greater than zero')
         else:
@@ -1660,12 +1662,12 @@ class DiscordLevelingSystem:
             .. NOTE
                 This is called AFTER we update or insert a new member into the database from :meth:`award_xp`, so :meth:`fetchone` will always return something
         """
-        async with self._connection.execute('SELECT member_name FROM leaderboard WHERE member_id = ? AND guild_id = ?', (message.author.id, message.author.guild.id)) as cursor:
+        async with self._connection.execute('SELECT member_name FROM leaderboard WHERE member_id = ? AND guild_id = ?', (message.author.id, message.author.guild.id)) as cursor: # type: ignore
             data = await cursor.fetchone()
-            database_name = data[0]
+            database_name = data[0] # type: ignore / will always have a value because as *soon* as a member sends a message, the database is updated to contain a value to fetch
             if database_name != str(message.author):
-                await cursor.execute('UPDATE leaderboard SET member_name = ? WHERE member_id = ? AND guild_id = ?', (str(message.author), message.author.id, message.author.guild.id))
-                await self._connection.commit()
+                await cursor.execute('UPDATE leaderboard SET member_name = ? WHERE member_id = ? AND guild_id = ?', (str(message.author), message.author.id, message.author.guild.id)) # type: ignore
+                await self._connection.commit() # type: ignore
     
     async def _handle_level_up(self, message: Message, md: MemberData, leveled_up: bool) -> None:
         """|coro| Gives/removes roles from members that leveled up and met the :class:`RoleAward` requirement. This also sends the level up message
@@ -1684,13 +1686,11 @@ class DiscordLevelingSystem:
                     Added handling for event `on_dls_level_up`
         """
         if leveled_up:
-            member = message.author       
+            member: Member = message.author # type: ignore / `.author` will be :class:`discord.Member` (lib doesn't work in DMs)
             
-            def role_exists(award: RoleAward):
+            def role_exists(award: RoleAward) -> Optional[Role]:
                 """Check to ensure the role associated with the :class:`RoleAward` still exists in the guild. If it does, it returns that discord role object for use"""
-                role_obj = message.guild.get_role(award.role_id)
-                if role_obj: return role_obj
-                else: return False
+                return message.guild.get_role(award.role_id) # type: ignore / `.guild` will always be :class:`discord.Guild`
             
             async def send_announcement(announcement_message, channel, send_kwargs):
                 """|coro| Send the level up message
@@ -1710,18 +1710,18 @@ class DiscordLevelingSystem:
                 lua._total_xp = md.total_xp
                 lua._level = md.level
                 lua._rank = md.rank
-                announcement_message = lua._parse_message(lua.message, self._message_author)
+                announcement_message = lua._parse_message(lua.message, self._message_author) # type: ignore
 
                 if lua.level_up_channel_ids:
                     channel_found = False
                     for channel_id in lua.level_up_channel_ids:
-                        channel = message.guild.get_channel(channel_id)
+                        channel = message.guild.get_channel(channel_id) # type: ignore / `.guild` will always be :class:`discord.Guild`
                         if channel:
                             channel_found = True
                             break
                     
                     if channel_found:
-                        await send_announcement(announcement_message, channel, lua._send_kwargs)
+                        await send_announcement(announcement_message, channel, lua._send_kwargs) # type: ignore / this will not execute if channel not found
                     else:
                         await send_announcement(announcement_message, message.channel, lua._send_kwargs)
                 else:
@@ -1731,7 +1731,7 @@ class DiscordLevelingSystem:
             if self._awards:
                 try:
                     # get the list of RoleAwards that match the guild ID
-                    guild_role_awards: List[RoleAward] = self._awards[message.guild.id]
+                    guild_role_awards: List[RoleAward] = self._awards[message.guild.id] # type: ignore / `.guild` will always be :class:`discord.Guild`
                 except KeyError:
                     return
                 else:
@@ -1740,15 +1740,15 @@ class DiscordLevelingSystem:
                     if role_award:
                         role_award = role_award[0]
                         if self.stack_awards:
-                            role_obj: Role = role_exists(award=role_award)
+                            role_obj: Optional[Role] = role_exists(award=role_award)
                             if role_obj:
                                 await member.add_roles(role_obj)
                             else:
                                 return
                         else:
                             last_award: RoleAward = self._get_last_award(role_award, guild_role_awards)
-                            role_to_remove: Role = role_exists(award=last_award)
-                            role_to_add: Role = role_exists(award=role_award)
+                            role_to_remove: Optional[Role] = role_exists(award=last_award)
+                            role_to_add: Optional[Role] = role_exists(award=role_award)
                             
                             # Note: Don't use an exception here because of multi-guild support
                             if not role_to_remove or not role_to_add:
@@ -1852,11 +1852,11 @@ class DiscordLevelingSystem:
                 amount = random.randint(amount[0], amount[1])
             
             # bonus XP
-            bonus: DiscordLevelingSystem.Bonus = kwargs.get('bonus')
+            bonus: Optional[DiscordLevelingSystem.Bonus] = kwargs.get('bonus')
             if bonus:
                 for role_id in bonus.role_ids:
-                    role = message.guild.get_role(role_id)
-                    if role in message.author.roles:
+                    role: Optional[Role] = message.guild.get_role(role_id) # type: ignore
+                    if role in message.author.roles: # type: ignore / This lib cannot operate with :class:`discord.User` (DM's). It will always be :class:`discord.Member`
                         if bonus.multiply:
                             amount *= bonus.bonus_amount
                         else:
@@ -1871,8 +1871,8 @@ class DiscordLevelingSystem:
 
             if not on_cooldown:
                 member = message.author
-                self._message_author = member
-                async with self._connection.execute('SELECT * FROM leaderboard WHERE member_id = ? AND guild_id = ?', (member.id, member.guild.id)) as cursor:
+                self._message_author = member # type: ignore
+                async with self._connection.execute('SELECT * FROM leaderboard WHERE member_id = ? AND guild_id = ?', (member.id, member.guild.id)) as cursor: # type: ignore
                     record = await cursor.fetchone()
                     member_level_up = False
                     if record:
@@ -1882,25 +1882,25 @@ class DiscordLevelingSystem:
                             SET member_xp = member_xp + ?, member_total_xp = member_total_xp + ?
                             WHERE member_id = ? AND guild_id = ?
                         """
-                        await cursor.execute(query, (amount, amount, member.id, member.guild.id))
-                        await self._connection.commit()
+                        await cursor.execute(query, (amount, amount, member.id, member.guild.id)) # type: ignore
+                        await self._connection.commit() # type: ignore
 
                         # get the updated member data (level is not updated yet)
-                        md = await self.get_data_for(member)
+                        md = await self.get_data_for(member) # type: ignore
 
-                        next_details = _next_level_details(md.level)
-                        if md.xp >= next_details.xp_needed and md.level < next_details.level:
+                        next_details = _next_level_details(md.level) # type: ignore
+                        if md.xp >= next_details.xp_needed and md.level < next_details.level: # type: ignore
                             # update the database with the new level and reset the current XP count
-                            await cursor.execute('UPDATE leaderboard SET member_level = ?, member_xp = ? WHERE member_id = ? AND guild_id = ?', (next_details.level, 0, member.id, member.guild.id))
-                            await self._connection.commit()
+                            await cursor.execute('UPDATE leaderboard SET member_level = ?, member_xp = ? WHERE member_id = ? AND guild_id = ?', (next_details.level, 0, member.id, member.guild.id)) # type: ignore
+                            await self._connection.commit() # type: ignore
                             member_level_up = True
 
-                        md = await self.get_data_for(member)
-                        await self._handle_level_up(message, md, leveled_up=member_level_up)
+                        md = await self.get_data_for(member) # type: ignore
+                        await self._handle_level_up(message, md, leveled_up=member_level_up) # type: ignore
 
                     else:
-                        await cursor.execute(DiscordLevelingSystem._QUERY_NEW_MEMBER, (member.guild.id, member.id, str(member), 0, amount, amount))
-                        await self._connection.commit()
+                        await cursor.execute(DiscordLevelingSystem._QUERY_NEW_MEMBER, (member.guild.id, member.id, str(member), 0, amount, amount)) # type: ignore
+                        await self._connection.commit() # type: ignore
 
                     if refresh_name:
                         await self._refresh_name(message)

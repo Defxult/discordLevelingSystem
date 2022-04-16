@@ -137,7 +137,7 @@ def _next_level_details(current_level: int) -> NamedTuple:
     Details = namedtuple('Details', ['level', 'xp_needed'])
     return Details(level=int(key), xp_needed=val)
 
-def _find_level(current_total_xp: int) -> int:
+def _find_level(current_total_xp: int) -> int: # type: ignore / this WILL return an `int` unless the user intentionally changed the values by altering the code 
     """Return the members current level based on their total XP
 
     NOTE: Do not use this with detecting level ups in :meth:`award_xp`. Pretty much only made for :meth:`add_xp`, :meth:`remove_xp`
@@ -154,5 +154,6 @@ def _find_level(current_total_xp: int) -> int:
             if 0 <= current_total_xp <= xp_needed:
                 level = int(level)
                 level -= 1
-                if level < 0: level = 0
+                if level < 0:
+                    level = 0
                 return level

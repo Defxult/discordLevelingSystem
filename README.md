@@ -268,7 +268,7 @@ Accessing the raw information inside the database file can look a bit messy if y
 * `level` (`int`) The members level
 * `xp` (`int`) The members xp
 * `total_xp` (`int`) The members total xp
-* `rank` (`int`) The members rank
+* `rank` (`Optional[int]`) The members rank
 * `mention` (`str`) The discord member mention string
 
 ### Methods

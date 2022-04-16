@@ -65,7 +65,7 @@ class AnnouncementMember:
     name: ClassVar[str] = '[$name]'
     nick: ClassVar[str] = '[$nick]'
     
-    Guild: ClassVar[AnnouncementMemberGuild] = AnnouncementMemberGuild
+    Guild: ClassVar[AnnouncementMemberGuild] = AnnouncementMemberGuild()
 
 class LevelUpAnnouncement:
     """A helper class for setting up messages that are sent when someone levels up
@@ -136,14 +136,14 @@ class LevelUpAnnouncement:
     TOTAL_XP: ClassVar[str] = '[$total_xp]'
     LEVEL: ClassVar[str] = '[$level]'
     RANK: ClassVar[str] = '[$rank]'
-    Member: ClassVar[AnnouncementMember] = AnnouncementMember
+    Member: ClassVar[AnnouncementMember] = AnnouncementMember()
 
     def __init__(self, message: Union[str, Embed]=default_message, level_up_channel_ids: Optional[Sequence[int]]=None, allowed_mentions: AllowedMentions=default_mentions, tts: bool=False, delete_after: Optional[float]=None):
         self.message = message
         self.level_up_channel_ids = level_up_channel_ids
-        self._total_xp: int = None
-        self._level: int = None
-        self._rank: int = None
+        self._total_xp: Optional[int] = None
+        self._level: Optional[int] = None
+        self._rank: Optional[int] = None
         self._send_kwargs = {
             'allowed_mentions' : allowed_mentions,
             'tts' : tts,
@@ -177,7 +177,7 @@ class LevelUpAnnouncement:
         """
         markdowns = {
             # member
-            AnnouncementMember.avatar_url : message_author.avatar.url,
+            AnnouncementMember.avatar_url : message_author.avatar.url, # type: ignore / Possible `url` is `None` but that's ok
             AnnouncementMember.banner_url : message_author.banner.url if message_author.banner is not None else None,
             AnnouncementMember.created_at : message_author.created_at,
             AnnouncementMember.default_avatar_url : message_author.default_avatar.url,
@@ -191,7 +191,7 @@ class LevelUpAnnouncement:
             AnnouncementMember.nick : message_author.nick,
 
             # guild
-            AnnouncementMember.Guild.icon_url : message_author.guild.icon.url,
+            AnnouncementMember.Guild.icon_url : message_author.guild.icon.url, # type: ignore / Possible `url` is `None` but that's ok
             AnnouncementMember.Guild.id : message_author.guild.id,
             AnnouncementMember.Guild.name : message_author.guild.name
         }
