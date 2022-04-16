@@ -84,7 +84,7 @@ class RoleAward:
                 if not isinstance(value, list): raise RoleAwardError('When setting the "awards" dict, all values must be of type list')
                 if isinstance(value, list) and not all([isinstance(role_award, RoleAward) for role_award in value]): raise RoleAwardError('When setting the "awards" dict, all values in the list must be of type RoleAward')
             else:
-                RoleAward._guild_id_check(awards.keys())
+                RoleAward._guild_id_check(list(awards.keys()))
                 for award in awards.values():
                     RoleAward._role_id_check(award)
                     RoleAward._level_req_check(award)
