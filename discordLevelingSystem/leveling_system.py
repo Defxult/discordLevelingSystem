@@ -274,15 +274,15 @@ class DiscordLevelingSystem:
             raise DiscordLevelingSystemError(f'Levels only go from 0-100, {level} is not a valid level')
     
     @staticmethod
-    def create_database_file(path: str) -> None:
+    def create_database_file(path: Optional[str]=None) -> None:
         """|static method|
         
         Create the database file and implement the SQL data for the database
         
         Parameters
         ----------
-        path: :class:`str`
-            The location to create the database file
+        path: Optional[:class:`str`]
+            The location to create the database file. If `None`, the file is created in the current working directory
         
         Raises
         ------
@@ -293,6 +293,7 @@ class DiscordLevelingSystem:
                 v0.0.2
                     Added guild_id for database file creation
         """
+        path = os.getcwd() if path is None else path
         if os.path.exists(path) and os.path.isdir(path):
             database_file = os.path.join(path, 'DiscordLevelingSystem.db')
             with open(database_file, mode='w'):

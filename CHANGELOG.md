@@ -8,6 +8,7 @@
 #### New Features
 * Added a shortcut method to function `version_info()`
   * `DiscordLevelingSystem.version_info()`
+* Parameter `path` is now optional in method `DiscordLevelingSystem.create_database_file()`. If left as `None`, the database file is created in the current working directory.
 
 <!-- </details> -->
 
