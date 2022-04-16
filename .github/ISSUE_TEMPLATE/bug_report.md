@@ -23,10 +23,12 @@ Minimal code to reproduce the bug/error
 
 **Required Checklist**
 - [ ] My Python version is 3.8 or higher
-- [ ] I am using discordLevelingSystem v1.1.0 or higher
-- [ ] I am using Pycord v2.0 or higher
+- [ ] I am using discord.py 2.0 or higher
 - [ ] I have the required [intents](https://github.com/Defxult/discordLevelingSystem#intents) enabled
 
 **Version Info**
-What version of the library are you using? `print(discordLevelingSystem.version_info())`
+What version of the library are you using? `print(DiscordLevelingSystem.version_info())`
 - [version here]
+
+My discord.py version is:
+- [discord.py version here]
