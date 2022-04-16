@@ -725,6 +725,9 @@ bot.run(...)
     - `DiscordLevelingSystemError` - One of the databases is missing the "leaderboard" table. A v0.0.2+ database file contains records, or there was an attempt to transfer records from a v0.0.2+ file to another v0.0.2+ file
 
 
+* *static method* **version_info**() - A shortcut to the function `discordLevelingSystem.version_info()`
+
+
 * *await* **wipe_database**(`guild = None, *, intentional = False`) - Delete EVERYTHING from the database. If `guild` is specified, only the information related to that guild will be deleted
   * **Parameters**
     * **guild** (`Optional[discord.Guild]`) The guild for which all information that is related to that guild will be deleted. If `None`, everything will be deleted

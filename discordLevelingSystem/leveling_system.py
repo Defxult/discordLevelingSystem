@@ -222,6 +222,17 @@ class DiscordLevelingSystem:
                 raise DiscordLevelingSystemError('When setting the role_ids for bonus XP, the role ID sequence cannot be empty')
     
     @staticmethod
+    def version_info():
+        """|static method|
+        
+        A shortcut to the function `discordLevelingSystem.version_info()`
+
+            .. added:: v1.2.0
+        """
+        from . import version_info
+        return version_info()
+
+    @staticmethod
     def levels_and_xp() -> Dict[str, int]:
         """|static method|
         

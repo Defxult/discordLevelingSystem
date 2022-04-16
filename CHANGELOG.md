@@ -6,6 +6,8 @@
 * The developer of discord.py has decided to revive the project. Since this library was originally dependent on discord.py, as of this version it no longer dependent on pycord, and will be using discord.py 2.0 and higher for the duration of this library.
 
 #### New Features
+* Added a shortcut method to function `version_info()`
+  * `DiscordLevelingSystem.version_info()`
 
 <!-- </details> -->
 
