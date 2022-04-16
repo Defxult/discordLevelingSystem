@@ -7,7 +7,7 @@ The GitHub version of this library will always have the latest changes, fixes, a
   ```
   You must have [Git](https://git-scm.com/) installed in order to do this. With that said the current README.md documentation represents the GitHub version of this library. If you are using the PyPI version of this library, it is suggested to read the README.md that matches your PyPI version [here](https://github.com/Defxult/discordLevelingSystem/releases) because documentation may have changed.
 
-* `GitHub: v1.1.0`
+* `GitHub: v1.2.0`
 * `PyPI: v1.1.0`
 
 ---
@@ -16,11 +16,6 @@ The GitHub version of this library will always have the latest changes, fixes, a
 $ pip install discordLevelingSystem
 ```
 
-## Notice
-With the discontinuation of discord.py, this library is now dependent on [Pycord](https://github.com/Pycord-Development/pycord). Pycord has been released and is currently in beta. Until it is out of beta, pip installing this library will not automatically install Pycord. When it comes to installing Pycord, you have a few options:
-
-* Option 1 - Install their most recent PyPI 2.0 version [here](https://pypi.org/project/py-cord/#history)
-* Option 2 - Install their development version of the library following their [instructions](https://github.com/Pycord-Development/pycord#installing)
 ---
 
 ## Showcase

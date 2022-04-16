@@ -45,7 +45,7 @@ setup(
     author='Defxult#8269',
     name='discordLevelingSystem',
     description='A library to implement a leveling system into a discord bot. Contains features such as XP, level, ranks, and role awards.',
-    version='1.1.0', 
+    version='1.2.0', 
     url='https://github.com/Defxult/discordLevelingSystem',
     project_urls=details,
     classifiers=classifiers,
@@ -54,6 +54,5 @@ setup(
     license='MIT',
     keywords=tags,
     packages=find_packages(),
-    install_requires=['aiosqlite>=0.17.0']
-    #! update to pycord 2.0.0 when released
+    install_requires=['aiosqlite>=0.17.0'] #! update to discord.py 2.0 when released
 )

@@ -1,4 +1,18 @@
+## v1.2.0 » Future Release
+<!-- <details>
+  <summary>Click to display changelog</summary> -->
+
+#### Library Change
+* The developer of discord.py has decided to revive the project. Since this library was originally dependent on discord.py, as of this version it no longer dependent on pycord, and will be using discord.py 2.0 and higher for the duration of this library.
+
+#### New Features
+
+<!-- </details> -->
+
 ## v1.1.0 » Jan. 29, 2022
+<details>
+  <summary>Click to display changelog</summary>
+
 #### Library Change
 * With the discontinuation of discord.py, this library is now dependent on [pycord](https://github.com/Pycord-Development/pycord)
 #### New Features
@@ -16,6 +30,7 @@
 * Added `__repr__` to the `DiscordLevelingSystem.Bonus` class
 * Added `__all__` for the library itself (`from discordLevelingSystem import *`)
 * Added more `typing.Optional` for parameters. Implemented the use of `typing.ClassVar` and `collections.abc.Sequence`. A handful of parameters that specified a `List[x]` never really *needed* to be a list. All parameters that specified a `List[x]` has been changed to `Sequence[x]`, but parameters that still require a list are still type hinted as `List[x]`
+</details>
 
 ## v1.0.2 » Sept. 4, 2021
 <details>
