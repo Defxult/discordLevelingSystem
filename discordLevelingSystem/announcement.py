@@ -57,7 +57,7 @@ class AnnouncementMember:
     created_at: ClassVar[str] = '[$created_at]'
     default_avatar_url: ClassVar[str] = '[$default_avatar_url]'
     discriminator: ClassVar[str] = '[$discriminator]'
-    display_avatar_url: ClassVar[str] = '[$display_avatar_url]'
+    display_avatar_url: ClassVar[str] = '[$display_avatar_url]' # Guild avatar if they have one set
     display_name: ClassVar[str] = '[$display_name]'
     id: ClassVar[str] = '[$id]'
     joined_at: ClassVar[str] = '[$joined_at]'
