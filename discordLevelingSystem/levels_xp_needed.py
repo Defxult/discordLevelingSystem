@@ -6,11 +6,11 @@ MEE6 documentation can be found here: https://github.com/Mee6/Mee6-documentation
 """
 
 from collections import namedtuple
-from typing import NamedTuple
+from typing import Final, NamedTuple
 
 __all__ = ('LEVELS_AND_XP', 'MAX_XP', 'MAX_LEVEL', '_next_level_details', '_find_level')
 
-LEVELS_AND_XP = {
+LEVELS_AND_XP: Final = {
     '0': 0,
     '1': 100,
     '2': 255,
@@ -114,8 +114,8 @@ LEVELS_AND_XP = {
     '100': 1899250
 }
 
-MAX_XP = LEVELS_AND_XP['100']
-MAX_LEVEL = 100
+MAX_XP: Final = LEVELS_AND_XP['100']
+MAX_LEVEL: Final = 100
 
 def _next_level_details(current_level: int) -> NamedTuple:
     """Returns a `namedtuple`
