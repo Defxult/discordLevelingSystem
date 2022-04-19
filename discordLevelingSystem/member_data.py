@@ -22,7 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from typing import Union
+from typing import Optional
 
 class MemberData:
     """Represents a members record from the database converted to an object where each value from their record can be easily accessed. Used in coordination with :class:`DiscordLevelingSystem`
@@ -44,7 +44,7 @@ class MemberData:
     total_xp: :class:`int`
         The members total xp
 
-    rank: Union[:class:`int`, `None`]
+    rank: Optional[:class:`int`]
         The members rank. Can be `None` if the member is not ranked yet
     
     mention: :class:`str`
@@ -53,7 +53,7 @@ class MemberData:
 
     __slots__ = ('id_number', 'name', 'level', 'xp', 'total_xp', 'rank', 'mention')
 
-    def __init__(self, id_number: int, name: str, level: int, xp: int, total_xp: int, rank: Union[int, None]):
+    def __init__(self, id_number: int, name: str, level: int, xp: int, total_xp: int, rank: Optional[int]):
         self.id_number = id_number
         self.name = name
         self.level = level
