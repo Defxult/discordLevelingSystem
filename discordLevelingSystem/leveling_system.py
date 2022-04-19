@@ -46,7 +46,7 @@ from .role_awards import RoleAward
 
 
 class DiscordLevelingSystem:
-    """A local pycord leveling system powered by SQLite
+    """A local discord.py leveling system powered by SQLite
 
     Parameters
     ----------

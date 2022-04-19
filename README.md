@@ -148,7 +148,7 @@ lvl = DiscordLevelingSystem(..., awards=my_awards)
 ## LevelUpAnnouncement
 ```class LevelUpAnnouncement(message=default_message, level_up_channel_ids=None, allowed_mentions=default_mentions, tts=False, delete_after=None)```
 
-Level up announcements are for when you want to implement your own level up messages. It provides access to who leveled up, their rank, level and much more. It also uses some of pycord's kwargs from it's `Messageable.send` such as `allowed_mentions`, `tts`, and `delete_after` to give you more control over the sent message.
+Level up announcements are for when you want to implement your own level up messages. It provides access to who leveled up, their rank, level and much more. It also uses some of discord.py's kwargs from it's `Messageable.send` such as `allowed_mentions`, `tts`, and `delete_after` to give you more control over the sent message.
 
 ---
 ### Parameters of the LevelUpAnnouncement constructor

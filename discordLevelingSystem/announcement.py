@@ -99,7 +99,7 @@ class LevelUpAnnouncement:
     - `LevelUpAnnouncement.LEVEL`: The members current level
     - `LevelUpAnnouncement.RANK`: The members current rank
     
-    You can access a reduced version of pycord's `discord.Member` object via the :class:`LevelUpAnnouncement.Member` attribute. That attribute (class) contains the following information
+    You can access a reduced version of discord.py's `discord.Member` object via the :class:`LevelUpAnnouncement.Member` attribute. That attribute (class) contains the following information
     about a member and the guild
 
     - `LevelUpAnnouncement.Member.avatar_url`
