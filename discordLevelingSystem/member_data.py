@@ -22,7 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from typing import Optional
+from typing import Dict, Optional, Union
 
 class MemberData:
     """Represents a members record from the database converted to an object where each value from their record can be easily accessed. Used in coordination with :class:`DiscordLevelingSystem`
@@ -65,12 +65,12 @@ class MemberData:
     def __repr__(self):
         return f'<MemberData id_number={self.id_number} name={self.name!r} level={self.level} xp={self.xp} total_xp={self.total_xp} rank={self.rank}>'
     
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict[str, Union[int, str]]:
         """Return the :class:`dict` representation of the :class:`MemberData` object
 
         Returns
         -------
-        :class:`dict`
+        Dict[:class:`str`, Union[:class:`int`, :class:`str`]]
 
             .. added:: v1.0.1
         """
