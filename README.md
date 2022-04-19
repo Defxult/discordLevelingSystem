@@ -29,7 +29,7 @@ from discordLevelingSystem import DiscordLevelingSystem, LevelUpAnnouncement, Ro
 
 ---
 ## Intents
-[Intents](https://docs.pycord.dev/en/master/intents.html) are required for proper functionality
+[Intents](https://discordpy.readthedocs.io/en/stable/intents.html) are required for proper functionality
 ```py
 bot = commands.Bot(..., intents=discord.Intents(messages=True, guilds=True, members=True))
 ```
@@ -75,7 +75,7 @@ When setting up the leveling system, a database file needs to be created in orde
 * Associated static method
   * `DiscordLevelingSystem.create_database_file(path: str)`
 
-The above *static* method is used to create the database file for you in the path you specify. This method only needs to be called once. Example:
+The above static method is used to create the database file for you in the path you specify. This method only needs to be called once. Example:
 ```py
 DiscordLevelingSystem.create_database_file(r'C:\Users\Defxult\Documents')
 ```
@@ -95,7 +95,7 @@ from discord.ext import commands
 from discordLevelingSystem import DiscordLevelingSystem
 
 bot = commands.Bot(...)
-lvl = DiscordLevelingSystem(rate=1, per=60.0)
+lvl = DiscordLevelingSystem()
 lvl.connect_to_database_file(r'C:\Users\Defxult\Documents\DiscordLevelingSystem.db')
 
 bot.run(...)
@@ -326,7 +326,7 @@ my_awards = {
 announcement = LevelUpAnnouncement(f'{LevelUpAnnouncement.Member.mention} just leveled up to level {LevelUpAnnouncement.LEVEL} 😎')
 
 # DiscordLevelingSystem.create_database_file(r'C:\Users\Defxult\Documents') database file already created
-lvl = DiscordLevelingSystem(rate=1, per=60.0, awards=my_awards, level_up_announcement=announcement)
+lvl = DiscordLevelingSystem(awards=my_awards, level_up_announcement=announcement)
 lvl.connect_to_database_file(r'C:\Users\Defxult\Documents\DiscordLevelingSystem.db')
 
 @bot.event
