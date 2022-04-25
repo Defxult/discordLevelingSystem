@@ -29,8 +29,6 @@ tags = [
     'level up',
     'level system',
     'mee6',
-    'pycord',
-    'py-cord',
     'rank',
     'ranking',
     'role award',
