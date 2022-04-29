@@ -1149,7 +1149,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def remove_from_database(self, member: Union[Member, int], guild: Optional[Guild]=None) -> Optional[bool]:
+    async def remove_from_database(self, member: Union[Member, int], guild: Optional[Guild]=None) -> bool:
         """|coro|
         
         Remove a member from the database. This is not guild specific although it can be if :param:`guild` is specified
@@ -1165,7 +1165,7 @@ class DiscordLevelingSystem:
         
         Returns
         -------
-        Optional[:class:`bool`]: Returns `True` if the member was successfully removed from the database. `False` if the member was not in the database so there was nothing to remove
+        :class:`bool`: Returns `True` if the member was successfully removed from the database. `False` if the member was not in the database so there was nothing to remove
 
         Raises
         ------
