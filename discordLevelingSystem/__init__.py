@@ -17,15 +17,20 @@ from .role_awards import RoleAward
 
 def version_info():
     """Shows the current version, release type, and patch of the library
-    - `version` Current version of the library
-    - `releasetype` Either "final" (the PyPI version) or "pre-release" (the GitHub version)
-    - `patch` The last significant bug fix
 
     >>> print(discordLevelingSystem.version_info())
     """
-    from collections import namedtuple
-    VersionInfo = namedtuple('VersionInfo', ['version', 'releasetype', 'patch'])
-    return VersionInfo(version='1.2.0', releasetype='pre-release', patch='1a')
+    from typing import NamedTuple, Literal
+    class VersionInfo(NamedTuple):
+        major: int
+        minor: int
+        patch: int
+        releaseLevel: Literal['alpha', 'beta', 'candidate', 'final']
+        
+        def __str__(self) -> str:
+            return f'{self.major}.{self.minor}.{self.patch}'
+
+    return VersionInfo(major=1, minor=2, patch=0, releaseLevel='candidate')
 
 __source__ = 'https://github.com/Defxult/discordLevelingSystem'
 __all__ = (

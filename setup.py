@@ -1,3 +1,4 @@
+from discordLevelingSystem import version_info
 from setuptools import setup, find_packages
 
 def _get_readme():
@@ -43,7 +44,7 @@ setup(
     author='Defxult#8269',
     name='discordLevelingSystem',
     description='A library to implement a leveling system into a discord bot. Contains features such as XP, level, ranks, and role awards.',
-    version='1.2.0', 
+    version=str(version_info()), 
     url='https://github.com/Defxult/discordLevelingSystem',
     project_urls=details,
     classifiers=classifiers,
