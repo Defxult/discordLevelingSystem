@@ -44,7 +44,7 @@ setup(
     author='Defxult#8269',
     name='discordLevelingSystem',
     description='A library to implement a leveling system into a discord bot. Contains features such as XP, level, ranks, and role awards.',
-    version=str(version_info()), 
+    version=version_info()._version, 
     url='https://github.com/Defxult/discordLevelingSystem',
     project_urls=details,
     classifiers=classifiers,

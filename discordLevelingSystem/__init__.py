@@ -27,7 +27,8 @@ def version_info():
         patch: int
         releaseLevel: Literal['alpha', 'beta', 'candidate', 'final']
         
-        def __str__(self) -> str:
+        @property
+        def _version(self) -> str:
             return f'{self.major}.{self.minor}.{self.patch}'
 
     return VersionInfo(major=1, minor=2, patch=0, releaseLevel='candidate')
