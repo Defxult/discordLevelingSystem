@@ -465,7 +465,7 @@ class DiscordLevelingSystem:
             raise DatabaseFileNotFound(f'The database file in path {path!r} was not found')
     
     @staticmethod
-    async def _execute_transer(db_from: 'Transfer', db_to: 'Transfer', guild_id: int) -> None: # type: ignore
+    async def _execute_transfer(db_from: 'Transfer', db_to: 'Transfer', guild_id: int) -> None: # type: ignore
         """|coro static method| Copy the contents from the old database file (v0.0.1), to the new database file (v0.0.2+)
         
             .. added:: v0.0.2
@@ -505,9 +505,9 @@ class DiscordLevelingSystem:
                         await db_to.connection.commit()
                         print('Transfer complete')
                 else:
-                    raise DiscordLevelingSystemError('When transfering the data to the new database file (created file using v0.0.2+), that database file must contain no records')
+                    raise DiscordLevelingSystemError('When transferring the data to the new database file (created file using v0.0.2+), that database file must contain no records')
             else:
-                raise DiscordLevelingSystemError('The "transfer" method is only to be used with transfering the data from the database file from version 0.0.1. If you were already using a database file from version 0.0.2+, there is no need to use this method')
+                raise DiscordLevelingSystemError('The "transfer" method is only to be used with transferring the data from the database file from version 0.0.1. If you were already using a database file from version 0.0.2+, there is no need to use this method')
     
     @staticmethod
     def transfer(old: str, new: str, guild_id: int) -> None:
@@ -540,7 +540,7 @@ class DiscordLevelingSystem:
         loop = asyncio.get_event_loop()
         transfer_from = DiscordLevelingSystem._get_transfer(old, loop)
         transfer_to = DiscordLevelingSystem._get_transfer(new, loop)
-        loop.run_until_complete(DiscordLevelingSystem._execute_transer(transfer_from, transfer_to, guild_id))
+        loop.run_until_complete(DiscordLevelingSystem._execute_transfer(transfer_from, transfer_to, guild_id))
     
     @db_file_exists
     @leaderboard_exists
@@ -1047,7 +1047,7 @@ class DiscordLevelingSystem:
         path: :class:`str`
             Path to copy the json file to
         
-        guild: :class:`discord.Guild`
+        guild: Union[:class:`discord.Guild`, :class:`None`]
             The guild for which the data should be extracted from. If :class:`None`, all guild information will be extracted from the database
         
         Raises
@@ -1879,7 +1879,7 @@ class DiscordLevelingSystem:
                         break
             
             bucket = self._cooldown.get_bucket(message)
-            on_cooldown = bucket.update_rate_limit()
+            on_cooldown = bucket.update_rate_limit() # type: ignore
 
             if not on_cooldown:
                 member = message.author
