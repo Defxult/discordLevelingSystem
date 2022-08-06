@@ -175,12 +175,13 @@ class LevelUpAnnouncement:
                     Added `discord.Member.display_avatar.url`
                     Added `discord.Member.banner.url`
         """
+        DEFAULT_URL = message_author.default_avatar.url
         markdowns = {
             # member
-            AnnouncementMember.avatar_url : message_author.avatar.url, # type: ignore / Possible `url` is `None` but that's ok
-            AnnouncementMember.banner_url : message_author.banner.url if message_author.banner is not None else None,
+            AnnouncementMember.avatar_url : message_author.avatar.url if message_author.avatar is not None else DEFAULT_URL,
+            AnnouncementMember.banner_url : message_author.banner.url if message_author.banner is not None else DEFAULT_URL,
             AnnouncementMember.created_at : message_author.created_at,
-            AnnouncementMember.default_avatar_url : message_author.default_avatar.url,
+            AnnouncementMember.default_avatar_url : DEFAULT_URL,
             AnnouncementMember.discriminator : message_author.discriminator,
             AnnouncementMember.display_avatar_url : message_author.display_avatar.url,
             AnnouncementMember.display_name : message_author.display_name,
@@ -191,7 +192,7 @@ class LevelUpAnnouncement:
             AnnouncementMember.nick : message_author.nick,
 
             # guild
-            AnnouncementMember.Guild.icon_url : message_author.guild.icon.url, # type: ignore / Possible `url` is `None` but that's ok
+            AnnouncementMember.Guild.icon_url : message_author.guild.icon.url if message_author.guild.icon is not None else DEFAULT_URL,
             AnnouncementMember.Guild.id : message_author.guild.id,
             AnnouncementMember.Guild.name : message_author.guild.name
         }

@@ -10,6 +10,9 @@
   * `DiscordLevelingSystem.version_info()`
 * Parameter `path` is now optional in method `DiscordLevelingSystem.create_database_file()`. If left as `None`, the database file is created in the current working directory.
 
+#### Bug Fixes
+* Fixed an issue where an error would occur when a user/guild doesn't have an icon. Now, the icon is the default discord user icon ([#5](https://github.com/Defxult/discordLevelingSystem/issues/15)). 
+
 <!-- </details> -->
 
 ## v1.1.0 » Jan. 29, 2022
