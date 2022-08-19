@@ -38,7 +38,7 @@ def db_file_exists(func):
     """Ensure the database file exists before performing any operations"""
     @wraps(func)
     async def wrapper(*args, **kwargs):
-        instance = _return_self(args)
+        instance = _return_self(args) # type: ignore
         if not any([instance._database_file_path, instance._connection]):
             raise DatabaseFileNotFound('The database file was not found. Did you forget to connect to it first using "DiscordLevelingSystem.connect_to_database_file()"?')
         
@@ -70,7 +70,7 @@ def leaderboard_exists(func):
     """Ensures the "leaderboard" table exists in the "DiscordLevelingSystem.db" file"""
     @wraps(func)
     async def wrapper(*args, **kwargs):
-        instance = _return_self(args)
+        instance = _return_self(args) # type: ignore
         try:
             async with instance._connection.execute('SELECT * FROM leaderboard'):
                 pass
@@ -97,7 +97,7 @@ def verify_leaderboard_integrity(func):
             (4, 'member_xp', 'INT', 1, None, 0),
             (5, 'member_total_xp', 'INT', 1, None, 0)
         ]
-        instance = _return_self(args)
+        instance = _return_self(args) # type: ignore
         async with instance._connection.execute('PRAGMA table_info(leaderboard)') as cursor:
             current_layout = await cursor.fetchall()
             if current_layout == PRAGMA_LAYOUT:

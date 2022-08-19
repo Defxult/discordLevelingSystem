@@ -23,14 +23,14 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from collections.abc import Sequence
-from typing import ClassVar, Optional, Union
+from typing import ClassVar, Final, Optional, Union
 
 from discord import AllowedMentions, Embed, Member as DMember
 
 from .errors import DiscordLevelingSystemError
 
-default_message = '[$mention], you are now **level [$level]!**'
-default_mentions = AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)
+default_message: Final = '[$mention], you are now **level [$level]!**'
+default_mentions: Final = AllowedMentions(everyone=False, users=True, roles=False, replied_user=False)
 
 
 class AnnouncementMemberGuild:

@@ -67,7 +67,7 @@ class RoleAward:
     def __repr__(self):
         return f'<RoleAward role_id={self.role_id} level_requirement={self.level_requirement} role_name={self.role_name!r}>'
     
-    def __eq__(self, value):
+    def __eq__(self, value: object):
         if isinstance(value, RoleAward):
             return all([self.role_id == value.role_id, self.level_requirement == value.level_requirement])
         else:
