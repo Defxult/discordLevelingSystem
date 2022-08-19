@@ -31,7 +31,7 @@ import shutil
 from collections.abc import Sequence
 from datetime import datetime
 from inspect import cleandoc
-from typing import Dict, List, NamedTuple, Optional, Tuple, Union
+from typing import Dict, List, Literal, NamedTuple, Optional, Tuple, Union
 
 import aiosqlite
 from discord import Guild, Member, Message, MessageType, Role
@@ -581,7 +581,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def insert(self, bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: str, overwrite: bool=False, show_results: bool=True) -> None:
+    async def insert(self, bot: Union[Bot, AutoShardedBot], guild_id: int, users: Dict[int, int], using: Literal['xp', 'levels'], overwrite: bool=False, show_results: bool=True) -> None:
         """|coro|
         
         Insert the records from your own leveling system into the library. A lot of leveling system tutorials out there use json files to store information. Although it might work, it is
@@ -629,7 +629,7 @@ class DiscordLevelingSystem:
         
         guild = bot.get_guild(guild_id)
         if guild:
-            using = using.lower()
+            using = using.lower() # type: ignore
             successfully_added: List[Member] = []
             skipped_users = []
             registered_users = []
@@ -1459,7 +1459,7 @@ class DiscordLevelingSystem:
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
-    async def each_member_data(self, guild: Guild, sort_by: Optional[str]=None, limit: Optional[int]=None) -> List[MemberData]:
+    async def each_member_data(self, guild: Guild, sort_by: Optional[Literal['name', 'level', 'xp', 'rank']]=None, limit: Optional[int]=None) -> List[MemberData]:
         """|coro|
         
         Return each member in the database as a :class:`MemberData` object for easy access to their XP, level, etc.
@@ -1511,7 +1511,7 @@ class DiscordLevelingSystem:
                 result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
                 return await result_to_memberdata(result)
             else:
-                sort_by = sort_by.lower()
+                sort_by = sort_by.lower() # type: ignore
                 if sort_by in ('name', 'level', 'xp', 'rank'):
                     if sort_by == 'name':
                         result = await self._connection.execute_fetchall('SELECT member_id, member_name, member_level, member_xp, member_total_xp FROM leaderboard WHERE guild_id = ? ORDER BY member_name COLLATE NOCASE', (guild.id,)) # type: ignore
