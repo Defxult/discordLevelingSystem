@@ -25,15 +25,18 @@ def version_info():
         major: int
         minor: int
         patch: int
-        releaseLevel: Literal['alpha', 'beta', 'candidate', 'final']
+        release_level: Literal['alpha', 'beta', 'rc', 'final']
+        serial: int
         
         @property
         def _version(self) -> str:
-            return f'{self.major}.{self.minor}.{self.patch}'
+            base = f'{self.major}.{self.minor}.{self.patch}'
+            return base if self.release_level == 'final' else base + f'{self.release_level}-{self.serial}'
 
-    return VersionInfo(major=1, minor=2, patch=0, releaseLevel='candidate')
+    return VersionInfo(major=1, minor=2, patch=0, release_level='rc', serial=1)
 
 __source__ = 'https://github.com/Defxult/discordLevelingSystem'
+__version__ = version_info()._version
 __all__ = (
     'LevelUpAnnouncement',
     'DiscordLevelingSystem',

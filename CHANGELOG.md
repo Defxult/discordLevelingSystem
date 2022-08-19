@@ -8,6 +8,7 @@
 #### New Features
 * Added a shortcut method to function `discordLevelingSystem.version_info()`. Instead of importing the namespace, simply use the class `DiscordLevelingSystem` to quickly access the same information.
   * `DiscordLevelingSystem.version_info()`
+  * In addition to this, `__version__` has been added to `__init__`
 * Parameter `path` is now optional in method `DiscordLevelingSystem.create_database_file()`. If left as `None`, the database file is created in the current working directory.
 
 #### Bug Fixes
