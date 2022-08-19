@@ -53,5 +53,5 @@ setup(
     license='MIT',
     keywords=tags,
     packages=find_packages(),
-    install_requires=['aiosqlite>=0.17.0'] #! update to discord.py 2.0 when released
+    install_requires=['aiosqlite>=0.17.0', 'discord.py>=2.0.0']
 )
