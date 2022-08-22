@@ -220,17 +220,6 @@ class DiscordLevelingSystem:
                 
             else:
                 raise DiscordLevelingSystemError('When setting the role_ids for bonus XP, the role ID sequence cannot be empty')
-    
-    @staticmethod
-    def version_info():
-        """|static method|
-        
-        A shortcut to the function `discordLevelingSystem.version_info()`
-
-            .. added:: v1.2.0
-        """
-        from . import version_info
-        return version_info()
 
     @staticmethod
     def levels_and_xp() -> Dict[str, int]:
@@ -424,7 +413,7 @@ class DiscordLevelingSystem:
             return True
 
         if self.no_xp_roles:
-            all_member_role_ids = [role.id for role in message.author.roles] # type: ignore / will always be `discord.Member` because all DM messages are ignored by the lib
+            all_member_role_ids = [role.id for role in message.author.roles] # type: ignore / will always be :class:`discord.Member` because all DM messages are ignored by the lib
             for no_xp_role_id in self.no_xp_roles:
                 if no_xp_role_id in all_member_role_ids:
                     has_no_xp_role = True
@@ -441,7 +430,7 @@ class DiscordLevelingSystem:
         # object because that method really only needs the ID to operate on the correct guild. Since this method has no :class:`discord.Guild` object, just make a false guild
         # object so :meth:`DiscordLevelingSystem.is_in_database` will work as intended
         FakeGuild = collections.namedtuple('FakeGuild', 'id')
-        if await self.is_in_database(member, guild=FakeGuild(id=guild_id)): # type: ignore / it's a fake guild, so yes, it's not compatible with `discord.Guild`
+        if await self.is_in_database(member, guild=FakeGuild(id=guild_id)): # type: ignore / it's a fake guild, so yes, it's not compatible with :class:`discord.Guild` that the method is looking for
             await self._cursor.execute('UPDATE leaderboard SET member_level = ?, member_xp = ?, member_total_xp = ? WHERE member_id = ? AND guild_id = ?', (level, xp, total_xp, member.id if isinstance(member, Member) else member, guild_id)) # type: ignore
         else:
             await self._cursor.execute(DiscordLevelingSystem._QUERY_NEW_MEMBER, (guild_id, member.id if isinstance(member, Member) else member, name, level, xp, total_xp)) # type: ignore
