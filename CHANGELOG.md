@@ -2,10 +2,8 @@
 <!-- <details>
   <summary>Click to display changelog</summary> -->
 
-#### Library Change
+#### Breaking Changes
 * The developer of discord.py has decided to revive the project. Since this library was originally dependent on discord.py, as of this version it is no longer dependent on pycord and will be using discord.py 2.0 or higher for the duration of this library.
-
-#### Breaking Change
 * Function `discordLevelingSystem.version_info()` has been removed. Use `$ pip show discordLevelingSystem` instead to get the library version.
 
 #### New Features
