@@ -31,7 +31,7 @@ import shutil
 from collections.abc import Sequence
 from datetime import datetime
 from inspect import cleandoc
-from typing import Dict, List, Literal, NamedTuple, Optional, Tuple, Union
+from typing import Dict, List, Literal, NamedTuple, Optional, overload, Tuple, Union
 
 import aiosqlite
 from discord import Guild, Member, Message, MessageType, Role
@@ -566,6 +566,14 @@ class DiscordLevelingSystem:
             await self._update_record(member=member_id, level=level, xp=0, total_xp=LEVELS_AND_XP[str(level)], guild_id=guild_id, name=str(member_name), maybe_new_record=True)
         else:
             raise DiscordLevelingSystemError('All parameters that expect an int were not of type int')
+    
+    @overload
+    async def insert(self, bot: AutoShardedBot, guild_id: int, users: Dict[int, int], using: Literal['xp', 'levels'], overwrite: bool=False, show_results: bool=True) -> None:
+        ...
+    
+    @overload
+    async def insert(self, bot: Bot, guild_id: int, users: Dict[int, int], using: Literal['xp', 'levels'], overwrite: bool=False, show_results: bool=True) -> None:
+        ...
 
     @db_file_exists
     @leaderboard_exists
@@ -674,6 +682,22 @@ class DiscordLevelingSystem:
                     print(stats)
         else:
             raise DiscordLevelingSystemError(f'Your bot is not in guild {guild_id}')
+    
+    @overload
+    def get_awards(self, guild: Optional[Guild]=None) -> Optional[Dict[int, List[RoleAward]]]:
+        ...
+    
+    @overload
+    def get_awards(self, guild: Optional[Guild]=None) -> Optional[List[RoleAward]]:
+        ...
+    
+    @overload
+    def get_awards(self, guild: Optional[int]=None) -> Optional[Dict[int, List[RoleAward]]]:
+        ...
+    
+    @overload
+    def get_awards(self, guild: Optional[int]=None) -> Optional[List[RoleAward]]:
+        ...
     
     def get_awards(self, guild: Optional[Union[Guild, int]]=None) -> Optional[Union[Dict[int, List[RoleAward]], List[RoleAward]]]:
         """Get all :class:`RoleAward`'s or only the :class:`RoleAward`'s assigned to the specified guild
@@ -988,6 +1012,14 @@ class DiscordLevelingSystem:
         await self._cursor.execute('UPDATE leaderboard SET member_level = 0, member_xp = 0, member_total_xp = 0 WHERE member_id = ? AND guild_id = ?', (member.id, member.guild.id)) # type: ignore
         await self._connection.commit() # type: ignore
     
+    @overload
+    async def reset_everyone(self, guild: Guild, *, intentional: bool=False) -> None:
+        ...
+    
+    @overload
+    async def reset_everyone(self, guild: None, *, intentional: bool=False) -> None:
+        ...
+    
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
@@ -1022,6 +1054,14 @@ class DiscordLevelingSystem:
             await self._connection.commit() # type: ignore
         else:
             raise FailSafe
+    
+    @overload
+    async def export_as_json(self, path: str, guild: Guild) -> None:
+        ...
+    
+    @overload
+    async def export_as_json(self, path: str, guild: None) -> None:
+        ...
     
     @db_file_exists
     @leaderboard_exists
@@ -1135,6 +1175,14 @@ class DiscordLevelingSystem:
         if guild:   return await self._connection.execute_fetchall('SELECT * FROM leaderboard WHERE guild_id = ?', (guild.id,)) # type: ignore
         else:       return await self._connection.execute_fetchall('SELECT * FROM leaderboard') # type: ignore
     
+    @overload
+    async def remove_from_database(self, member: Member, guild: Optional[Guild]=None) -> bool:
+        ...
+    
+    @overload
+    async def remove_from_database(self, member: int, guild: Optional[Guild]=None) -> bool:
+        ...
+
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
@@ -1181,6 +1229,14 @@ class DiscordLevelingSystem:
         else:
             raise DiscordLevelingSystemError(f'Parameter "member" expected discord.Member or int, got {member.__class__.__name__}')
     
+    @overload
+    async def is_in_database(self, member: Member, guild: Optional[Guild]=None) -> bool:
+        ...
+    
+    @overload
+    async def is_in_database(self, member: int, guild: Optional[Guild]=None) -> bool:
+        ...
+
     @db_file_exists
     @leaderboard_exists
     @verify_leaderboard_integrity
@@ -1804,6 +1860,14 @@ class DiscordLevelingSystem:
                     raise DiscordLevelingSystemError('Parameter "amount" sequence expected value 1 to be larger than value 2')
         else:
             raise DiscordLevelingSystemError(f'Parameter "amount" expected int or Sequence, got {arg.__class__.__name__}')
+    
+    @overload
+    async def award_xp(self, *, amount: int, message: Message, refresh_name: bool=True, **kwargs) -> None:
+        ...
+    
+    @overload
+    async def award_xp(self, *, amount: Sequence[int]=[15, 25], message: Message, refresh_name: bool=True, **kwargs) -> None:
+        ...
     
     @db_file_exists
     @leaderboard_exists
