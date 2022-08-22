@@ -418,9 +418,9 @@ bot.run(...)
     * `DatabaseFileNotFound` - The database file was not found
 
 
-* *static method* **create_database_file**(`path`) - Create the database file and implement the SQL data for the database
+* *static method* **create_database_file**(`path = None`) - Create the database file and implement the SQL data for the database
   * **Parameters**
-    * **path** (`str`) The location to create the database file
+    * **path** (`Optional[str]`) The location to create the database file. If `None`, the file is created in the current working directory
   * **Raises**
     * `ConnectionFailure` - Attempted to create the database file when the event loop is already running
     * `DiscordLevelingSystemError` - The path does not exist or the path points to a file instead of a directory
@@ -723,9 +723,6 @@ bot.run(...)
     - `ConnectionFailure` - The event loop is already running
     - `DatabaseFileNotFound` - "old" or "new" database file was not found
     - `DiscordLevelingSystemError` - One of the databases is missing the "leaderboard" table. A v0.0.2+ database file contains records, or there was an attempt to transfer records from a v0.0.2+ file to another v0.0.2+ file
-
-
-* *static method* **version_info**() - A shortcut to the function `discordLevelingSystem.version_info()`
 
 
 * *await* **wipe_database**(`guild = None, *, intentional = False`) - Delete EVERYTHING from the database. If `guild` is specified, only the information related to that guild will be deleted
