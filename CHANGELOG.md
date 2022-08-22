@@ -1,4 +1,4 @@
-## v1.2.0 » Future Release
+## v1.2.0 » Aug. 22, 2022
 <!-- <details>
   <summary>Click to display changelog</summary> -->
 
