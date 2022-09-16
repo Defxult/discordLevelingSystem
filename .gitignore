@@ -8,3 +8,5 @@ cogs/*
 discordLevelingSystem/__pycache__/*
 discordLevelingSystem.egg-info/*
 dist/*
+testing.py
+test.png
