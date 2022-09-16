@@ -87,9 +87,9 @@ class RankCard:
         username:str,
         current_exp:int,
         max_exp:int,
-        bar_color:str="white",
-        text_color:str="white",
-        path:str=None
+        bar_color:Optional[str]="white",
+        text_color:Optional[str]="white",
+        path:Optional[str]=None
     )-> None:
         self.background = background
         self.avatar = avatar
@@ -203,4 +203,7 @@ class RankCard:
             self.background.save(self.path, "PNG")
             return self.path
         else:
-            return self.background.tobytes()
+            with BytesIO() as image:
+                self.background.save(image, 'PNG')
+                image.seek(0)
+                return image
