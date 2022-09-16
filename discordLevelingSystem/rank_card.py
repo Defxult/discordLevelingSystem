@@ -29,6 +29,7 @@ from typing import Optional, Union
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
 from .errors import InvalidImageType, InvalidImageUrl
+from .member_data import MemberData
 
 class RankCard:
     """Represents the rank card that will be sent to the member upon leveling up
@@ -89,14 +90,22 @@ class RankCard:
         max_exp:int,
         bar_color:Optional[str]="white",
         text_color:Optional[str]="white",
-        path:Optional[str]=None
+        path:Optional[str]=None,
+        member_data:Optional[MemberData]=None
     )-> None:
         self.background = background
         self.avatar = avatar
-        self.level = level
-        self.username = username
-        self.current_exp = current_exp
-        self.max_exp = max_exp
+        if member_data is not None:
+            self.level = member_data.level
+            self.username = member_data.name
+            self.current_exp = member_data.xp
+            self.max_exp = member_data.total_xp
+
+        else:
+            self.level = level
+            self.username = username
+            self.current_exp = current_exp
+            self.max_exp = max_exp
         self.bar_color = bar_color
         self.text_color = text_color
         self.path = path
@@ -203,7 +212,7 @@ class RankCard:
             self.background.save(self.path, "PNG")
             return self.path
         else:
-            with BytesIO() as image:
-                self.background.save(image, 'PNG')
-                image.seek(0)
-                return image
+            image = BytesIO()
+            self.background.save(image, 'PNG')
+            image.seek(0)
+            return image
