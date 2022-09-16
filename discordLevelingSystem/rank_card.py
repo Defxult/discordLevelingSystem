@@ -63,6 +63,9 @@ class RankCard:
     path: :class:`Optional[PathLike]`
         The path to save the rank card to. If this is not provided, `bytes` will be returned instead.
     
+    member_data: :class:`Optional[MemberData]`
+        The member data to use for the rank card. If this is provided, the other parameters will be ignored.
+
     Attributes
     ----------
     - `background`
@@ -74,9 +77,10 @@ class RankCard:
     - `bar_color`
     - `text_color`
     - `path`
+    - `member_data`
     """
 
-    __slots__ = ('background', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'bar_color', 'text_color', 'path')
+    __slots__ = ('background', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'bar_color', 'text_color', 'path', 'member_data')
 
 
 
