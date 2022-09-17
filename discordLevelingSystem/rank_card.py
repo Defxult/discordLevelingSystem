@@ -22,25 +22,23 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from io import BufferedIOBase, BytesIO, IOBase
-from os import PathLike
-from typing import Optional, Union
-
+from io import BytesIO, IOBase
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
 from .errors import InvalidImageType, InvalidImageUrl
-from .member_data import MemberData
+from .card_settings import Settings
+from pathlib import Path
 
 class RankCard:
     """Represents the rank card that will be sent to the member upon leveling up
 
     Parameters
     ----------
-    background: :class:`Union[PathLike, BufferedIOBase]`
-        The background image for the rank card. This can be a path to a file or a file-like object in `rb` mode
-
-    avatar: :class:`Union[PathLike, BufferedIOBase]`
-        The avatar image for the rank card. This can be a path to a file or a file-like object in `rb` mode
+    settings: :class:`Settings`
+        The settings for the rank card
+    
+    avatar: :class:`str`
+        The avatar image for the rank card. This can only be a URL to an image
     
     level: :class:`int`
         The level of the member
@@ -48,74 +46,50 @@ class RankCard:
     username: :class:`str`
         The username of the member
     
-    current_exp: :class:`int`
+    current_xp: :class:`int`
         The current amount of XP the member has
     
-    max_exp: :class:`int`
+    max_xp: :class:`int`
         The amount of XP required for the member to level up
-    
-    bar_color: :class:`Optional[str]`
-        The color of the XP bar. This can be a hex code or a color name. Default is `white`
-    
-    text_color: :class:`Optional[str]`
-        The color of the text. This can be a hex code or a color name. Default is `white`
-    
-    path: :class:`Optional[PathLike]`
-        The path to save the rank card to. If this is not provided, `bytes` will be returned instead.
-    
-    member_data: :class:`Optional[MemberData]`
-        The member data to use for the rank card. If this is provided, the other parameters will be ignored.
-
+            
     Attributes
     ----------
-    - `background`
     - `avatar`
     - `level`
     - `username`
-    - `current_exp`
-    - `max_exp`
-    - `bar_color`
-    - `text_color`
-    - `path`
-    - `member_data`
+    - `current_xp`
+    - `max_xp`
+
+    Raises
+    ------
+    - `InvalidImageType`
+        If the image type is not supported
+    - `InvalidImageUrl`
+        If the image url is invalid
     """
 
-    __slots__ = ('background', 'avatar', 'level', 'username', 'current_exp', 'max_exp', 'bar_color', 'text_color', 'path', 'member_data')
-
-
+    __slots__ = ('settings', 'avatar', 'level', 'username', 'current_xp', 'max_xp')
 
     def __init__(
         self,
-        background: Union[PathLike, BufferedIOBase],
-        avatar: Union[PathLike, BufferedIOBase],
+        settings:Settings,
+        avatar:str,
         level:int,
         username:str,
-        current_exp:int,
-        max_exp:int,
-        bar_color:Optional[str]="white",
-        text_color:Optional[str]="white",
-        path:Optional[str]=None,
-        member_data:Optional[MemberData]=None
+        current_xp:int,
+        max_xp:int
     )-> None:
-        self.background = background
+        self.background = settings.background
+        self.bar_color = settings.bar_color
+        self.text_color = settings.text_color
         self.avatar = avatar
-        if member_data is not None:
-            self.level = member_data.level
-            self.username = member_data.name
-            self.current_exp = member_data.xp
-            self.max_exp = member_data.total_xp
-
-        else:
-            self.level = level
-            self.username = username
-            self.current_exp = current_exp
-            self.max_exp = max_exp
-        self.bar_color = bar_color
-        self.text_color = text_color
-        self.path = path
+        self.level = level
+        self.username = username
+        self.current_xp = current_xp
+        self.max_xp = max_xp
 
     @staticmethod
-    def convert_number(number: int) -> str:
+    def _convert_number(number: int) -> str:
         if number >= 1000000000:
             return f"{number / 1000000000:.1f}B"
         elif number >= 1000000:
@@ -126,7 +100,7 @@ class RankCard:
             return str(number)
 
     @staticmethod
-    async def image_(url:str):
+    async def _image(url:str):
         async with ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
@@ -134,40 +108,48 @@ class RankCard:
                 data = await response.read()
                 return Image.open(BytesIO(data))
 
-
-
-    async def card(self)-> Union[None, bytes]:
+    async def create(self)-> bytes:
         """
-        Creates the rank card and saves it to the path provided in `self.path` or returns `bytes` if `self.path` is not provided
+        Creates the rank card
+
+        Returns
+        -------
+        :class:`bytes`
+            The rank card as bytes
+
+        Raises
+        ------
+        - :class:`InvalidImageType`
+            The image type is not supported
+        - :class:`InvalidImageUrl`
+            The image url is invalid
         """
-        
+
+        path = Path(__file__).parent
+
         if isinstance(self.background, IOBase):
             if not (self.background.seekable() and self.background.readable() and self.background.mode == "rb"):
                 raise InvalidImageType(f"File buffer {self.background!r} must be seekable and readable and in binary mode")
             self.background = Image.open(self.background)
         elif isinstance(self.background, str):
             if self.background.startswith("http"):
-                self.background = await RankCard.image_(self.background)
+                self.background = await RankCard._image(self.background)
             else:
                 self.background = Image.open(open(self.background, "rb"))
         else:
             raise InvalidImageType(f"background must be a path or url or a file buffer, not {type(self.background)}") 
 
-        if isinstance(self.avatar, IOBase):
-            if not (self.avatar.seekable() and self.avatar.readable() and self.avatar.mode == "rb"):
-                raise ValueError(f"File buffer {self.avatar!r} must be seekable and readable and in binary mode")
-            self.avatar = Image.open(self.avatar)
-        elif isinstance(self.avatar, str):
+        if isinstance(self.avatar, str):
             if self.avatar.startswith("http"):
-                self.avatar = await RankCard.image_(self.avatar)
+                self.avatar = await RankCard._image(self.avatar)
             else:
                 self.avatar = Image.open(open(self.avatar, "rb"))
         else:
-            raise TypeError(f"avatar must be a path or url or a file buffer, not {type(self.background)}") 
+            raise TypeError(f"avatar must be a url, not {type(self.background)}") 
 
         self.avatar = self.avatar.resize((170,170))
 
-        overlay = Image.open("./assets/overlay1.png")
+        overlay = Image.open(path + "/assets/overlay1.png")
         background = Image.new("RGBA", overlay.size)
         backgroundover = self.background.resize((638,159))
         background.paste(backgroundover,(0,0))
@@ -175,26 +157,26 @@ class RankCard:
         self.background = background.resize(overlay.size)
         self.background.paste(overlay,(0,0),overlay)
 
-        myFont = ImageFont.truetype("./assets/levelfont.otf",40)
+        myFont = ImageFont.truetype(path + "/assets/levelfont.otf",40)
         draw = ImageDraw.Draw(self.background)
 
         draw.text((205,(327/2)+20), self.username,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
-        bar_exp = (self.current_exp/self.max_exp)*420
+        bar_exp = (self.current_xp/self.max_xp)*420
         if bar_exp <= 50:
             bar_exp = 50    
 
-        current_exp = RankCard.convert_number(self.current_exp)
+        current_xp = RankCard.convert_number(self.current_xp)
         
-        max_exp = RankCard.convert_number(self.max_exp)
+        max_xp = RankCard.convert_number(self.max_xp)
         
 
-        myFont = ImageFont.truetype("./assets/levelfont.otf",30)
+        myFont = ImageFont.truetype(path + "/assets/levelfont.otf",30)
         draw.text((197,(327/2)+125), f"LEVEL - {RankCard.convert_number(self.level)}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
-        w,h = draw.textsize(f"{current_exp}/{max_exp}", font=myFont)
-        draw.text((638-w-50,(327/2)+125), f"{current_exp}/{max_exp}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+        w,_ = draw.textsize(f"{current_xp}/{max_xp}", font=myFont)
+        draw.text((638-w-50,(327/2)+125), f"{current_xp}/{max_xp}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
-        mask_im = Image.open("./assets/mask_circle.jpg").convert('L').resize((170,170))
+        mask_im = Image.open(path + "/assets/mask_circle.jpg").convert('L').resize((170,170))
         new = Image.new("RGB", self.avatar.size, (0, 0, 0))
         try:
             new.paste(self.avatar, mask=self.avatar.convert("RGBA").split()[3])
@@ -209,14 +191,11 @@ class RankCard:
         draw.rounded_rectangle((0, 0, bar_exp, 50), 30, fill=self.bar_color)
         self.background.paste(im, (190, 235))
         new = Image.new("RGBA", self.background.size)
-        new.paste(self.background,(0, 0), Image.open("./assets/curvedoverlay.png").convert("L"))
+        new.paste(self.background,(0, 0), Image.open(path + "/assets/curvedoverlay.png").convert("L"))
         self.background = new.resize((505, 259))
 
-        if self.path is not None:
-            self.background.save(self.path, "PNG")
-            return self.path
-        else:
-            image = BytesIO()
-            self.background.save(image, 'PNG')
-            image.seek(0)
-            return image
+        image = BytesIO()
+        self.background.save(image, 'PNG')
+        image.seek(0)
+        return image
+    

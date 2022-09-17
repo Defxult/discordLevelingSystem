@@ -43,7 +43,8 @@ from .errors import *
 from .levels_xp_needed import *
 from .member_data import MemberData
 from .role_awards import RoleAward
-
+from .card_settings import Settings
+from .rank_card import RankCard
 
 class DiscordLevelingSystem:
     """A local discord.py leveling system powered by SQLite
@@ -1969,3 +1970,52 @@ class DiscordLevelingSystem:
 
                     if refresh_name:
                         await self._refresh_name(message)
+
+    @db_file_exists
+    async def get_rank_card(self, member: Member, settings: Settings)->bytes:
+        """|coro|
+
+        Get the rank card for a member
+
+        Parameters
+        ----------
+        member: :class:`discord.Member`
+            The member to get the rank card for
+        
+        settings: :class:`DiscordLevelingSystem.Settings`
+            The settings to use for the rank card. If :param:`settings` is not provided, the default settings will be used
+        
+        Returns
+        -------
+        :class:`bytes`
+            The rank card as a PNG image
+        
+        Raises
+        ------
+        - `InvalidImageType`
+            If the image type is not supported
+        - `InvalidImageUrl`
+            If the image url is invalid
+
+        """
+        memberdata = await self.get_data_for(member)
+        if memberdata == None:
+            return None
+         
+        next_details = _next_level_details(memberdata.level)
+        max_xp = next_details.xp_needed
+        current_xp = memberdata.xp
+        avatar = member.avatar.url
+        level = memberdata.level
+        username = memberdata.name
+        max_xp = memberdata.total_xp
+
+        card = RankCard(
+            settings=settings,
+            avatar=avatar,
+            level=level,
+            username=username,
+            current_xp=current_xp,
+            max_xp=max_xp,
+        )
+        return (await card.create())

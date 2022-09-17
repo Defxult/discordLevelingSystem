@@ -75,5 +75,5 @@ setup(
     license='MIT',
     keywords=tags,
     packages=find_packages(),
-    install_requires=['aiosqlite>=0.17.0', 'discord.py>=2.0.0']
+    install_requires=['aiosqlite>=0.17.0', 'discord.py>=2.0.0', 'Pillow>=9.2.0']
 )
