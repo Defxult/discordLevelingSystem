@@ -22,12 +22,17 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from io import BytesIO, IOBase
+from io import BufferedIOBase, BytesIO, IOBase
+from os import PathLike
+from pathlib import Path
+from typing import Optional, Union
+
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
-from .errors import InvalidImageType, InvalidImageUrl
+
 from .card_settings import Settings
-from pathlib import Path
+from .errors import InvalidImageType, InvalidImageUrl
+
 
 class RankCard:
     """Represents the rank card that will be sent to the member upon leveling up
@@ -68,7 +73,7 @@ class RankCard:
         If the image url is invalid
     """
 
-    __slots__ = ('settings', 'avatar', 'level', 'username', 'current_xp', 'max_xp')
+    __slots__ = ('settings', 'avatar', 'level', 'username', 'current_xp', 'max_xp', 'background', 'bar_color', 'text_color')
 
     def __init__(
         self,
@@ -108,7 +113,7 @@ class RankCard:
                 data = await response.read()
                 return Image.open(BytesIO(data))
 
-    async def create(self)-> bytes:
+    async def create(self)-> BytesIO:
         """
         Creates the rank card
 
@@ -145,7 +150,7 @@ class RankCard:
             else:
                 self.avatar = Image.open(open(self.avatar, "rb"))
         else:
-            raise TypeError(f"avatar must be a url, not {type(self.background)}") 
+            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
 
         self.avatar = self.avatar.resize((170,170))
 
@@ -157,24 +162,24 @@ class RankCard:
         self.background = background.resize(overlay.size)
         self.background.paste(overlay,(0,0),overlay)
 
-        myFont = ImageFont.truetype(path + "/assets/levelfont.otf",40)
+        card_font = ImageFont.truetype(path + "/assets/levelfont.otf",40)
         draw = ImageDraw.Draw(self.background)
 
-        draw.text((205,(327/2)+20), self.username,font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+        draw.text((205,(327/2)+20), self.username,font=card_font, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
         bar_exp = (self.current_xp/self.max_xp)*420
         if bar_exp <= 50:
             bar_exp = 50    
 
-        current_xp = RankCard.convert_number(self.current_xp)
+        current_xp = RankCard._convert_number(self.current_xp)
         
-        max_xp = RankCard.convert_number(self.max_xp)
+        max_xp = RankCard._convert_number(self.max_xp)
         
 
-        myFont = ImageFont.truetype(path + "/assets/levelfont.otf",30)
-        draw.text((197,(327/2)+125), f"LEVEL - {RankCard.convert_number(self.level)}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+        card_font = ImageFont.truetype(path + "/assets/levelfont.otf",30)
+        draw.text((197,(327/2)+125), f"LEVEL - {RankCard._convert_number(self.level)}",font=card_font, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
-        w,_ = draw.textsize(f"{current_xp}/{max_xp}", font=myFont)
-        draw.text((638-w-50,(327/2)+125), f"{current_xp}/{max_xp}",font=myFont, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
+        w,_ = draw.textsize(f"{current_xp}/{max_xp}", font=card_font)
+        draw.text((638-w-50,(327/2)+125), f"{current_xp}/{max_xp}",font=card_font, fill=self.text_color,stroke_width=1,stroke_fill=(0, 0, 0))
 
         mask_im = Image.open(path + "/assets/mask_circle.jpg").convert('L').resize((170,170))
         new = Image.new("RGB", self.avatar.size, (0, 0, 0))
@@ -199,3 +204,40 @@ class RankCard:
         image.seek(0)
         return image
     
+
+class Settings:
+    """
+    Represents the settings for the rank card
+
+    Parameters
+    ----------
+    background: :class:`Union[PathLike, BufferedIOBase, str]`
+        The background image for the rank card. This can be a path to a file or a file-like object in `rb` mode or URL
+
+    bar_color: :class:`Optional[str]`
+        The color of the XP bar. This can be a hex code or a color name. Default is `white`
+    
+    text_color: :class:`Optional[str]`
+        The color of the text. This can be a hex code or a color name. Default is `white`
+
+    Attributes
+    ----------
+    - `background`
+    - `bar_color`
+    - `text_color`
+    """
+
+    __slots__ = ('background', 'bar_color', 'text_color')
+
+    def __init__(
+        self,
+        background: Union[PathLike, BufferedIOBase, str],
+        bar_color: Optional[str] = 'white',
+        text_color: Optional[str] = 'white'
+    ) -> None:
+        self.background = background
+        self.bar_color = bar_color
+        self.text_color = text_color
+    
+    def to_dict(self) -> dict:
+        return {key : getattr(self, key) for key in self.__class__.__slots__}

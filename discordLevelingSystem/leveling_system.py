@@ -24,6 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 import asyncio
 import collections
+from io import BytesIO
 import json
 import os
 import random
@@ -43,8 +44,7 @@ from .errors import *
 from .levels_xp_needed import *
 from .member_data import MemberData
 from .role_awards import RoleAward
-from .card_settings import Settings
-from .rank_card import RankCard
+from .rank_card import RankCard, Settings
 
 class DiscordLevelingSystem:
     """A local discord.py leveling system powered by SQLite
@@ -1972,7 +1972,7 @@ class DiscordLevelingSystem:
                         await self._refresh_name(message)
 
     @db_file_exists
-    async def get_rank_card(self, member: Member, settings: Settings)->bytes:
+    async def get_rank_card(self, member: Member, settings: Settings)->Optional[BytesIO]:
         """|coro|
 
         Get the rank card for a member
@@ -2002,20 +2002,12 @@ class DiscordLevelingSystem:
         if memberdata == None:
             return None
          
-        next_details = _next_level_details(memberdata.level)
-        max_xp = next_details.xp_needed
-        current_xp = memberdata.xp
-        avatar = member.avatar.url
-        level = memberdata.level
-        username = memberdata.name
-        max_xp = memberdata.total_xp
-
         card = RankCard(
             settings=settings,
-            avatar=avatar,
-            level=level,
-            username=username,
-            current_xp=current_xp,
-            max_xp=max_xp,
+            avatar=member.display_avatar.url,
+            level=memberdata.level,
+            username=memberdata.name,
+            current_xp=memberdata.xp,
+            max_xp=self.get_xp_for_level(await self.next_level(member)),
         )
         return (await card.create())

@@ -13,7 +13,7 @@ from .announcement import LevelUpAnnouncement
 from .leveling_system import DiscordLevelingSystem
 from .member_data import MemberData
 from .role_awards import RoleAward
-from .rank_card import RankCard
+from .rank_card import RankCard, Settings
 
 __source__ = 'https://github.com/Defxult/discordLevelingSystem'
 __all__ = (
@@ -21,5 +21,6 @@ __all__ = (
     'DiscordLevelingSystem',
     'MemberData',
     'RoleAward',
-    'RankCard'
+    'RankCard',
+    'Settings'
 )
