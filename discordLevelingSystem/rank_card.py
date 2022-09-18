@@ -170,7 +170,7 @@ class RankCard:
             The image url is invalid
         """
 
-        path = Path(__file__).parent
+        path = str(Path(__file__).parent)
 
         if isinstance(self.background, IOBase):
             if not (self.background.seekable() and self.background.readable() and self.background.mode == "rb"):
