@@ -1982,13 +1982,13 @@ class DiscordLevelingSystem:
         member: :class:`discord.Member`
             The member to get the rank card for
         
-        settings: :class:`DiscordLevelingSystem.Settings`
-            The settings to use for the rank card. If :param:`settings` is not provided, the default settings will be used
+        settings: :class:`Settings`
+            The settings to use for the rank card
         
         Returns
         -------
-        :class:`bytes`
-            The rank card as a PNG image
+        :class:`BytesIO`
+            The rank card as BytesIO
         
         Raises
         ------

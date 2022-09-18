@@ -30,12 +30,49 @@ from typing import Optional, Union
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
 
-from .card_settings import Settings
 from .errors import InvalidImageType, InvalidImageUrl
 
 
+class Settings:
+    """
+    Represents the settings for the rank card
+
+    Parameters
+    ----------
+    background: :class:`Union[PathLike, BufferedIOBase, str]`
+        The background image for the rank card. This can be a path to a file or a file-like object in `rb` mode or URL
+
+    bar_color: :class:`Optional[str]`
+        The color of the XP bar. This can be a hex code or a color name. Default is `white`
+    
+    text_color: :class:`Optional[str]`
+        The color of the text. This can be a hex code or a color name. Default is `white`
+
+    Attributes
+    ----------
+    - `background`
+    - `bar_color`
+    - `text_color`
+    """
+
+    __slots__ = ('background', 'bar_color', 'text_color')
+
+    def __init__(
+        self,
+        background: Union[PathLike, BufferedIOBase, str],
+        bar_color: Optional[str] = 'white',
+        text_color: Optional[str] = 'white'
+    ) -> None:
+        self.background = background
+        self.bar_color = bar_color
+        self.text_color = text_color
+    
+    def to_dict(self) -> dict:
+        return {key : getattr(self, key) for key in self.__class__.__slots__}
+
+
 class RankCard:
-    """Represents the rank card that will be sent to the member upon leveling up
+    """Represents the users rank card
 
     Parameters
     ----------
@@ -63,7 +100,10 @@ class RankCard:
     - `level`
     - `username`
     - `current_xp`
-    - `max_xp`
+    - `max_xp`    
+    - `background`
+    - `bar_color`
+    - `text_color`
 
     Raises
     ------
@@ -119,8 +159,8 @@ class RankCard:
 
         Returns
         -------
-        :class:`bytes`
-            The rank card as bytes
+        :class:`BytesIO`
+            The rank card as BytesIO
 
         Raises
         ------
@@ -203,41 +243,3 @@ class RankCard:
         self.background.save(image, 'PNG')
         image.seek(0)
         return image
-    
-
-class Settings:
-    """
-    Represents the settings for the rank card
-
-    Parameters
-    ----------
-    background: :class:`Union[PathLike, BufferedIOBase, str]`
-        The background image for the rank card. This can be a path to a file or a file-like object in `rb` mode or URL
-
-    bar_color: :class:`Optional[str]`
-        The color of the XP bar. This can be a hex code or a color name. Default is `white`
-    
-    text_color: :class:`Optional[str]`
-        The color of the text. This can be a hex code or a color name. Default is `white`
-
-    Attributes
-    ----------
-    - `background`
-    - `bar_color`
-    - `text_color`
-    """
-
-    __slots__ = ('background', 'bar_color', 'text_color')
-
-    def __init__(
-        self,
-        background: Union[PathLike, BufferedIOBase, str],
-        bar_color: Optional[str] = 'white',
-        text_color: Optional[str] = 'white'
-    ) -> None:
-        self.background = background
-        self.bar_color = bar_color
-        self.text_color = text_color
-    
-    def to_dict(self) -> dict:
-        return {key : getattr(self, key) for key in self.__class__.__slots__}
