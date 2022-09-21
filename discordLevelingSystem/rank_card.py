@@ -42,11 +42,11 @@ class Settings:
     background: :class:`Union[PathLike, BufferedIOBase, str]`
         The background image for the rank card. This can be a path to a file or a file-like object in `rb` mode or URL
 
-    bar_color: :class:`Optional[str]`
-        The color of the XP bar. This can be a hex code or a color name. Default is `white`
+    bar_color: :class:`str`
+        The color of the XP bar. This can be a string hex code or a color name. Default is `white`
     
-    text_color: :class:`Optional[str]`
-        The color of the text. This can be a hex code or a color name. Default is `white`
+    text_color: :class:`str`
+        The color of the text. This can be a string hex code or a color name. Default is `white`
 
     Attributes
     ----------
@@ -60,8 +60,8 @@ class Settings:
     def __init__(
         self,
         background: Union[PathLike, BufferedIOBase, str],
-        bar_color: Optional[str] = 'white',
-        text_color: Optional[str] = 'white'
+        bar_color: str = 'white',
+        text_color: str = 'white'
     ) -> None:
         self.background = background
         self.bar_color = bar_color
@@ -135,12 +135,10 @@ class RankCard:
 
     @staticmethod
     def _convert_number(number: int) -> str:
-        if number >= 1000000000:
-            return f"{number / 1000000000:.1f}B"
-        elif number >= 1000000:
-            return f"{number / 1000000:.1f}M"
+        if number >= 1000000:
+            return f"{number / 1000000:.3f}M"
         elif number >= 1000:
-            return f"{number / 1000:.1f}K"
+            return f"{number / 1000:.3f}K"
         else:
             return str(number)
 
@@ -153,7 +151,7 @@ class RankCard:
                 data = await response.read()
                 return Image.open(BytesIO(data))
 
-    async def create(self)-> BytesIO:
+    async def create(self)-> Optional[BytesIO]:
         """
         Creates the rank card
 
@@ -190,7 +188,7 @@ class RankCard:
             else:
                 self.avatar = Image.open(open(self.avatar, "rb"))
         else:
-            raise TypeError(f"avatar must be a url, not {type(self.avatar)}") 
+            raise InvalidImageType(f"avatar must be a url, not {type(self.avatar)}") 
 
         self.avatar = self.avatar.resize((170,170))
 
