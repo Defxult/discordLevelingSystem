@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+authors = [{name = "Defxult#8269"}]
+name = "discordLevelingSystem"
+readme = "README.md"
+version = "1.2.1"
+description = "A library to implement a leveling system into a discord bot. Contains features such as XP, level, ranks, and role awards."
+requires-python = ">=3.8"
+license = {text = "MIT"}
+dependencies = ["discord.py>=2.0.0", "aiosqlite>=0.17.0"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+keywords = [
+    "database",
+    "discord",
+    "discord bot",
+    "discord.py",
+    "discord py",
+    "discord level",
+    "discord leveling",
+    "discord leveling system",
+    "level",
+    "levels",
+    "leveling",
+    "level up",
+    "level system",
+    "mee6",
+    "rank",
+    "ranking",
+    "role award",
+    "xp"
+]
+
+
+[project.urls]
+Homepage = "https://github.com/Defxult/discordLevelingSystem"
+Changelog = "https://github.com/Defxult/discordLevelingSystem/blob/main/CHANGELOG.md"
+
+
+[tool.setuptools]
+packages = ["discordLevelingSystem"]

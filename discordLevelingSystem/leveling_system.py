@@ -1927,7 +1927,7 @@ class DiscordLevelingSystem:
                         else:
                             amount += bonus.bonus_amount
                         
-                        if amount > 75:
+                        if amount > 75: # type: ignore
                             amount = 75
                         break
             

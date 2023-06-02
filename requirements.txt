@@ -1,0 +1,2 @@
+discord.py>=2.0.0
+aiosqlite>=0.17.0

@@ -1,6 +1,15 @@
-## v1.2.0 » Aug. 22, 2022
+## v1.2.1 » Jun. 2, 2023
 <!-- <details>
   <summary>Click to display changelog</summary> -->
+
+#### Bug Fixes
+* Fixed an issue where the library couldn't be installed via pip ([#23](https://github.com/Defxult/discordLevelingSystem/issues/23)).
+
+<!-- </details> -->
+
+## v1.2.0 » Aug. 22, 2022
+<details>
+  <summary>Click to display changelog</summary>
 
 #### Breaking Changes
 * The developer of discord.py has decided to revive the project. Since this library was originally dependent on discord.py, as of this version it is no longer dependent on pycord and will be using discord.py 2.0 or higher for the duration of this library.
@@ -12,7 +21,7 @@
 #### Bug Fixes
 * Fixed an issue where an error would occur when a user/guild doesn't have an icon. Now, the icon is the default discord user icon ([#5](https://github.com/Defxult/discordLevelingSystem/issues/15)). 
 
-<!-- </details> -->
+</details> 
 
 ## v1.1.0 » Jan. 29, 2022
 <details>
