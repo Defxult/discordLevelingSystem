@@ -2,7 +2,7 @@ A library to implement a leveling system into a discord bot. One of the most pop
 
 [![Downloads](https://pepy.tech/badge/discordlevelingsystem)](https://pepy.tech/project/discordlevelingsystem)
 [![Downloads](https://pepy.tech/badge/discordlevelingsystem/month)](https://pepy.tech/project/discordlevelingsystem)
-![python_version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue)
+![python_version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue)
 
 ## Installing
 You can install the latest [PyPI version](https://pypi.org/project/discordLevelingSystem/) of the library by doing:
