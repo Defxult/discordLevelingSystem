@@ -16,7 +16,7 @@ Or the development version:
 ---
 
 ## Showcase
-![showcase](https://cdn.discordapp.com/attachments/655186216060321816/835010159092039680/leveling_showcase.gif?ex=663468cf&is=6621f3cf&hm=d8180dfdcda907d2795d86991c1b15af114422a19d48ef5793754a0df658c923&)
+![showcase](https://i.imgur.com/myCKaxG.gif)
 
 ---
 ## How to import
