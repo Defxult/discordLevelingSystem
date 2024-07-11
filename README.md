@@ -1,4 +1,4 @@
-A library to implement a leveling system into a discord bot. One of the most popular discord bots out there is MEE6 and it's leveling system. This library provides ways to easily implement one for yourself. It uses SQLite ([aiosqlite](https://pypi.org/project/aiosqlite/)) to locally query things such as their XP, rank, and level. Various amounts of other methods and classes are also provided so you can access or remove contents from the database file.
+A library to implement a leveling system into a discord bot. One of the most popular discord bots out there is MEE6 and its leveling system. This library provides ways to easily implement one for yourself. It uses SQLite ([aiosqlite](https://pypi.org/project/aiosqlite/)) to locally query things such as their XP, rank, and level. Various amounts of other methods and classes are also provided so you can access or remove contents from the database file.
 
 [![Downloads](https://pepy.tech/badge/discordlevelingsystem)](https://pepy.tech/project/discordlevelingsystem)
 [![Downloads](https://pepy.tech/badge/discordlevelingsystem/month)](https://pepy.tech/project/discordlevelingsystem)
@@ -145,7 +145,7 @@ lvl = DiscordLevelingSystem(..., awards=my_awards)
 ## LevelUpAnnouncement
 ```class LevelUpAnnouncement(message=default_message, level_up_channel_ids=None, allowed_mentions=default_mentions, tts=False, delete_after=None)```
 
-Level up announcements are for when you want to implement your own level up messages. It provides access to who leveled up, their rank, level and much more. It also uses some of discord.py's kwargs from it's `Messageable.send` such as `allowed_mentions`, `tts`, and `delete_after` to give you more control over the sent message.
+Level up announcements are for when you want to implement your own level up messages. It provides access to who leveled up, their rank, level and much more. It also uses some of discord.py's kwargs from its `Messageable.send()` such as `allowed_mentions`, `tts`, and `delete_after` to give you more control over the sent message.
 
 ---
 ### Parameters of the LevelUpAnnouncement constructor
@@ -258,8 +258,8 @@ Accessing the raw information inside the database file can look a bit messy if y
 * `id_number` (`int`) The members ID
 * `name` (`str`) The members name
 * `level` (`int`) The members level
-* `xp` (`int`) The members xp
-* `total_xp` (`int`) The members total xp
+* `xp` (`int`) The members XP
+* `total_xp` (`int`) The members total XP
 * `rank` (`Optional[int]`) The members rank
 * `mention` (`str`) The discord member mention string
 
@@ -603,7 +603,7 @@ bot.run(...)
       * Index 2 is their name
       * Index 3 is their level
       * Index 4 is their XP
-      * Index 5 is their total xp
+      * Index 5 is their total XP
       * Can be an empty list if nothing is in the database
   * **Raises**
     * `DatabaseFileNotFound` - The database file was not found
